@@ -2,7 +2,7 @@
 //  capstone_2025App.swift
 //  capstone_2025
 //
-//  Created by ㅇㅇ ㅇ on 2/18/25.
+//  Created by Yoon on 2/18/25.
 //
 
 import SwiftUI
