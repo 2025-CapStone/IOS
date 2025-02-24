@@ -9,20 +9,21 @@ struct home: View {
     ]
     
     var body: some View {
-        NavigationView { // ✅ 네비게이션 뷰 추가
+        NavigationView {
             VStack(spacing: 20) {
-                // 상단 네비게이션 바
+                Spacer(minLength: 50) // ✅ 상단 여백 추가하여 전체적으로 내림
+                
+                // ✅ 상단 네비게이션 바
                 HStack {
                     Image("logo") // 좌측 상단 로고
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 50, height: 50)
+                        .frame(width: 40, height: 40)
 
                     Spacer()
 
-                    Button(action: {
-                        print("추가 버튼 클릭됨")
-                    }) {
+                    // ✅ + 버튼을 클릭하면 club_create 화면으로 이동
+                    NavigationLink(destination: club_create()) {
                         Image(systemName: "plus") // 우측 상단 추가 버튼
                             .resizable()
                             .scaledToFit()
@@ -31,14 +32,13 @@ struct home: View {
                     }
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 50) // SafeArea와 겹치지 않도록 조정
 
-                // CLUB HOUSE 텍스트
+                // ✅ CLUB HOUSE 텍스트
                 Text("CLUB HOUSE")
-                    .font(.custom("Comfortaa-Bold", size: 24)) // 원하는 폰트 적용
-                    .padding(.top, -10)
+                    .font(.custom("Comfortaa-Bold", size: 24))
+                    .padding(.top, 10) // ✅ 약간 아래로 내림
 
-                // 검색창 및 필터 버튼을 포함한 HStack
+                // ✅ 검색창 및 필터 버튼
                 HStack {
                     Button(action: {
                         print("검색 버튼 클릭됨")
@@ -49,55 +49,64 @@ struct home: View {
                             Spacer()
                         }
                         .padding(.leading, 15)
-                        .frame(height: 40)
+                        .frame(height: 45)
+                        .frame(maxWidth: .infinity) // ✅ 검색창 너비 확장
                         .background(RoundedRectangle(cornerRadius: 15).fill(Color.white))
                         .shadow(radius: 2)
                     }
-                    Spacer(minLength: 15)
-                    
-                    // ✅ 필터 버튼 → home_filter로 이동하는 NavigationLink 추가
-//                    NavigationLink(destination: home_filter()) {
-//                        Image(systemName: "line.horizontal.3.decrease.circle.fill")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 30, height: 30)
-//                            .foregroundColor(.black)
-//                            .background(Color.white)
-//                            .clipShape(Circle())
-//                            .shadow(radius: 2)
-//                    }
-                }
-                .padding(.horizontal, 20)
 
-                // 동호회 목록 (그리드 형식)
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 20), count: 2), spacing: 20) {
-                    ForEach(clubs, id: \.0) { club in
-                        VStack {
-                            Image(club.0) // 이미지 파일명
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 100)
-                                .clipShape(RoundedRectangle(cornerRadius: 15))
-                            
-                            Text(club.1)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(.black)
-                        }
-                        .frame(width: 150, height: 160)
-                        .background(Color.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
-                        .shadow(radius: 2)
+                    // ✅ 필터 버튼
+                    Button(action: {
+                        print("필터 버튼 클릭됨")
+                    }) {
+                        Image(systemName: "line.horizontal.3.decrease.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 35, height: 35)
+                            .foregroundColor(.black)
+                            .background(Color.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 2)
                     }
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 20)
+                .padding(.top, 10) // ✅ 검색창 위치 조정
+
+                // ✅ 동호회 목록 (그리드 형식)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 20), count: 2), spacing: 20) {
+                    ForEach(clubs, id: \.0) { club in
+                        NavigationLink(destination: club_intro()) { // ✅ 동호회 클릭 시 club_intro 이동
+                            VStack {
+                                Image(club.0)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 120) // ✅ 이미지 크기 증가
+                                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                                
+                                Text(club.1)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundColor(.black)
+                            }
+                            .frame(width: 170, height: 180) // ✅ 크기 조정
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                            .shadow(radius: 2)
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
+                .frame(maxWidth: .infinity) // ✅ 가로 너비 확장
+
+                Spacer() // ✅ 화면 아래 여백 추가
             }
-            .background(Color.white) // 배경 흰색으로 설정
-            .edgesIgnoringSafeArea(.top) // SafeArea 고려하여 상단 배경 적용
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // ✅ 전체 화면 조정
+            .background(Color.white)
+            .edgesIgnoringSafeArea(.all)
         }
     }
 }
 
+// ✅ 미리보기
 #Preview {
     home()
 }
