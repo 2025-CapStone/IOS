@@ -1,7 +1,9 @@
+
 import SwiftUI
 
 struct introduce_2: View {
     @State private var currentPage = 1 // 현재 페이지 (2/3)
+    @EnvironmentObject var router: NavigationRouter
 
     var body: some View {
         VStack {
@@ -14,7 +16,8 @@ struct introduce_2: View {
                 Spacer()
 
                 Button(action: {
-                    print("Skip 버튼 클릭됨") // 스킵 기능 추가 가능
+                    print("introduce2 Skip 버튼 클릭됨") // 스킵 기능 추가 가능
+                    router.path.append(AppRoute.login)
                 }) {
                     Text("Skip")
                         .font(.system(size: 17, weight: .bold))
@@ -63,6 +66,7 @@ struct introduce_2: View {
                 // Prev 버튼
                 Button(action: {
                     print("Prev 버튼 클릭됨") // 이전 화면으로 이동 가능
+                    router.path.removeLast()
                 }) {
                     Text("Prev")
                         .font(.system(size: 16, weight: .bold))
@@ -86,6 +90,8 @@ struct introduce_2: View {
                 // Next 버튼
                 Button(action: {
                     print("Next 버튼 클릭됨") // 다음 화면으로 이동 가능
+                    router.path.append(AppRoute.introduce3)
+
                 }) {
                     Text("Next")
                         .font(.system(size: 16, weight: .bold))

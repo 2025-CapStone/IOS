@@ -5,6 +5,7 @@ struct SignUp: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @State private var phoneNumber: String = ""
+    @EnvironmentObject var router: NavigationRouter
 
     var body: some View {
         VStack(spacing: 20) {
@@ -25,6 +26,7 @@ struct SignUp: View {
             // 가입하기 버튼
             Button(action: {
                 print("가입하기 버튼 클릭됨")
+                router.path.append(AppRoute.login)
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)

@@ -1,7 +1,10 @@
+
 import SwiftUI
 
 struct onboarding: View {
     @Environment(\.presentationMode) var presentationMode // 모달 닫기 기능
+    @EnvironmentObject var router: NavigationRouter
+
 
     var body: some View {
         ZStack {
@@ -78,6 +81,11 @@ struct onboarding: View {
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .shadow(radius: 10)
+        }.onAppear{
+            // 2초 후 자동으로 introduce_1 화면으로 전환
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                router.path.append(AppRoute.introduce)
+            }
         }
     }
 }
@@ -109,3 +117,4 @@ struct PermissionRow: View {
 #Preview {
     onboarding()
 }
+

@@ -1,8 +1,9 @@
+
 import SwiftUI
 
 struct introduce_1: View {
     @State private var currentPage = 0 // 페이지 인덱스 관리
-    
+    @EnvironmentObject var router: NavigationRouter
     var body: some View {
         VStack {
             // 상단 네비게이션 (1/3 단계 & Skip 버튼)
@@ -14,7 +15,9 @@ struct introduce_1: View {
                 Spacer()
                 
                 Button(action: {
+                    
                     print("Skip 버튼 클릭됨") // 스킵 기능 추가 가능
+                    router.path.append(AppRoute.login)
                 }) {
                     Text("Skip")
                         .font(.system(size: 17, weight: .bold))
@@ -69,6 +72,7 @@ struct introduce_1: View {
                 // Next 버튼
                 Button(action: {
                     print("Next 버튼 클릭됨") // 다음 화면으로 이동 가능
+                    router.path.append(AppRoute.introduce2)
                 }) {
                     Text("Next")
                         .font(.system(size: 16, weight: .bold))
