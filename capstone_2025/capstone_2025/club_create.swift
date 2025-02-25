@@ -7,18 +7,19 @@ struct club_create: View {
     @State private var clubDescription: String = ""
 
     var body: some View {
-        VStack(spacing: 20) {
-            // 상단 이미지 (pngwing 이미지)
+        VStack(spacing: 25) {
+            Spacer(minLength: 150) // ✅ 화면 전체적으로 아래로 내림
+            
+            // ✅ 상단 이미지 (사진 업로드 아이콘)
             Image("camera")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 115, height: 85)
                 .clipShape(Circle())
                 .shadow(radius: 5)
-                .padding(.top, 200)
 
-            // 입력 필드
-            VStack(spacing: 15) {
+            // ✅ 입력 필드
+            VStack(spacing: 20) {
                 CustomInputField(title: "동호회 이름", text: $clubName)
                 CustomInputField(title: "지역", text: $location)
                 CustomInputField(title: "최대 인원수", text: $maxMembers)
@@ -26,7 +27,7 @@ struct club_create: View {
             }
             .padding(.horizontal, 20)
 
-            // 동호회 명부 업로드 버튼
+            // ✅ 동호회 명부 업로드 버튼
             Button(action: {
                 print("동호회 명부 업로드 클릭됨")
             }) {
@@ -41,8 +42,9 @@ struct club_create: View {
                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                     )
             }
+            .padding(.top, 10)
 
-            // 가입하기 버튼
+            // ✅ 가입하기 버튼
             Button(action: {
                 print("가입하기 버튼 클릭됨")
             }) {
@@ -54,17 +56,17 @@ struct club_create: View {
                     .cornerRadius(20)
                     .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 4)
             }
-            .padding(.top, 10)
+            .padding(.top, 20)
 
             Spacer()
         }
         .background(Color.white)
-        .edgesIgnoringSafeArea(.top)
+        .edgesIgnoringSafeArea(.all)
     }
 }
 
 // ✅ 커스텀 입력 필드
-struct CustomTextFieldView: View {
+struct CustomInputFieldView: View {
     var title: String
     @Binding var text: String
 
@@ -84,7 +86,7 @@ struct CustomTextFieldView: View {
     }
 }
 
-// 미리보기
+// ✅ 미리보기
 #Preview {
     club_create()
 }

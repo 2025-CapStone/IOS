@@ -19,7 +19,7 @@ struct club_intro: View {
                     Image("logo") // 좌측 상단 로고
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 30, height: 30)
+                        .frame(width: 40, height: 40)
 
                     Spacer()
                     
@@ -32,7 +32,7 @@ struct club_intro: View {
                         Image(systemName: "line.horizontal.3")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 22, height: 22)
+                            .frame(width: 40, height: 40)
                             .foregroundColor(.black)
                     }
                 }
@@ -51,9 +51,7 @@ struct club_intro: View {
                     Text(clubName)
                         .font(.system(size: 18, weight: .bold))
                     
-                    Button(action: {
-                        print("Edit Profile 클릭됨")
-                    }) {
+                    NavigationLink(destination: club_edit()) { // ✅ Edit Profile 클릭 시 이동
                         Text("Edit profile")
                             .font(.system(size: 12))
                             .foregroundColor(.black)
