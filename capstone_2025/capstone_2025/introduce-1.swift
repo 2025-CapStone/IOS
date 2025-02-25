@@ -54,16 +54,25 @@ struct introduce_1: View {
             .padding(.horizontal, 40)
             
             Spacer()
-            
-            // 페이지 인디케이터 & Next 버튼
+            // 페이지 인디케이터 & Prev / Next 버튼
             HStack {
+                // Prev 버튼
+                Button(action: {
+                    print("Prev 버튼 클릭됨") // 이전 화면으로 이동 가능
+                    router.path.removeLast()
+                }) {
+                    Text("Prev")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.gray) // 흐린 회색
+                }
+                Spacer()
                 // 페이지 인디케이터 (Dots)
                 HStack(spacing: 8) {
-                    Circle().fill(currentPage == 0 ? Color.black : Color.gray.opacity(0.5))
+                    Circle().fill(Color.black)
                         .frame(width: 8, height: 8)
-                    Circle().fill(currentPage == 1 ? Color.black : Color.gray.opacity(0.5))
+                    Circle().fill(Color.gray.opacity(0.5))
                         .frame(width: 8, height: 8)
-                    Circle().fill(currentPage == 2 ? Color.black : Color.gray.opacity(0.5))
+                    Circle().fill(Color.gray.opacity(0.5))
                         .frame(width: 8, height: 8)
                 }
                 

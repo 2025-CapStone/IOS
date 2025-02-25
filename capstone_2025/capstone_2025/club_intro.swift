@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct club_intro: View {
-    @State private var isMenuOpen = false // ✅ 메뉴 상태 추가
+    @State private var isMenuOpen = false
+    @EnvironmentObject var router: NavigationRouter // ✅ 네비게이션 라우터 추가
     
-    // ✅ 사용자 데이터 (서버/API 연동 가능)
+    // ✅ 사용자 데이터
     @State private var clubName: String = "동호회 이름"
     @State private var memberCount: String = "14"
     @State private var creationDate: String = "2017.03.18"
@@ -12,11 +13,10 @@ struct club_intro: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 30) { // 🔹 전체적으로 간격 증가
-                
-                // 🔹 상단 네비게이션 바
+            VStack(spacing: 30) {
+                // 🔹 네비게이션 바
                 HStack {
-                    Image("logo") // 좌측 상단 로고
+                    Image("logo")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 40, height: 40)
@@ -38,7 +38,7 @@ struct club_intro: View {
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
-                
+
                 // 🔹 동호회 이미지
                 Image("pngwing")
                     .resizable()
@@ -51,7 +51,7 @@ struct club_intro: View {
                     Text(clubName)
                         .font(.system(size: 18, weight: .bold))
                     
-                    NavigationLink(destination: club_edit()) { // ✅ Edit Profile 클릭 시 이동
+                    NavigationLink(destination: club_edit()) {
                         Text("Edit profile")
                             .font(.system(size: 12))
                             .foregroundColor(.black)
@@ -108,7 +108,7 @@ struct club_intro: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.white.edgesIgnoringSafeArea(.all))
             
-            // ✅ 메뉴바 수정 (우측 상단에서 나옴)
+            // ✅ 메뉴바 수정
             if isMenuOpen {
                 VStack {
                     HStack {
@@ -118,7 +118,13 @@ struct club_intro: View {
                             MenuItem(title: "회원관리")
                             MenuItem(title: "예산관리")
                             Divider()
-                            MenuItem(title: "로그아웃", isLogout: true)
+                            // ✅ 로그아웃 버튼 수정
+                            MenuItem(title: "로그아웃", isLogout: true, action: {
+                                withAnimation {
+                                    router.path = NavigationPath() // ✅ 네비게이션 스택 초기화
+                                    router.path.append(AppRoute.login) // ✅ Login 화면으로 이동
+                                }
+                            })
                         }
                         .frame(width: 150)
                         .background(Color.white)
@@ -144,9 +150,11 @@ struct club_intro: View {
 struct MenuItem: View {
     var title: String
     var isLogout: Bool = false
+    var action: (() -> Void)? // ✅ 추가된 로그아웃 액션
     
     var body: some View {
         Button(action: {
+            action?() // ✅ 로그아웃이면 실행
             print("\(title) 클릭됨")
         }) {
             HStack {
@@ -163,4 +171,5 @@ struct MenuItem: View {
 
 #Preview {
     club_intro()
+        .environmentObject(NavigationRouter()) // ✅ 환경 객체 추가
 }
