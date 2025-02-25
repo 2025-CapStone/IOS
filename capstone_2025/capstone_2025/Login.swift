@@ -1,8 +1,10 @@
+
 import SwiftUI
 
 struct Login: View {
     @State private var username: String = ""
     @State private var password: String = ""
+    @EnvironmentObject var router: NavigationRouter
 
     var body: some View {
         VStack(spacing: 20) {
@@ -58,6 +60,7 @@ struct Login: View {
             // 로그인 버튼
             Button(action: {
                 print("로그인 버튼 클릭됨")
+                router.path.append(AppRoute.home)
             }) {
                 Text("로그인")
                     .font(.headline)
@@ -74,6 +77,8 @@ struct Login: View {
             // 회원가입 버튼
             Button(action: {
                 print("회원가입 버튼 클릭됨")
+                router.path.append(AppRoute.signup)
+
             }) {
                 Text("회원가입")
                     .font(.subheadline)
@@ -88,3 +93,4 @@ struct Login: View {
 #Preview {
     Login()
 }
+
