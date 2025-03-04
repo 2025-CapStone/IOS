@@ -29,7 +29,7 @@ struct club_intro: View {
                             isMenuOpen.toggle()
                         }
                     }) {
-                        Image(systemName: "line.horizontal.3")
+                        Image(systemName: "ellipsis")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 40, height: 40)

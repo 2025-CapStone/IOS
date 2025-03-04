@@ -1,70 +1,62 @@
-
-//  ContentView.swift
-//  capstone_2025
-//
-//  Created by Yoon on 2/18/25.
-//
-
-
 import SwiftUI
 
+// ✅ 앱 내 네비게이션 경로를 관리하는 Enum
 enum AppRoute: Hashable {
     case login
     case introduce1
     case introduce2
     case introduce3
-    // 예시: 다른 뷰(데이터 전달이 필요한 경우)
-    case home/*(data: String)*/
+    case home
     case signup
     case onboarding
     case introduce
 }
 
+// ✅ 네비게이션 상태를 관리하는 ObservableObject
 class NavigationRouter: ObservableObject {
     @Published var path = NavigationPath()
 }
 
-
 struct ContentView: View {
-    @StateObject var router = NavigationRouter()
-    
+    @StateObject var router = NavigationRouter() // ✅ 네비게이션 상태 객체 생성
+
     var body: some View {
         NavigationStack(path: $router.path) {
-            // 초기 뷰: introduce1을 보여줍니다.
-            onboarding()
+            onboarding() // ✅ 초기 뷰를 `onboarding()`으로 설정
+                .environmentObject(router) // ✅ 모든 뷰에서 `router`를 사용할 수 있도록 설정
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
                     case .login:
-                        Login() // 로그인 뷰 (추후 정의)
+                        Login()
+                            .environmentObject(router) // ✅ Login 화면에도 environmentObject 추가
                     case .introduce1:
                         introduce_1()
+                            .environmentObject(router)
                     case .introduce2:
                         introduce_2()
+                            .environmentObject(router)
                     case .introduce3:
                         introduce_3()
-                    case .home/*(let data)*/:
-                        home(/*data: data*/) // 예시: 데이터 전달받는 Home 뷰
-                        // HTTP 프로토콜을 사용해야 하는 부분!
+                            .environmentObject(router)
+                    case .home:
+                        home()
+                            .environmentObject(router) // ✅ home 화면에서도 router 사용 가능
                     case .signup:
                         SignUp()
+                            .environmentObject(router) // ✅ SignUp 화면에서도 router 사용 가능
                     case .onboarding:
                         onboarding()
+                            .environmentObject(router)
                     case .introduce:
                         introduce()
+                            .environmentObject(router)
                     }
                 }
         }
-        .environmentObject(router) // 모든 자식 뷰에서 router에 접근할 수 있도록 설정
+        .environmentObject(router) // ✅ 모든 뷰에서 NavigationRouter 사용 가능하도록 설정
     }
 }
-
-extension ContentView{
-    
-
-    }
-
 
 #Preview {
     ContentView()
 }
-

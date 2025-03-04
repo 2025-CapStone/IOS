@@ -1,4 +1,3 @@
-
 import SwiftUI
 
 struct Login: View {
@@ -92,5 +91,6 @@ struct Login: View {
 
 #Preview {
     Login()
+    .environmentObject(NavigationRouter())
 }
 
