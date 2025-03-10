@@ -10,6 +10,7 @@ enum AppRoute: Hashable {
     case signup
     case onboarding
     case introduce
+    case calender
 }
 
 // ✅ 네비게이션 상태를 관리하는 ObservableObject
@@ -26,6 +27,10 @@ struct ContentView: View {
                 .environmentObject(router) // ✅ 모든 뷰에서 `router`를 사용할 수 있도록 설정
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
+                    
+                    case .calender:
+                        MainCalendarView()
+                            .environmentObject(router)
                     case .login:
                         Login()
                             .environmentObject(router) // ✅ Login 화면에도 environmentObject 추가
