@@ -170,5 +170,4 @@ struct Menu: View {
 
 
 #Preview {
-    budget()
-}
+    budget()}

@@ -6,6 +6,7 @@ struct MainCalendarView: View {
     @State private var showPopup = false
     @State private var selectedDate: Date = Date() // 기본 선택 날짜 (현재 년/월)
 
+
     var body: some View {
         ZStack {
             CalendarView(selectedDate: $selectedDate, showPopup: $showPopup)
@@ -49,41 +50,38 @@ struct CalendarView: View {
     @Binding var selectedDate: Date
     @Binding var showPopup: Bool
     @State private var month: Date = Date()
-    @StateObject var router = NavigationRouter() // ✅ 네비게이션 상태 객체 생성
+    @EnvironmentObject var router : NavigationRouter // ✅ 네비게이션 상태 객체 선언
+    @State private var isMenuOpen = false
+
 
 
     var body: some View {
         VStack {
+            // 🔹 네비게이션 바
             HStack {
-                NavigationLink(destination: club_create()) {
-                    Image(systemName: "plus") // 우측 상단 추가 버튼
+                Image("logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .onTapGesture{router.path.append(AppRoute.home)}
+
+                Spacer()
+                
+                // ✅ 메뉴 버튼
+                Button(action: {
+                    withAnimation {
+                        isMenuOpen.toggle()
+                    }
+                }) {
+                    Image(systemName: "ellipsis")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(.black)
-                }
-
-                Button(action: { print("특정 화면 이동")
-                    router.path = NavigationPath()
-                    router.path.append(AppRoute.home)
-                }) {
-                    Image(systemName: "person.3.fill")
-                        .font(.title)
-                        .foregroundColor(.black)
-                }
-                Spacer()
-                Button(action: { print("뒤로 가기")
-                    router.path = NavigationPath()
-                    router.path.removeLast()
-                }) {
-                    
-                    Image(systemName: "arrow.left")
-                        .font(.title)
+                        .frame(width: 40, height: 40)
                         .foregroundColor(.black)
                 }
             }
-            .padding(.horizontal)
-            .padding(.top, 10)
+            .padding(.horizontal, 20)
+            .padding(.top, 20)
 
             Spacer(minLength: 10)
 
@@ -115,6 +113,42 @@ struct CalendarView: View {
             calendarGridView
 
             Spacer()
+        }
+        if isMenuOpen {
+            VStack {
+                HStack {
+                    Spacer()
+                    VStack(alignment: .leading, spacing: 10) {
+                        MenuItem(title: "일정관리").onTapGesture{
+                           print("일정관리 탭제스쳐")
+                        }
+                        MenuItem(title: "회원관리").onTapGesture {
+                            print("회원관리 탭제스쳐")
+
+                        }
+                        MenuItem(title: "예산관리").onTapGesture {
+                         
+                        }
+                        Divider()
+                        // ✅ 로그아웃 버튼 수정
+                        MenuItem(title : "로그아웃")
+                   
+                    }
+                    .frame(width: 150)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                    .padding(.top, 50)
+                    .padding(.trailing, 10)
+                }
+                Spacer()
+            }
+            .background(Color.black.opacity(0.5).edgesIgnoringSafeArea(.all))
+            .onTapGesture {
+                withAnimation {
+                    isMenuOpen = false
+                }
+            }
         }
     }
 

@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct capstone_2025App: App {
-    var body: some Scene {
-        WindowGroup {
-            budget_2()
+
+        var body: some Scene {
+            WindowGroup {
+                ContentView()
+                    
+            }
         }
-    }
 }

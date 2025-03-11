@@ -1,5 +1,9 @@
 import SwiftUI
 
+// 필터는 안하고 edit profie 동호회 관리에서만 운영진 특ㅎ화 두기
+// 아무것도 가입 안한 사람은 클럽 아무거나 보여주기
+// 클럽 회장은 뭔가 왕관 아이콘?
+
 struct home: View {
     let clubs = [
         ("burger1", "동호회 이름"),
@@ -8,8 +12,10 @@ struct home: View {
         ("burger4", "동호회 이름3")
     ]
     
-    @State private var isFilterPopupVisible = false // ✅ 필터 팝업 상태 변수
-    @State private var userRole: String = "" // ✅ 선택된 역할을 저장하는 변수 추가
+    @State private var isFilterPopupVisible = false
+    @State private var userRole: String = ""
+    @State private var isLogoutAlertVisible = false // 로그아웃 알림창 표시 여부
+    @EnvironmentObject var router: NavigationRouter
 
     var body: some View {
         ZStack {
@@ -22,12 +28,17 @@ struct home: View {
                         Image("logo") // 좌측 상단 로고
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 40, height: 40)
+                            .frame(width: 40, height: 40).onTapGesture {
+                                isLogoutAlertVisible = true // 로고 터치 시 알림창 표시
+                            }
+                
+                      
 
                         Spacer()
 
                         // ✅ + 버튼을 클릭하면 club_create 화면으로 이동
                         NavigationLink(destination: club_create()) {
+                            
                             Image(systemName: "plus") // 우측 상단 추가 버튼
                                 .resizable()
                                 .scaledToFit()
@@ -108,6 +119,22 @@ struct home: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center) // ✅ 전체 화면 조정
                 .background(Color.white)
                 .edgesIgnoringSafeArea(.all)
+            } // 로그아웃 알림창 표시
+            if isLogoutAlertVisible {
+                CustomAlertView(
+                    title: "로그아웃",
+                    message: "로그아웃 하시겠습니까?",
+                    onConfirm: {
+                        // 로그아웃 처리 로직
+                        print("로그아웃 확인")
+                        isLogoutAlertVisible = false
+                        router.path=NavigationPath()
+                    },
+                    onCancel: {
+                        isLogoutAlertVisible = false
+                    }
+                )
+                .zIndex(1) // 알림창을 상위에 표시
             }
 
             // ✅ 필터 팝업 (필터 버튼 클릭 시만 나타남)
@@ -116,4 +143,8 @@ struct home: View {
             }
         }
     }
+}
+
+#Preview{
+    home().environmentObject(CustomAlertManager())
 }

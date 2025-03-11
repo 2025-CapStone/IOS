@@ -2,7 +2,8 @@ import SwiftUI
 
 struct club_intro: View {
     @State private var isMenuOpen = false
-    @EnvironmentObject var router: NavigationRouter // ✅ 네비게이션 라우터 추가
+    @EnvironmentObject var router: NavigationRouter  // ✅ 네비게이션 라우터 추가
+    
     
     // ✅ 사용자 데이터
     @State private var clubName: String = "동호회 이름"
@@ -51,7 +52,7 @@ struct club_intro: View {
                     Text(clubName)
                         .font(.system(size: 18, weight: .bold))
                     
-                    NavigationLink(destination: club_edit()) {
+                    //NavigationLink(destination: club_edit()) {
                         Text("Edit profile")
                             .font(.system(size: 12))
                             .foregroundColor(.black)
@@ -60,8 +61,10 @@ struct club_intro: View {
                             .overlay(
                                 RoundedRectangle(cornerRadius: 5)
                                     .stroke(Color.black, lineWidth: 1)
-                            )
-                    }
+                            ).onTapGesture{
+                                router.path.append(AppRoute.clubEdit)
+                            }
+                    
                 }
                 .padding(.horizontal, 20)
 
@@ -114,17 +117,20 @@ struct club_intro: View {
                     HStack {
                         Spacer()
                         VStack(alignment: .leading, spacing: 10) {
-                            MenuItem(title: "일정관리")
-                            MenuItem(title: "회원관리")
-                            MenuItem(title: "예산관리")
+                            MenuItem(title: "일정관리").onTapGesture{
+                               print("일정관리 탭제스쳐")
+                            }
+                            MenuItem(title: "회원관리").onTapGesture {
+                                print("회원관리 탭제스쳐")
+
+                            }
+                            MenuItem(title: "예산관리").onTapGesture {
+                             
+                            }
                             Divider()
                             // ✅ 로그아웃 버튼 수정
-                            MenuItem(title: "로그아웃", isLogout: true, action: {
-                                withAnimation {
-                                    router.path = NavigationPath() // ✅ 네비게이션 스택 초기화
-                                    router.path.append(AppRoute.login) // ✅ Login 화면으로 이동
-                                }
-                            })
+                            MenuItem(title : "로그아웃")
+                       
                         }
                         .frame(width: 150)
                         .background(Color.white)
@@ -151,11 +157,26 @@ struct MenuItem: View {
     var title: String
     var isLogout: Bool = false
     var action: (() -> Void)? // ✅ 추가된 로그아웃 액션
+    @EnvironmentObject var router: NavigationRouter // ✅ 네비게이션 라우터 추가
     
+
     var body: some View {
         Button(action: {
-            action?() // ✅ 로그아웃이면 실행
+            action?()
             print("\(title) 클릭됨")
+
+            
+            if title.hasPrefix("일정") {
+                
+                router.path.append(AppRoute.calendar)
+            } else if title.hasPrefix("예산") {
+                router.path.append(AppRoute.budget)
+            } else if title.hasPrefix("회원") {
+                router.path.append(AppRoute.login)
+            }else if title.hasSuffix("아웃") {
+                router.path.append(AppRoute.login) // ✅ Login 화면으로 이동
+
+            }
         }) {
             HStack {
                 Text(title)
@@ -171,5 +192,5 @@ struct MenuItem: View {
 
 #Preview {
     club_intro()
-        .environmentObject(NavigationRouter()) // ✅ 환경 객체 추가
+         // ✅ 환경 객체 추가
 }

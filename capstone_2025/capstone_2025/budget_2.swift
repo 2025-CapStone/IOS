@@ -184,8 +184,4 @@ struct MenuItems: View {
 
 // ✅ 미리보기
 #Preview {
-    NavigationStack {
-            budget_2()
-                .environmentObject(NavigationRouter()) // ✅ 환경 객체 추가
-        }
-}
+    budget_2()}

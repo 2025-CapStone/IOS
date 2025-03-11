@@ -84,8 +84,9 @@ struct onboarding: View {
         }.onAppear{
             // 2초 후 자동으로 introduce_1 화면으로 전환
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                
                 router.path.append(AppRoute.introduce)
-            }
+                                }
         }
     }
 }
@@ -115,6 +116,7 @@ struct PermissionRow: View {
 }
 
 #Preview {
-    onboarding()
+    onboarding().environmentObject(NavigationRouter())
+        .environmentObject(CustomAlertManager())
 }
 

@@ -10,7 +10,10 @@ enum AppRoute: Hashable {
     case signup
     case onboarding
     case introduce
-    case calender
+    case calendar
+    case budget2//(예산관리)
+    case budget
+    case clubEdit
 }
 
 // ✅ 네비게이션 상태를 관리하는 ObservableObject
@@ -18,22 +21,28 @@ class NavigationRouter: ObservableObject {
     @Published var path = NavigationPath()
 }
 
+
 struct ContentView: View {
-    @StateObject var router = NavigationRouter() // ✅ 네비게이션 상태 객체 생성
+    @StateObject var router = NavigationRouter()   // 네비게이션 상태 관리
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            onboarding() // ✅ 초기 뷰를 `onboarding()`으로 설정
-                .environmentObject(router) // ✅ 모든 뷰에서 `router`를 사용할 수 있도록 설정
+            onboarding()
+                .environmentObject(router)         // ✅ 네비게이션 객체 추가
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
-                    
-                    case .calender:
+                    case .budget:
+                        budget_2()
+                            .environmentObject(router)
+                    case .budget2:
+                        budget()
+                            .environmentObject(router)
+                    case .calendar:
                         MainCalendarView()
                             .environmentObject(router)
                     case .login:
                         Login()
-                            .environmentObject(router) // ✅ Login 화면에도 environmentObject 추가
+                            .environmentObject(router)
                     case .introduce1:
                         introduce_1()
                             .environmentObject(router)
@@ -45,23 +54,27 @@ struct ContentView: View {
                             .environmentObject(router)
                     case .home:
                         home()
-                            .environmentObject(router) // ✅ home 화면에서도 router 사용 가능
+                            .environmentObject(router)
                     case .signup:
                         SignUp()
-                            .environmentObject(router) // ✅ SignUp 화면에서도 router 사용 가능
+                            .environmentObject(router)
                     case .onboarding:
                         onboarding()
                             .environmentObject(router)
                     case .introduce:
                         introduce()
                             .environmentObject(router)
+                    case .clubEdit:
+                        club_edit().environmentObject(router)
                     }
                 }
         }
         .environmentObject(router) // ✅ 모든 뷰에서 NavigationRouter 사용 가능하도록 설정
+     
     }
 }
 
 #Preview {
     ContentView()
+           
 }

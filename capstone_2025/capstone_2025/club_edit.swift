@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct club_edit: View {
+    
+    // 동호회 API
+    // 사진 업로드 할 ui 필요
     @State private var clubName: String = ""
     @State private var location: String = ""
     @State private var maxMembers: String = ""
@@ -28,6 +31,7 @@ struct club_edit: View {
             
 
             // 동호회 명부 업로드 버튼
+            //??
             Button(action: {
                 print("동호회 명부 업로드 클릭됨")
             }) {
