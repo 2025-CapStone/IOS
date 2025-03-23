@@ -1,5 +1,12 @@
 import SwiftUI
 
+
+struct Schedule: Identifiable {
+    let id = UUID()
+    let time: String
+    let title: String
+}
+
 struct MainCalendarView: View {
     @State private var showCreateTaskView = false
     @State private var showScheduleListView = false
@@ -73,7 +80,7 @@ struct CalendarView: View {
                         isMenuOpen.toggle()
                     }
                 }) {
-                    Image(systemName: "ellipsis")
+                    Image("menu")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 40, height: 40)
@@ -249,153 +256,261 @@ struct EventPopupView: View {
     @Binding var showScheduleListView: Bool
 
     var body: some View {
-        VStack(spacing: 20) {
-            HStack {
-                Button(action: { showPopup = false }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title)
-                        .foregroundColor(.black)
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.white)
+                .shadow(radius: 10)
+
+            VStack(spacing: 16) {
+                HStack {
+                    // 왼쪽 상단 아이콘
+                    HStack(spacing: 4) {
+                    
+                        Image("logo").resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.black)
+                    }
+                    .font(.title3)
+                    .foregroundColor(.black)
+
+                    Spacer()
+
+                    // 오른쪽 상단 화살표
+                    Button(action: { showPopup = false }) {
+                        Image(systemName: "arrow.left")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.black)
+                    }
+                    
                 }
+                .padding(.horizontal)
+
                 Spacer()
-            }
-            .padding(.horizontal)
 
-            HStack(spacing: 20) {
-                Button(action: {
-                    showPopup = false
-                    showCreateTaskView = true
-                }) {
-                    Text("일정 생성")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.5), lineWidth: 1))
-                }
+                // 버튼 2개
+                HStack(spacing: 20) {
+                    Button(action: {
+                        showPopup = false
+                        showCreateTaskView = true
+                    }) {
+                        Text("일정 생성")
+                            .frame(width: 120, height: 40)
+                            .background(Color.white)
+                            .foregroundColor(.black)
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.5), lineWidth: 1))
+                            .cornerRadius(10)
+                    }
 
-                Button(action: {
-                    showPopup = false
-                    showScheduleListView = true
-                }) {
-                    Text("일정 확인 / 출첵")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.5), lineWidth: 1))
+                    Button(action: {
+                        showPopup = false
+                        showScheduleListView = true
+                    }) {
+                        Text("일정 확인 / 출첵")
+                            .frame(width: 120, height: 40)
+                            .background(Color.white)
+                            .foregroundColor(.black)
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.5), lineWidth: 1))
+                            .cornerRadius(10)
+                    }
                 }
+                .padding(.bottom, 16)
             }
-            .padding()
+            .padding(.top, 16)
+            .frame(width: 300, height: 150)
         }
         .frame(width: 300, height: 150)
-        .background(Color.white)
-        .cornerRadius(15)
-        .shadow(radius: 10)
     }
 }
+
 
 // ✅ Create Task View (일정 생성)
 struct CreateTaskView: View {
     @Binding var showCreateTaskView: Bool
     var selectedDate: Date
 
+    @State private var name: String = ""
+    @State private var startTime: Date = Date()
+    @State private var endTime: Date = Date()
+    @State private var detail: String = ""
+    @State private var category: String = ""
+    @State private var longDetail: String = ""
+
+    // 참여 등급
+    let categories = ["운영진", "정회원", "휴회원", "기타"]
+
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
+            // 상단 바
             HStack {
                 Button(action: { showCreateTaskView = false }) {
                     Image(systemName: "arrow.left")
-                        .font(.title)
+                        .font(.title2)
                         .foregroundColor(.black)
                 }
                 Spacer()
             }
-            .padding()
+            .padding(.horizontal)
 
-            Text("일정 생성")
-                .font(.title2)
-                .bold()
-
-            Text(formattedYearMonth(selectedDate))
-                .font(.title3)
-                .bold()
-                .padding(.bottom, 10)
-
-            TextField("일정 제목", text: .constant(""))
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            // Name
+            TextField("Name", text: $name)
+                .padding()
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
                 .padding(.horizontal)
 
-            Button(action: { showCreateTaskView = false }) {
+            // Start Time & End Time
+            HStack(spacing: 12) {
+                HStack {
+                    Image(systemName: "flag.fill")
+                        .foregroundColor(.gray)
+                    DatePicker("", selection: $startTime, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                }
+                .padding()
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+
+                HStack {
+                    Image(systemName: "play.fill")
+                        .foregroundColor(.gray)
+                    DatePicker("", selection: $endTime, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                }
+                .padding()
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+            }
+            .padding(.horizontal)
+
+            // One-line Details
+            TextField("Details", text: $detail)
+                .padding()
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+                .padding(.horizontal)
+
+            // Task Category Picker
+            Picker(selection: $category, label: Text(category.isEmpty ? "참여 등급" : category)) {
+                Text("참여 등급").tag("") // <- 선택 안한 상태
+                ForEach(categories, id: \.self) { category in
+                    Text(category).tag(category)
+                }
+            }
+            .padding()
+            .background(Color.white)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+            .padding(.horizontal)
+
+            // Multi-line Details
+            TextEditor(text: $longDetail)
+                .frame(height: 100)
+                .padding(8)
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+                .padding(.horizontal)
+
+            // Create 버튼
+            Button(action: {
+                // 일정 생성 로직
+                showCreateTaskView = false
+            }) {
                 Text("Create")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.gray.opacity(0.4)) // 조건에 따라 활성화 가능
                     .foregroundColor(.white)
                     .cornerRadius(10)
-                    .padding(.horizontal)
             }
+            .padding(.horizontal)
+            .padding(.bottom)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.top)
         .background(Color.white)
-        .cornerRadius(15)
-        .shadow(radius: 10)
-        .padding(.horizontal)
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
-
-// ✅ Schedule List View (일정 확인 / 출첵)
+// MARK: - ScheduleListView
 struct ScheduleListView: View {
     @Binding var showScheduleListView: Bool
     var selectedDate: Date
 
+    @State private var selectedSchedule: Schedule? = nil
+    @State private var showPopup = false
+
+    let mockSchedules: [Schedule] = [
+        Schedule(time: "17:30", title: "ENGLISH_JAPANESE with my friend"),
+        Schedule(time: "19:30", title: "I read The History of Venice"),
+        Schedule(time: "21:30", title: "The French cafe")
+    ]
+
     var body: some View {
-        VStack {
-            HStack {
-                Button(action: { showScheduleListView = false }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title)
-                        .foregroundColor(.black)
+        ZStack {
+            VStack(spacing: 16) {
+                // 상단 바
+                HStack {
+                    Image("logo")
+                    Spacer()
+                    Button(action: { showScheduleListView = false }) {
+                        Image(systemName: "arrow.left")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                    }
+                }
+                .padding(.horizontal)
+
+                // 날짜
+                Text(formattedDate(selectedDate))
+                    .font(.title2)
+                    .bold()
+
+                // 리스트
+                ScrollView {
+                    VStack(spacing: 10) {
+                        ForEach(mockSchedules) { schedule in
+                            Button(action: {
+                                selectedSchedule = schedule
+                                showPopup = true
+                            }) {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(schedule.time)
+                                        .foregroundColor(.brown)
+                                        .fontWeight(.semibold)
+                                    Text(schedule.title)
+                                        .font(.body)
+                                        .foregroundColor(.black)
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.3)))
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
                 }
                 Spacer()
             }
-            .padding()
 
-            Text("일정 확인 / 출첵")
-                .font(.title2)
-                .bold()
-
-            Text(formattedYearMonth(selectedDate))
-                .font(.title3)
-                .bold()
-                .padding(.bottom, 10)
-
-            ScrollView {
-                ForEach(0..<3, id: \.self) { _ in
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 80)
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
-                }
-            }
-
-            Button(action: { showScheduleListView = false }) {
-                Text("닫기")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .padding(.horizontal)
+            // 팝업
+            if let schedule = selectedSchedule, showPopup {
+                ScheduleCheckPopup(schedule: schedule, showPopup: $showPopup)
+                    .transition(.scale)
+                    .zIndex(1)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
-        .cornerRadius(15)
-        .shadow(radius: 10)
-        .padding(.horizontal)
+        .animation(.easeInOut, value: showPopup)
+        .background(Color.white.ignoresSafeArea())
+    }
+
+    func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        return formatter.string(from: date)
     }
 }
-
 // ✅ 날짜 포맷 함수
 private func formattedYearMonth(_ date: Date) -> String {
     let formatter = DateFormatter()
@@ -403,13 +518,93 @@ private func formattedYearMonth(_ date: Date) -> String {
     return formatter.string(from: date)
 }
 
+struct ScheduleCheckPopup: View {
+    let schedule: Schedule
+    @Binding var showPopup: Bool
 
+    var body: some View {
+        VStack(spacing: 16) {
+            // 상단 아이콘 및 닫기
+            HStack {
+                Image("logo")
+                Spacer()
+                Button(action: { showPopup = false }) {
+                    Image(systemName: "arrow.left")
+                        .font(.title2)
+                        .foregroundColor(.black)
+                }
+            }
+            .padding(.horizontal)
 
+            // 클릭한 일정의 시간과 제목 표시
+            VStack(spacing: 4) {
+               
+                Text(schedule.title)
+                    .font(.body)
+                    .fontWeight(.medium)
+            }
+            .padding(.horizontal)
 
-// ✅ Preview
-struct MainCalendarView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainCalendarView()
+            // 입력 필드들
+            VStack(spacing: 12) {
+                TextField("Name", text: .constant(""))
+                    .padding()
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+
+                HStack(spacing: 12) {
+                    HStack {
+                        Image(systemName: "flag.fill")
+                        Text(schedule.time)
+                        Spacer()
+                    }
+                    .padding()
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+
+                    HStack {
+                        Image(systemName: "play.fill")
+                        Text("End Time")
+                        Spacer()
+                    }
+                    .padding()
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+                }
+
+                TextField("Details", text: .constant(""))
+                    .padding()
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+
+                TextField("Details", text: .constant(""))
+                    .padding()
+                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+            }
+            .padding(.horizontal)
+
+            // 위치 아이콘
+            HStack {
+                Spacer()
+                Image(systemName: "mappin.and.ellipse")
+                    .font(.title3)
+                    .foregroundColor(.gray)
+            }
+            .padding(.horizontal)
+
+            // 참석 버튼
+            Button(action: {}) {
+                Text("참석")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.gray.opacity(0.4))
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
+        }
+        .padding(.top)
+        .background(Color.white)
+        .cornerRadius(20)
+        .shadow(radius: 10)
+        .padding()
     }
 }
 

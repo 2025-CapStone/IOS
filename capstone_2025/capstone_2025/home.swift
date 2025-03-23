@@ -145,6 +145,6 @@ struct home: View {
     }
 }
 
-#Preview{
+#Preview{   
     home().environmentObject(CustomAlertManager())
 }
