@@ -12,7 +12,7 @@ struct capstone_2025App: App {
     
     var body: some Scene {
         WindowGroup {
-            MainCalendarView()
+            ContentView()
         }
     }
 }

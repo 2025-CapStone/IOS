@@ -8,7 +8,7 @@ struct Login: View {
     var body: some View {
         VStack(spacing: 20) {
             // 로고 텍스트
-            Text("CLUB HOUSE")
+            Text("OnClub")
                 .font(.custom("Comfortaa-Bold", size: 30))
                 .padding(.top, 50)
 

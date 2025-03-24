@@ -49,7 +49,7 @@ struct home: View {
                     .padding(.horizontal, 20)
 
                     // ✅ CLUB HOUSE 텍스트
-                    Text("CLUB HOUSE")
+                    Text("OnClub")
                         .font(.custom("Comfortaa-Bold", size: 24))
                         .padding(.top, 10) // ✅ 약간 아래로 내림
 

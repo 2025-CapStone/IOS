@@ -11,8 +11,8 @@ enum AppRoute: Hashable {
     case onboarding
     case introduce
     case calendar
-    case budget2//(예산관리)
-    case budget
+    case budget//(예산관리)
+    case member
     case clubEdit
 }
 
@@ -31,10 +31,10 @@ struct ContentView: View {
                 .environmentObject(router)         // ✅ 네비게이션 객체 추가
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
-                    case .budget:
-                        budget_2()
+                    case .member:
+                        member()
                             .environmentObject(router)
-                    case .budget2:
+                    case .budget:
                         budget()
                             .environmentObject(router)
                     case .calendar:

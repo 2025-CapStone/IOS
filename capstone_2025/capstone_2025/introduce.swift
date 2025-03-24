@@ -35,7 +35,7 @@ struct introduce: View {
                                 .offset(y: -40) // 원이 살짝 올라가도록 조정
                                 
                                 // 제목 텍스트
-                                Text("CLUB HOUSE")
+                                Text("OnClub")
                                     .font(.custom("Comfortaa-Bold", size: 28)) // 원하는 폰트 적용
                                     .foregroundColor(.black)
                                 
