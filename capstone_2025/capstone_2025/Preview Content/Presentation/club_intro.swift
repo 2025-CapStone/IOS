@@ -172,7 +172,7 @@ struct MenuItem: View {
             } else if title.hasPrefix("예산") {
                 router.path.append(AppRoute.budget)
             } else if title.hasPrefix("회원") {
-                router.path.append(AppRoute.login)
+                router.path.append(AppRoute.member)
             }else if title.hasSuffix("아웃") {
                 router.path.append(AppRoute.login) // ✅ Login 화면으로 이동
 
