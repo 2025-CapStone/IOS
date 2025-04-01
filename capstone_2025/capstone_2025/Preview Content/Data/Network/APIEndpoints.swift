@@ -1,6 +1,7 @@
 //import Foundation
 //
-//struct APIEndpoints {
+// MARK: - API Endpoint 구성
+struct APIEndpoints {
 //    
 //    static func getMovies(with moviesRequestDTO: MoviesRequestDTO) -> Endpoint<MoviesResponseDTO> {
 //
@@ -25,4 +26,28 @@
 //            responseDecoder: RawDataResponseDecoder()
 //        )
 //    }
-//}
+    
+    
+    static func signup(_ dto: SignUpRequestDTO) -> Endpoint<SignUpResponseDTO> {
+        Endpoint(
+            path: "api/user/join",
+            method: .post,
+            bodyParametersEncodable: dto,
+            bodyEncoder: JSONBodyEncoder(),
+            responseDecoder: JSONResponseDecoder()
+        )
+    }
+
+    static func login(_ dto: LoginRequestDTO) -> Endpoint<LoginResponseDTO> {
+        Endpoint(
+            path: "api/user/login",
+            method: .post,
+            bodyParametersEncodable: dto,
+            bodyEncoder: JSONBodyEncoder(),
+            responseDecoder: JSONResponseDecoder()
+        )
+    }
+
+    
+    
+}
