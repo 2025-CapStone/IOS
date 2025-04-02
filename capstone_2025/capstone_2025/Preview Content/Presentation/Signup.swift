@@ -6,6 +6,8 @@ struct SignUp: View {
     @State private var password: String = ""
     @State private var phoneNumber: String = ""
     @EnvironmentObject var router: NavigationRouter
+    @ObservedObject var viewModel: SignupViewModel
+
 
     var body: some View {
         VStack(spacing: 20) {
@@ -88,6 +90,10 @@ struct CustomSecureField: View {
 }
 
 #Preview {
-    SignUp()
+    
 }
 
+#Preview {
+    SignUp(viewModel: AppDIContainer.shared.makeSignupViewModel())
+        .environmentObject(NavigationRouter())
+}

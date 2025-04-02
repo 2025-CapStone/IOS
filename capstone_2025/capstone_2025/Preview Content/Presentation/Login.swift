@@ -4,6 +4,7 @@ struct Login: View {
     @State private var username: String = ""
     @State private var password: String = ""
     @EnvironmentObject var router: NavigationRouter
+    @ObservedObject var viewModel: LoginViewModel
 
     var body: some View {
         VStack(spacing: 20) {
@@ -90,7 +91,6 @@ struct Login: View {
 }
 
 #Preview {
-    Login()
-    .environmentObject(NavigationRouter())
+    Login(viewModel: AppDIContainer.shared.makeLoginViewModel())
+        .environmentObject(NavigationRouter())
 }
-
