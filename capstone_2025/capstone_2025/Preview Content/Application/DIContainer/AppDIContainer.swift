@@ -1,14 +1,17 @@
 // AppDIContainer.swift
-// SwiftUI용으로 수정
+
 
 import Foundation
 
 final class AppDIContainer {
-
+    
+    static let shared = AppDIContainer()
+    private init() {}
+    
     // MARK: - Network
     lazy var apiDataTransferService: DataTransferService = {
         let config = ApiDataNetworkConfig(
-            baseURL: URL(string: "http://서버 IP")!
+            baseURL: URL(string: "https://mock.api")!
         )
         let apiDataNetwork = DefaultNetworkService(config: config)
         return DefaultDataTransferService(with: apiDataNetwork)
