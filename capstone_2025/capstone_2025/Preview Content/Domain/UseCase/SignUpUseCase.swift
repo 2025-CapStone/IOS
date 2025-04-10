@@ -12,14 +12,14 @@ import Foundation
 protocol SignupUseCase {
     func execute(
         requestValue: SignupRequestValue,
-        completion: @escaping (Result<User, Error>) -> Void
+        completion: @escaping (Result<Void, Error>) -> Void
     ) -> Cancellable?
 }
 
 // MARK: - Request Value
 
 struct SignupRequestValue {
-    let user: User
+    let user: SignupUser
 }
 
 // MARK: - UseCase Implementation
@@ -33,7 +33,7 @@ final class DefaultSignupUseCase: SignupUseCase {
 
     func execute(
         requestValue: SignupRequestValue,
-        completion: @escaping (Result<User, Error>) -> Void
+        completion: @escaping (Result<Void, Error>) -> Void
     ) -> Cancellable? {
         return userRepository.signup(requestValue.user, completion: completion)
     }

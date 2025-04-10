@@ -6,6 +6,7 @@ enum NetworkError: Error {
     case cancelled
     case generic(Error)
     case urlGeneration
+    case unauthorized
 }
 
 protocol NetworkCancellable {
@@ -154,6 +155,7 @@ final class DefaultNetworkErrorLogger: NetworkErrorLogger {
 
 extension NetworkError {
     var isNotFoundError: Bool { return hasStatusCode(404) }
+    var isUnauthorized: Bool { return hasStatusCode(401) }
     
     func hasStatusCode(_ codeError: Int) -> Bool {
         switch self {

@@ -48,6 +48,27 @@ struct APIEndpoints {
         )
     }
 
+    static func refreshToken(_ token: String) -> Endpoint<LoginResponseDTO> {
+        Endpoint(
+            path: "api/user/refresh",
+            method: .post,
+            headerParameters: ["Authorization": "Bearer \(token)"],
+            responseDecoder: JSONResponseDecoder()
+        )
+    }
     
+    static func logout(_ token: String) -> Endpoint<Void> {
+        Endpoint(
+            path: "api/user/logout",
+            method: .post,
+            headerParameters: [
+                "Authorization": token, // Bearer 없이
+                "Content-Type": "application/json"
+            ],
+            responseDecoder: JSONResponseDecoder()
+        )
+    }
+
+
     
 }

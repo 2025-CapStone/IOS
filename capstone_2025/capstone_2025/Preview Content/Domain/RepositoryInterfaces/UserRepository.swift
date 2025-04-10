@@ -9,7 +9,7 @@
 
 
 protocol UserRepository {
-    func signup(_ user: User, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable?
-    func login(phoneNumber: String, password: String, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable?
+    func signup(_ user: SignupUser, completion: @escaping (Result<Void, Error>) -> Void) -> Cancellable?
+    func login(phoneNumber: String, password: String, completion: @escaping (Result<LoginResponseDTO, Error>) -> Void) -> Cancellable?
 
 }

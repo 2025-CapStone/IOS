@@ -1,7 +1,7 @@
 import Foundation
 
 protocol LoginUseCase {
-    func execute(phoneNumber: String, password: String, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable?
+    func execute(phoneNumber: String, password: String, completion: @escaping (Result<LoginResponseDTO, Error>) -> Void) -> Cancellable?
 }
 
 final class DefaultLoginUseCase: LoginUseCase {
@@ -11,7 +11,7 @@ final class DefaultLoginUseCase: LoginUseCase {
         self.userRepository = userRepository
     }
 
-    func execute(phoneNumber: String, password: String, completion: @escaping (Result<User, Error>) -> Void) -> Cancellable? {
+    func execute(phoneNumber: String, password: String, completion: @escaping (Result<LoginResponseDTO, Error>) -> Void) -> Cancellable? {
         return userRepository.login(phoneNumber: phoneNumber, password: password, completion: completion)
     }
 }

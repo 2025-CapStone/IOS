@@ -18,7 +18,7 @@ struct SignUpRequestDTO: Encodable {
 }
 
 extension SignUpRequestDTO {
-    init(_ user: User) {
+    init(_ user: SignupUser) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
 
@@ -31,3 +31,4 @@ extension SignUpRequestDTO {
         self.career = user.career
     }
 }
+

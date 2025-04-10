@@ -21,3 +21,15 @@ struct ApiDataNetworkConfig: NetworkConfigurable {
         self.queryParameters = queryParameters
     }
 }
+
+struct AuthorizedNetworkConfig: NetworkConfigurable {
+    let baseURL: URL
+    var headers: [String: String] {
+        var baseHeaders: [String: String] = ["Content-Type": "application/json"]
+        if let token = UserDefaults.standard.string(forKey: "accessToken") {
+            baseHeaders["Authorization"] = "Bearer \(token)"
+        }
+        return baseHeaders
+    }
+    let queryParameters: [String: String] = [:]
+}

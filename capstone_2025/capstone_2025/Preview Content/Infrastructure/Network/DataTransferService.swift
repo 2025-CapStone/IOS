@@ -132,6 +132,26 @@ extension DefaultDataTransferService: DataTransferService {
     }
 
     // MARK: - Private
+//    private func decode<T: Decodable>(
+//        data: Data?,
+//        decoder: ResponseDecoder
+//    ) -> Result<T, DataTransferError> {
+//        do {
+//            guard let data = data else { return .failure(.noResponse) }
+//            let result: T = try decoder.decode(data)
+//            return .success(result)
+//        } catch {
+//            self.errorLogger.log(error: error)
+//            return .failure(.parsing(error))
+//        }
+//    }
+//    
+    private func resolve(networkError error: NetworkError) -> DataTransferError {
+        let resolvedError = self.errorResolver.resolve(error: error)
+        return resolvedError is NetworkError
+        ? .networkFailure(error)
+        : .resolvedNetworkFailure(resolvedError)
+    }
     private func decode<T: Decodable>(
         data: Data?,
         decoder: ResponseDecoder
@@ -141,18 +161,20 @@ extension DefaultDataTransferService: DataTransferService {
             let result: T = try decoder.decode(data)
             return .success(result)
         } catch {
+            // 👇 응답 본문 출력
+            if let data = data, let responseString = String(data: data, encoding: .utf8) {
+                print("❌ JSON Decode 실패. 서버 응답:\n\(responseString)")
+            } else {
+                print("❌ JSON Decode 실패. 응답 데이터 없음")
+            }
+
             self.errorLogger.log(error: error)
             return .failure(.parsing(error))
         }
     }
-    
-    private func resolve(networkError error: NetworkError) -> DataTransferError {
-        let resolvedError = self.errorResolver.resolve(error: error)
-        return resolvedError is NetworkError
-        ? .networkFailure(error)
-        : .resolvedNetworkFailure(resolvedError)
-    }
 }
+
+
 
 // MARK: - Logger
 final class DefaultDataTransferErrorLogger: DataTransferErrorLogger {
