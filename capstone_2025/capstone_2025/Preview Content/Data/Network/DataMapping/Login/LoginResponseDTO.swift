@@ -15,25 +15,25 @@ import Foundation
 //
 //  Created by ㅇㅇ ㅇ on 4/2/25.
 //
-
-import Foundation
-
-// MARK: - LoginResponseDTO
-
-struct LoginResponseDTO: Decodable {
-    let userId: String
-    let userName: String
-    let accessToken: String
-    let refreshToken: String
-}
-
-// MARK: - Mapping to Domain User
-
-extension LoginResponseDTO {
-    func toDomain() -> User {
-        return User(id: userId)
-    }
-}
+//
+//import Foundation
+//
+//// MARK: - LoginResponseDTO
+//
+//struct LoginResponseDTO: Decodable {
+//    let userId: String
+//    let userName: String
+//    let accessToken: String
+//    let refreshToken: String
+//}
+//
+//// MARK: - Mapping to Domain User
+//
+//extension LoginResponseDTO {
+//    func toDomain() -> User {
+//        return User(id: userId)
+//    }
+//}
 
 //
 //struct LoginResponseDTO: Decodable {

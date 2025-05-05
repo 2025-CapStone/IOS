@@ -13,7 +13,7 @@ enum AppRoute: Hashable {
     case calendar
     case budget//(예산관리)
     case member
-    case clubEdit
+//    case clubEdit
 }
 
 // ✅ 네비게이션 상태를 관리하는 ObservableObject
@@ -24,7 +24,7 @@ class NavigationRouter: ObservableObject {
 
 struct ContentView: View {
     @StateObject var router = NavigationRouter()   // 네비게이션 상태 관리
-
+    
     var body: some View {
         NavigationStack(path: $router.path) {
             onboarding()
@@ -43,7 +43,6 @@ struct ContentView: View {
                     case .login:
                         Login(viewModel: AppDIContainer.shared.makeLoginViewModel())
                             .environmentObject(router)
-
                     case .signup:
                         SignUp(viewModel: AppDIContainer.shared.makeSignupViewModel())
                             .environmentObject(router)
@@ -59,15 +58,14 @@ struct ContentView: View {
                     case .home:
                         home()
                             .environmentObject(router)
-
                     case .onboarding:
                         onboarding()
                             .environmentObject(router)
                     case .introduce:
                         introduce()
                             .environmentObject(router)
-                    case .clubEdit:
-                        club_edit().environmentObject(router)
+//                    case .clubEdit:
+//                        club_edit().environmentObject(router)
                     }
                 }
         }

@@ -21,3 +21,18 @@ struct SignupUser {
     let password: String
     let career: Int
 }
+extension SignupUser.Gender {
+    var rawValue: String {
+        switch self {
+        case .male: return "MALE"
+        case .female: return "FEMALE"
+        }
+    }
+}
+extension DateFormatter {
+    static let yyyyMMdd: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+}

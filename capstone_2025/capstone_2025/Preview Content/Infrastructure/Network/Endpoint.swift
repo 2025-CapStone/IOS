@@ -90,7 +90,7 @@ enum RequestGenerationError: Error {
 extension Requestable {
     
     func url(with config: NetworkConfigurable) throws -> URL {
-
+        
         let baseURL = config.baseURL.absoluteString.last != "/"
         ? config.baseURL.absoluteString + "/"
         : config.baseURL.absoluteString
@@ -100,7 +100,7 @@ extension Requestable {
             string: endpoint
         ) else { throw RequestGenerationError.components }
         var urlQueryItems = [URLQueryItem]()
-
+        
         let queryParameters = try queryParametersEncodable?.toDictionary() ?? self.queryParameters
         queryParameters.forEach {
             urlQueryItems.append(URLQueryItem(name: $0.key, value: "\($0.value)"))
@@ -113,6 +113,21 @@ extension Requestable {
         return url
     }
     
+    //    func urlRequest(with config: NetworkConfigurable) throws -> URLRequest {
+    //
+    //        let url = try self.url(with: config)
+    //        var urlRequest = URLRequest(url: url)
+    //        var allHeaders: [String: String] = config.headers
+    //        headerParameters.forEach { allHeaders.updateValue($1, forKey: $0) }
+    //
+    //        let bodyParameters = try bodyParametersEncodable!.toDictionary() ?? self.bodyParameters
+    //        if !bodyParameters.isEmpty {
+    //            urlRequest.httpBody = bodyEncoder.encode(bodyParameters)
+    //        }
+    //        urlRequest.httpMethod = method.rawValue
+    //        urlRequest.allHTTPHeaderFields = allHeaders
+    //        return urlRequest
+    //    }
     func urlRequest(with config: NetworkConfigurable) throws -> URLRequest {
         
         let url = try self.url(with: config)
@@ -120,14 +135,18 @@ extension Requestable {
         var allHeaders: [String: String] = config.headers
         headerParameters.forEach { allHeaders.updateValue($1, forKey: $0) }
 
-        let bodyParameters = try bodyParametersEncodable?.toDictionary() ?? self.bodyParameters
+        let encodableParameters = try bodyParametersEncodable?.toDictionary()
+        let bodyParameters = encodableParameters ?? self.bodyParameters
+
         if !bodyParameters.isEmpty {
             urlRequest.httpBody = bodyEncoder.encode(bodyParameters)
         }
+        
         urlRequest.httpMethod = method.rawValue
         urlRequest.allHTTPHeaderFields = allHeaders
         return urlRequest
     }
+
 }
 
 private extension Dictionary {

@@ -1,158 +1,146 @@
 import SwiftUI
 
 struct club_intro: View {
+    @State private var club: Club
+    let onUpdate: (Club) -> Void
+
     @State private var isMenuOpen = false
-    @EnvironmentObject var router: NavigationRouter  // ✅ 네비게이션 라우터 추가
-    
-    
-    // ✅ 사용자 데이터
-    @State private var clubName: String = "동호회 이름"
-    @State private var memberCount: String = "14"
-    @State private var creationDate: String = "2017.03.18"
-    @State private var location: String = "강서구"
-    @State private var clubDescription: String = "동호회 소개 텍스트"
+    @EnvironmentObject var router: NavigationRouter
+
+    init(club: Club, onUpdate: @escaping (Club) -> Void) {
+        _club = State(initialValue: club)
+        self.onUpdate = onUpdate
+    }
 
     var body: some View {
         ZStack {
             VStack(spacing: 30) {
-                // 🔹 네비게이션 바
                 HStack {
-                    Image("logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40, height: 40)
-
+                    Image("ball")
+                        .resizable().scaledToFit().frame(width: 32, height: 32)
                     Spacer()
-                    
-                    // ✅ 메뉴 버튼
-                    Button(action: {
-                        withAnimation {
-                            isMenuOpen.toggle()
-                        }
-                    }) {
+                    Button { isMenuOpen.toggle() } label: {
                         Image(systemName: "ellipsis")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(.black)
+                            .resizable().scaledToFit().frame(width: 24, height: 24)
                     }
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
+                .padding(.horizontal, 20).padding(.top, 20)
 
-                // 🔹 동호회 이미지
-                Image("pngwing")
-                    .resizable()
-                    .scaledToFit()
+                clubLogo
                     .frame(width: 120, height: 120)
-                    .padding(.top, 20)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
 
-                // 🔹 동호회 이름 & Edit Profile 버튼
-                HStack {
-                    Text(clubName)
+                HStack(spacing: 6) {
+                    Text(club.name)
                         .font(.system(size: 18, weight: .bold))
-                    
-                    //NavigationLink(destination: club_edit()) {
+
+                    NavigationLink {
+//                        club_edit(
+//                            club: club,
+//                            onSave: { edited in
+//                                club = edited
+//                                onUpdate(edited)
+//                            }
+//                        )
+                    } label: {
                         Text("Edit profile")
                             .font(.system(size: 12))
                             .foregroundColor(.black)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 5)
-                                    .stroke(Color.black, lineWidth: 1)
-                            ).onTapGesture{
-                                router.path.append(AppRoute.clubEdit)
-                            }
-                    
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .overlay(RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.black, lineWidth: 1))
+                    }
                 }
-                .padding(.horizontal, 20)
 
-                // 🔹 동호회 정보
                 HStack {
                     VStack {
                         Image(systemName: "person.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 18, height: 18)
-                        Text(memberCount)
-                            .font(.system(size: 14, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    
+                        Text("14")
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+
                     VStack {
-                        Text("SINCE")
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                        Text(creationDate)
-                            .font(.system(size: 14, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    
+                        Text("SINCE").font(.footnote).foregroundColor(.gray)
+                        Text(club.createdAt.formatted(date: .numeric, time: .omitted))
+                    }.frame(maxWidth: .infinity)
+
                     VStack {
                         Image(systemName: "mappin")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 18, height: 18)
-                        Text(location)
-                            .font(.system(size: 14, weight: .medium))
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                        Text("강서구")
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
                 }
+                .font(.system(size: 14, weight: .medium))
                 .padding(.horizontal, 40)
 
-                // 🔹 동호회 소개 텍스트
-                Text(clubDescription)
+                Text(club.description)
                     .font(.system(size: 16, weight: .bold))
-                    .padding(.top, 20)
+                    .padding(.horizontal, 16)
+                    .multilineTextAlignment(.center)
 
                 Spacer()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.white.edgesIgnoringSafeArea(.all))
-            
-            // ✅ 메뉴바 수정
-            if isMenuOpen {
-                VStack {
-                    HStack {
-                        Spacer()
-                        VStack(alignment: .leading, spacing: 10) {
-                            MenuItem(title: "일정관리").onTapGesture{
-                               print("일정관리 탭제스쳐")
-                            }
-                            MenuItem(title: "회원관리").onTapGesture {
-                                print("회원관리 탭제스쳐")
+            .background(Color.white.ignoresSafeArea())
 
-                            }
-                            MenuItem(title: "예산관리").onTapGesture {
-                             
-                            }
-                            Divider()
-                            // ✅ 로그아웃 버튼 수정
-                            MenuItem(title : "로그아웃")
-                       
-                        }
-                        .frame(width: 150)
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        .padding(.top, 50)
-                        .padding(.trailing, 10)
-                    }
-                    Spacer()
-                }
-                .background(Color.black.opacity(0.5).edgesIgnoringSafeArea(.all))
-                .onTapGesture {
-                    withAnimation {
-                        isMenuOpen = false
+            if isMenuOpen { menuPopup }
+        }
+    }
+
+    private var clubLogo: some View {
+        Group {
+            if let url = club.logoURL.flatMap(URL.init) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty: ProgressView()
+                    case .success(let img): img.resizable().scaledToFill()
+                    default: Image("defaultLogo").resizable().scaledToFill()
                     }
                 }
+            } else {
+                Image("defaultLogo").resizable().scaledToFill()
             }
         }
     }
+
+    private var menuPopup: some View {
+        VStack {
+            HStack {
+                Spacer()
+                VStack(alignment: .leading, spacing: 10) {
+                    MenuItem(title: "일정관리")
+                    MenuItem(title: "회원관리")
+                    MenuItem(title: "예산관리")
+                    Divider()
+                    MenuItem(title: "로그아웃", isLogout: true)
+                }
+                .frame(width: 150)
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .padding(.top, 50).padding(.trailing, 10)
+            }
+            Spacer()
+        }
+        .background(Color.black.opacity(0.5).ignoresSafeArea())
+        .onTapGesture { isMenuOpen = false }
+    }
 }
 
-// ✅ 메뉴 아이템 뷰
+#Preview {
+    let dto = ClubResponseDTO(
+        clubId: 99,
+        clubName: "프리뷰 테스트 클럽",
+        clubDescription: "프리뷰용 설명입니다.",
+        clubLogoURL: nil,
+        clubBackgroundURL: nil,
+        clubCreatedAt: "2025-03-08T18:20:56Z"
+    )
+    let club = Club(from: dto)
+    return club_intro(club: club) { _ in }
+        .environmentObject(NavigationRouter())
+}
+
+
+
+//// ✅ 메뉴 아이템 뷰
 struct MenuItem: View {
     var title: String
     var isLogout: Bool = false
@@ -167,7 +155,7 @@ struct MenuItem: View {
 
             
             if title.hasPrefix("일정") {
-                
+                router.path.append(.calendarWithClubId(club.id))
                 router.path.append(AppRoute.calendar)
             } else if title.hasPrefix("예산") {
                 router.path.append(AppRoute.budget)
@@ -190,7 +178,3 @@ struct MenuItem: View {
     }
 }
 
-#Preview {
-    club_intro()
-         // ✅ 환경 객체 추가
-}

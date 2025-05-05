@@ -188,7 +188,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "24"
             endingLineNumber = "24"
-            landmarkName = "apiDataTransferService"
+            landmarkName = "baseURL"
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
@@ -250,6 +250,252 @@
                   endingLineNumber = "34">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "15CA473F-4419-404C-B971-62351783C376"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "login()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - c6623090152c3be4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - 60481954a32f4aa3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - 19c48fa9dd747fea"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+               <Location
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - cc9a32c261619deb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "25"
+                  endingLineNumber = "25">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E27BCCC9-6749-4557-9A1B-66BFEA875FBA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "login()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5992E661-1EBE-4BD3-80A5-A8B52674E126"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/Data/Repositories/DefaultClubRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "10"
+            endingLineNumber = "10"
+            landmarkName = "fetchMyClubs(userId:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "72E05BD8-7047-4383-9B3B-778372057178"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/Data/Repositories/DefaultClubRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "fetchMyClubs(userId:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "72E05BD8-7047-4383-9B3B-778372057178 - ed0daca378c3d905"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, capstone_2025.DataTransferError&gt;) -&gt; () in capstone_2025.DefaultClubRepository.fetchMyClubs(userId: Swift.String, completion: (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/Data/Repositories/DefaultClubRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+               <Location
+                  uuid = "72E05BD8-7047-4383-9B3B-778372057178 - ed0daca378c3d905"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, capstone_2025.DataTransferError&gt;) -&gt; () in capstone_2025.DefaultClubRepository.fetchMyClubs(userId: Swift.String, completion: (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/Data/Repositories/DefaultClubRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "85CDD8D3-D4CF-4D81-9EAF-885E18637AF4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/Data/Repositories/DefaultClubRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "fetchMyClubs(userId:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EE98D2E8-5777-4D3E-B7C2-CEF589B142FE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/Data/Repositories/DefaultClubRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "fetchMyClubs(userId:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "EE98D2E8-5777-4D3E-B7C2-CEF589B142FE - ed0daca378c3d905"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, capstone_2025.DataTransferError&gt;) -&gt; () in capstone_2025.DefaultClubRepository.fetchMyClubs(userId: Swift.String, completion: (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/Data/Repositories/DefaultClubRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+               <Location
+                  uuid = "EE98D2E8-5777-4D3E-B7C2-CEF589B142FE - ed0daca378c3d905"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, capstone_2025.DataTransferError&gt;) -&gt; () in capstone_2025.DefaultClubRepository.fetchMyClubs(userId: Swift.String, completion: (Swift.Result&lt;Swift.Array&lt;capstone_2025.ClubResponseDTO&gt;, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/Data/Repositories/DefaultClubRepository.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "17"
+                  endingLineNumber = "17">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "ABFBED5C-DD5C-4FE0-87E8-D20F57666D46"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/Data/Repositories/DefaultClubRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "fetchMyClubs(userId:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6E40B68F-C326-43D6-91F7-54796B5E22CC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/Data/Repositories/DefaultClubRepository.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "fetchMyClubs(userId:completion:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

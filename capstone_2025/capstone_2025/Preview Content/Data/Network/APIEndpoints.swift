@@ -68,6 +68,15 @@ struct APIEndpoints {
             responseDecoder: JSONResponseDecoder()
         )
     }
+    static func getClubsByUserId(userId: String) -> Endpoint<[ClubResponseDTO]> {
+        return Endpoint(
+            path: "/api/club/find/by-user_id",
+            method: .get,
+            headerParameters: [:], // Authorization은 config에서 자동 처리
+            queryParameters: ["userId": "\(userId)"],
+            responseDecoder: JSONResponseDecoder()
+        )
+    }
 
 
     
