@@ -14,6 +14,23 @@ enum AppRoute: Hashable {
     case budget//(예산관리)
     case member
 //    case clubEdit
+    
+    
+//    static func == (lhs: AppRoute, rhs: AppRoute) -> Bool {
+//            switch (lhs, rhs) {
+//            case (.calendar, .calendar): return true
+//            default: return false
+//            }
+//        }
+//    
+//    func hash(into hasher: inout Hasher) {
+//          switch self {
+//          case .calendar:
+//              hasher.combine("calendar")
+//          default:
+//              break
+//          }
+//      }
 }
 
 // ✅ 네비게이션 상태를 관리하는 ObservableObject
@@ -38,8 +55,10 @@ struct ContentView: View {
                         budget()
                             .environmentObject(router)
                     case .calendar:
-                        MainCalendarView()
+                        MainCalendarView(viewModel: AppDIContainer.shared.makeEventListViewModel())
                             .environmentObject(router)
+
+
                     case .login:
                         Login(viewModel: AppDIContainer.shared.makeLoginViewModel())
                             .environmentObject(router)

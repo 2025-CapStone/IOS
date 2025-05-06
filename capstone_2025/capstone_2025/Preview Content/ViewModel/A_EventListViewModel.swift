@@ -12,6 +12,12 @@ final class EventListViewModel: ObservableObject {
     @Published var events: [Event] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    private(set) var clubId: Int?
+    
+    func setClubId(_ id: Int) {
+        self.clubId = id
+    }
+
 
     func fetchEvents(for clubId: Int) {
         guard let accessToken = SessionStorage.shared.accessToken else {

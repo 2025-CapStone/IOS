@@ -68,6 +68,16 @@ final class AppDIContainer {
     func makeClubRepository() -> ClubRepository {
         return DefaultClubRepository(dataTransferService: apiDataTransferService)
     }
+    
+    
+ 
+
+    func makeEventListViewModel() -> EventListViewModel {
+        EventListViewModel()
+        //vm.setClubId(clubId)
+       // return vm
+    }
+
 }
 
 

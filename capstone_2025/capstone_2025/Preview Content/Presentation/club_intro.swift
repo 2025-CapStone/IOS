@@ -105,7 +105,7 @@ struct club_intro: View {
             HStack {
                 Spacer()
                 VStack(alignment: .leading, spacing: 10) {
-                    MenuItem(title: "일정관리")
+                    MenuItem(title: "일정관리", clubId: club.id)
                     MenuItem(title: "회원관리")
                     MenuItem(title: "예산관리")
                     Divider()
@@ -122,6 +122,7 @@ struct club_intro: View {
         .background(Color.black.opacity(0.5).ignoresSafeArea())
         .onTapGesture { isMenuOpen = false }
     }
+
 }
 
 #Preview {
@@ -144,26 +145,24 @@ struct club_intro: View {
 struct MenuItem: View {
     var title: String
     var isLogout: Bool = false
-    var action: (() -> Void)? // ✅ 추가된 로그아웃 액션
-    @EnvironmentObject var router: NavigationRouter // ✅ 네비게이션 라우터 추가
+    var clubId: Int? = nil // ✅ 추가
+    var action: (() -> Void)?
+    @EnvironmentObject var router: NavigationRouter
     
-
     var body: some View {
         Button(action: {
             action?()
             print("\(title) 클릭됨")
 
-            
-            if title.hasPrefix("일정") {
-                router.path.append(.calendarWithClubId(club.id))
+            if title.hasPrefix("일정"), let id = clubId {
+                ClubEventContext.shared.selectedClubId = id
                 router.path.append(AppRoute.calendar)
             } else if title.hasPrefix("예산") {
                 router.path.append(AppRoute.budget)
             } else if title.hasPrefix("회원") {
                 router.path.append(AppRoute.member)
-            }else if title.hasSuffix("아웃") {
-                router.path.append(AppRoute.login) // ✅ Login 화면으로 이동
-
+            } else if title.hasSuffix("아웃") {
+                router.path.append(AppRoute.login)
             }
         }) {
             HStack {
@@ -177,4 +176,3 @@ struct MenuItem: View {
         }
     }
 }
-

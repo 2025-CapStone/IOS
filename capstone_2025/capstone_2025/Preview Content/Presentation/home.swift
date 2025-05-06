@@ -1,69 +1,67 @@
 import SwiftUI
 
+// ✅ home.swift 수정본 (NavigationView 제거 + club_intro 개선)
+
 struct home: View {
     @StateObject private var viewModel = ClubListViewModel()
     @State private var searchText = ""
     @State private var isFilterPopupVisible = false
     @State private var isLogoutAlertVisible = false
-    
+
     @EnvironmentObject var router: NavigationRouter
-    
+
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 20), count: 2)
-    
+
     private var clubs: [Club] {
         viewModel.clubs.map(Club.init(from:))
     }
-    
+
     private var filteredClubs: [Club] {
         let key = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         return key.isEmpty ? clubs : clubs.filter { $0.name.localizedCaseInsensitiveContains(key) }
     }
-    
+
     var body: some View {
         ZStack {
-            NavigationView {
-                VStack(spacing: 0) {
-                    header
-                    
-                    if viewModel.isLoading {
-                        ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else if let error = viewModel.errorMessage {
-                        Text(error).foregroundColor(.red).padding()
-                    } else {
-                        ScrollView {
-                            LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(filteredClubs) { club in
-                                    NavigationLink {
-                                        club_intro(
-                                            club: club,
-                                            onUpdate: { updated in
-                                                if let i = viewModel.clubs.firstIndex(where: { $0.clubId == updated.id }) {
-                                                    viewModel.clubs[i] = ClubResponseDTO(
-                                                        clubId: updated.id,
-                                                        clubName: updated.name,
-                                                        clubDescription: updated.description,
-                                                        clubLogoURL: updated.logoURL,
-                                                        clubBackgroundURL: updated.backgroundURL,
-                                                        clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt)
-                                                    )
-                                                }
+            VStack(spacing: 0) {
+                header
+
+                if viewModel.isLoading {
+                    ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if let error = viewModel.errorMessage {
+                    Text(error).foregroundColor(.red).padding()
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            ForEach(filteredClubs) { club in
+                                NavigationLink(destination:
+                                    club_intro(
+                                        club: club,
+                                        onUpdate: { updated in
+                                            if let i = viewModel.clubs.firstIndex(where: { $0.clubId == updated.id }) {
+                                                viewModel.clubs[i] = ClubResponseDTO(
+                                                    clubId: updated.id,
+                                                    clubName: updated.name,
+                                                    clubDescription: updated.description,
+                                                    clubLogoURL: updated.logoURL,
+                                                    clubBackgroundURL: updated.backgroundURL,
+                                                    clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt)
+                                                )
                                             }
-                                        )
-                                    } label: {
-                                        clubCard(for: club)
-                                    }
+                                        }
+                                    )
+                                ) {
+                                    clubCard(for: club)
                                 }
                             }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 10)
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
                     }
                 }
-                .onAppear {
-                    viewModel.fetchClubs()
-                }
             }
-            
+            .onAppear { viewModel.fetchClubs() }
+
             if isLogoutAlertVisible {
                 CustomAlertView(
                     title: "로그아웃",
@@ -77,14 +75,13 @@ struct home: View {
                     }
                 ).zIndex(1)
             }
-            
+
             if isFilterPopupVisible {
                 FilterPopupView(isVisible: $isFilterPopupVisible, userRole: .constant(""))
             }
         }
     }
-    
-    // MARK: Header / Card
+
     private var header: some View {
         VStack(spacing: 14) {
             HStack {
@@ -99,7 +96,7 @@ struct home: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
-            
+
             HStack(spacing: 12) {
                 HStack {
                     Image(systemName: "magnifyingglass").foregroundColor(.gray)
@@ -111,7 +108,7 @@ struct home: View {
                 .frame(height: 42)
                 .background(RoundedRectangle(cornerRadius: 15).fill(Color.white))
                 .shadow(radius: 1)
-                
+
                 Button { isFilterPopupVisible.toggle() } label: {
                     Image(systemName: "line.horizontal.3.decrease.circle.fill")
                         .resizable().frame(width: 34, height: 34)
@@ -121,7 +118,7 @@ struct home: View {
             .padding(.horizontal, 20)
         }
     }
-    
+
     private func clubCard(for c: Club) -> some View {
         VStack {
             clubLogo(for: c).frame(height: 120)
@@ -135,7 +132,6 @@ struct home: View {
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .shadow(radius: 2)
     }
-    
     @ViewBuilder
     private func clubLogo(for c: Club) -> some View {
         if let url = c.logoURL.flatMap(URL.init) {
@@ -154,21 +150,5 @@ struct home: View {
         } else {
             Image("defaultLogo").resizable().scaledToFill()
         }
-    }
-}
-// 버튼 스타일 -------------------------------------------------
-struct OutlinedButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 18, weight: .medium))
-            .foregroundColor(.black)
-            .frame(width: 296, height: 50)
-            .background(Color.white)
-            .cornerRadius(10)
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-            )
-            .opacity(configuration.isPressed ? 0.7 : 1)
     }
 }

@@ -8,8 +8,9 @@ struct Schedule: Identifiable {
 }
 
 struct MainCalendarView: View {
-    @StateObject private var viewModel = EventListViewModel()
-    var clubId: Int
+    //@StateObject private var viewModel = EventListViewModel()
+    var clubId: Int?
+    @ObservedObject var viewModel: EventListViewModel // ✅ 여기만 수정
 
     @State private var showCreateTaskView = false
     @State private var showScheduleListView = false
@@ -40,9 +41,10 @@ struct MainCalendarView: View {
                 ScheduleListView(showScheduleListView: $showScheduleListView, selectedDate: selectedDate, events: viewModel.events)
             }
         }
-        .onAppear {
+        .onAppear {                       if let clubId = ClubEventContext.shared.selectedClubId {
+            viewModel.setClubId(clubId)
             viewModel.fetchEvents(for: clubId)
-        }
+        }}
     }
 }
 
