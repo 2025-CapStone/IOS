@@ -32,10 +32,14 @@ struct MainCalendarView: View {
                 )
                 .transition(.scale)
             }
-
             if showCreateTaskView {
                 CreateTaskView(showCreateTaskView: $showCreateTaskView, selectedDate: selectedDate)
+                    .environmentObject(viewModel) // ✅ 주입
             }
+            
+//            if showCreateTaskView {
+//                CreateTaskView(showCreateTaskView: $showCreateTaskView, selectedDate: selectedDate)
+//            }
 
             if showScheduleListView {
                 ScheduleListView(showScheduleListView: $showScheduleListView, selectedDate: selectedDate, events: viewModel.events)
@@ -322,7 +326,6 @@ struct EventPopupView: View {
 }
 
 
-// ✅ Create Task View (일정 생성)
 struct CreateTaskView: View {
     @Binding var showCreateTaskView: Bool
     var selectedDate: Date
@@ -334,7 +337,8 @@ struct CreateTaskView: View {
     @State private var category: String = ""
     @State private var longDetail: String = ""
 
-    // 참여 등급
+    @EnvironmentObject var viewModel: EventListViewModel  // ✅ ViewModel 주입
+
     let categories = ["운영진", "정회원", "휴회원", "기타"]
 
     var body: some View {
@@ -390,7 +394,7 @@ struct CreateTaskView: View {
 
             // Task Category Picker
             Picker(selection: $category, label: Text(category.isEmpty ? "참여 등급" : category)) {
-                Text("참여 등급").tag("") // <- 선택 안한 상태
+                Text("참여 등급").tag("")
                 ForEach(categories, id: \.self) { category in
                     Text(category).tag(category)
                 }
@@ -408,15 +412,27 @@ struct CreateTaskView: View {
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
                 .padding(.horizontal)
 
-            // Create 버튼
+            // ✅ Create 버튼: 이벤트 생성 호출
             Button(action: {
-                // 일정 생성 로직
-                showCreateTaskView = false
+                let mergedStart = merge(date: selectedDate, time: startTime)
+                let mergedEnd = merge(date: selectedDate, time: endTime)
+
+                viewModel.createEvent(
+                    startTime: mergedStart,
+                    endTime: mergedEnd,
+                    description: detail
+                ) { success in
+                    if success {
+                        showCreateTaskView = false
+                    } else {
+                        print("[CreateTaskView] ❌ 이벤트 생성 실패")
+                    }
+                }
             }) {
                 Text("Create")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.gray.opacity(0.4)) // 조건에 따라 활성화 가능
+                    .background(Color.gray.opacity(0.4))
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
@@ -427,7 +443,25 @@ struct CreateTaskView: View {
         .background(Color.white)
         .edgesIgnoringSafeArea(.bottom)
     }
+
+    // ✅ 날짜 + 시간 병합
+    func merge(date: Date, time: Date) -> Date {
+        let cal = Calendar.current
+        let dateComponents = cal.dateComponents([.year, .month, .day], from: date)
+        let timeComponents = cal.dateComponents([.hour, .minute], from: time)
+
+        var merged = DateComponents()
+        merged.year = dateComponents.year
+        merged.month = dateComponents.month
+        merged.day = dateComponents.day
+        merged.hour = timeComponents.hour
+        merged.minute = timeComponents.minute
+
+        return cal.date(from: merged) ?? date
+    }
 }
+
+
 // MARK: - ScheduleListView
 struct ScheduleListView: View {
     @Binding var showScheduleListView: Bool

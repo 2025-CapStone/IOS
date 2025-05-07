@@ -28,4 +28,29 @@ enum EventAPI {
                 }
             }
     }
+    
+    static func createEvent(
+           request: EventRequestDTO,
+           accessToken: String,
+           completion: @escaping (Result<String, Error>) -> Void
+       ) {
+           let url = "http://43.201.191.12:8080/api/event/add-event"
+           let headers: HTTPHeaders = [
+               "Authorization": "Bearer \(accessToken)",
+               "Content-Type": "application/json"
+           ]
+
+           AF.request(url, method: .post, parameters: request, encoder: JSONParameterEncoder.default, headers: headers)
+               .validate()
+               .responseString { response in
+                   switch response.result {
+                   case .success(let message):
+                       print("[EventAPI] ✅ 이벤트 생성 성공: \(message)")
+                       completion(.success(message))
+                   case .failure(let error):
+                       print("[EventAPI] ❌ 이벤트 생성 실패: \(error)")
+                       completion(.failure(error))
+                   }
+               }
+       }
 }

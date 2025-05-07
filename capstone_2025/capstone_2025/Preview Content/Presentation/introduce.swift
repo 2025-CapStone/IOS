@@ -2,6 +2,7 @@
 
 import SwiftUI
 
+
 struct introduce: View {
     @EnvironmentObject var router: NavigationRouter
     
@@ -27,10 +28,10 @@ struct introduce: View {
                                         .fill(Color.white)
                                         .frame(width: 80, height: 80)
                                     
-                                    Image("club")
+                                    Image("logo 1")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 50, height: 50)
+                                        .frame(width:150, height: 150)
                                 }
                                 .offset(y: -40) // 원이 살짝 올라가도록 조정
                                 
@@ -41,9 +42,7 @@ struct introduce: View {
                                 
                                 // 설명 텍스트
                                 Text("""
-                                CLUB HOUSE 란 각종 동호회 
-                                운영진을 위해 만들어진 동호회  
-                                관리 플랫폼 입니다.
+                                테니스의 즐거움, 관리까지 온클럽에서
                                 """)
                                 .font(.system(size: 18, weight: .medium))
                                 .multilineTextAlignment(.center)
@@ -70,4 +69,6 @@ struct introduce: View {
     #Preview{
         introduce()
     }
+
+
 

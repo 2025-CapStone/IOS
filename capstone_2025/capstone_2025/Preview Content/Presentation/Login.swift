@@ -102,6 +102,13 @@ struct Login: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            Image("logo 1")                 // ← Asset 이름이 “logo 1”일 때
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)   // 크기 조정은 자유
+                        .clipShape(Circle())              // 원형 자를 필요 없으면 삭제
+                        .shadow(radius: 5)
+
             // 로고 텍스트
             Text("OnClub")
                 .font(.custom("Comfortaa-Bold", size: 30))
@@ -120,7 +127,7 @@ struct Login: View {
                         .frame(width: 30, height: 30)
                         .padding(.leading, 10)
 
-                    TextField("전화번호를 입력하세요", text: $viewModel.phoneNumber)
+                    TextField("ex ) xxx - xxxx - xxxx", text: $viewModel.phoneNumber)
                         .padding(10)
                         .keyboardType(.phonePad)
                 }

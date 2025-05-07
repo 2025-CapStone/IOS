@@ -33,9 +33,51 @@ final class EventListViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success(let dtos):
+                    print(dtos)
                     self?.events = dtos.map { Event(from: $0) }
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    
+    
+}
+extension EventListViewModel {
+    func createEvent(
+        startTime: Date,
+        endTime: Date,
+        description: String,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard let clubId = clubId,
+              let accessToken = SessionStorage.shared.accessToken else {
+            print("[ViewModel] ❌ clubId 또는 accessToken 누락")
+            completion(false)
+            return
+        }
+
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+
+        let request = EventRequestDTO(
+            clubId: clubId,
+            eventStartTime: formatter.string(from: startTime),
+            eventEndTime: formatter.string(from: endTime),
+            eventDescription: description
+        )
+
+        EventAPI.createEvent(request: request, accessToken: accessToken) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self?.fetchEvents(for: clubId) // 성공 후 목록 리로드
+                    completion(true)
+                case .failure(let error):
+                    print("[ViewModel] ❌ 이벤트 생성 실패: \(error.localizedDescription)")
+                    completion(false)
                 }
             }
         }
