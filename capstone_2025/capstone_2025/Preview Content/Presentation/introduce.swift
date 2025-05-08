@@ -1,7 +1,7 @@
 
 
-import SwiftUI
 
+import SwiftUI
 
 struct introduce: View {
     @EnvironmentObject var router: NavigationRouter
@@ -69,6 +69,4 @@ struct introduce: View {
     #Preview{
         introduce()
     }
-
-
 

@@ -34,15 +34,16 @@ struct MainCalendarView: View {
             }
             if showCreateTaskView {
                 CreateTaskView(showCreateTaskView: $showCreateTaskView, selectedDate: selectedDate)
-                    .environmentObject(viewModel) // ✅ 주입
+                    .environmentObject(viewModel).onTapGesture{"ShowCreateTaskView tapped"} // ✅ 주입
+                
             }
             
 //            if showCreateTaskView {
 //                CreateTaskView(showCreateTaskView: $showCreateTaskView, selectedDate: selectedDate)
 //            }
 
-            if showScheduleListView {
-                ScheduleListView(showScheduleListView: $showScheduleListView, selectedDate: selectedDate, events: viewModel.events)
+            else if showScheduleListView {
+                ScheduleListView(showScheduleListView: $showScheduleListView, selectedDate: selectedDate, events: viewModel.events).onTapGesture{"showSchedulistView tapped"}
             }
         }
         .onAppear {                       if let clubId = ClubEventContext.shared.selectedClubId {
@@ -294,7 +295,11 @@ struct EventPopupView: View {
                 HStack(spacing: 20) {
                     Button(action: {
                         showPopup = false
-                        showCreateTaskView = true
+                        showScheduleListView = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            showCreateTaskView = true
+                            }
+                       
                     }) {
                         Text("일정 생성")
                             .frame(width: 120, height: 40)
@@ -306,7 +311,11 @@ struct EventPopupView: View {
 
                     Button(action: {
                         showPopup = false
-                        showScheduleListView = true
+                        //showScheduleListView = true
+                        showCreateTaskView = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                showScheduleListView = true
+                            }
                     }) {
                         Text("일정 확인 / 출첵")
                             .frame(width: 120, height: 40)
@@ -462,7 +471,7 @@ struct CreateTaskView: View {
 }
 
 
-// MARK: - ScheduleListView
+
 struct ScheduleListView: View {
     @Binding var showScheduleListView: Bool
     var selectedDate: Date
@@ -479,7 +488,7 @@ struct ScheduleListView: View {
         ZStack {
             VStack(spacing: 16) {
                 HStack {
-                    Image("logo")
+                    Image("ball").resizable().frame(width: 24, height: 24)
                     Spacer()
                     Button(action: { showScheduleListView = false }) {
                         Image(systemName: "arrow.left")
@@ -487,30 +496,64 @@ struct ScheduleListView: View {
                 }
                 .padding(.horizontal)
 
-                Text(formattedDate(selectedDate)).font(.title2).bold()
+                Text(formattedDate(selectedDate))
+                    .font(.title2)
+                    .bold()
 
                 ScrollView {
-                    ForEach(filteredEvents) { event in
-                        Button(action: {
-                            selectedSchedule = event
-                            showPopup = true
-                        }) {
-                            VStack(alignment: .leading) {
-                                Text(event.startTime.formatted(date: .omitted, time: .shortened))
-                                    .foregroundColor(.brown)
-                                Text(event.description)
+                    if filteredEvents.isEmpty {
+                        Text("해당 날짜에 일정이 없습니다.")
+                            .foregroundColor(.gray)
+                            .padding(.top, 60)
+                    } else {
+                        ForEach(filteredEvents) { event in
+                            Button(action: {
+                                selectedSchedule = event
+                                showPopup = true
+                            }) {
+                                VStack(alignment: .leading) {
+                                    Text(event.startTime.formatted(date: .omitted, time: .shortened))
+                                        .foregroundColor(.brown)
+                                    Text(event.description)
+                                }
+                                .padding()
+                                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
                             }
-                            .padding()
-                            .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                     }
                 }
             }
 
+            // ✅ 팝업이 있을 경우 어두운 배경 + 팝업 표시
             if let event = selectedSchedule, showPopup {
-                ScheduleCheckPopup(schedule: Schedule(time: event.startTime.formatted(date: .omitted, time: .shortened), title: event.description), showPopup: $showPopup)
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        showPopup = false
+                    }
+
+                ScheduleCheckPopup(
+                    schedule: Schedule(
+                        time: event.startTime.formatted(date: .omitted, time: .shortened),
+                        title: event.description
+                    ),
+                    showPopup: $showPopup
+                )
+                .zIndex(1)
+                .transition(.scale)
+                .animation(.easeInOut, value: showPopup)
             }
+        }
+        .onAppear {
+            print("[ScheduleListView] ✅ onAppear 호출됨")
+            if let clubId = ClubEventContext.shared.selectedClubId {
+                // 최신 이벤트 목록 요청
+                EventListViewModel().fetchEvents(for: clubId)
+            }
+        }
+        .onDisappear {
+            print("[ScheduleListView] ✅ onDisappear 호출됨")
         }
     }
 
@@ -528,6 +571,7 @@ private func formattedYearMonth(_ date: Date) -> String {
     formatter.dateFormat = "yyyy년 MM월"
     return formatter.string(from: date)
 }
+import SwiftUI
 
 struct ScheduleCheckPopup: View {
     let schedule: Schedule
@@ -549,16 +593,16 @@ struct ScheduleCheckPopup: View {
 
             // 클릭한 일정의 시간과 제목 표시
             VStack(spacing: 4) {
-               
                 Text(schedule.title)
                     .font(.body)
                     .fontWeight(.medium)
             }
             .padding(.horizontal)
 
-            // 입력 필드들
+            // 입력 필드들 (비활성화된 상태)
             VStack(spacing: 12) {
                 TextField("Name", text: .constant(""))
+                    .disabled(true)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
 
@@ -581,10 +625,12 @@ struct ScheduleCheckPopup: View {
                 }
 
                 TextField("Details", text: .constant(""))
+                    .disabled(true)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
 
                 TextField("Details", text: .constant(""))
+                    .disabled(true)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
             }
@@ -600,7 +646,9 @@ struct ScheduleCheckPopup: View {
             .padding(.horizontal)
 
             // 참석 버튼
-            Button(action: {}) {
+            Button(action: {
+                // 출석 처리 로직 추가 가능
+            }) {
                 Text("참석")
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -616,14 +664,11 @@ struct ScheduleCheckPopup: View {
         .cornerRadius(20)
         .shadow(radius: 10)
         .padding()
+        .onAppear {
+            print("[ScheduleCheckPopup] ✅ 팝업 등장")
+        }
+        .onDisappear {
+            print("[ScheduleCheckPopup] ✅ 팝업 닫힘")
+        }
     }
 }
-
-
-//CreateTaskView 에서 필요한 API
-
-// 사용자가 소속된 동호회 명단,
-// 일정 주최는 사용자가 운영자일때만 가능하게 할건지?
-// 사용자는 일정을 생성할때 소속 동호회를 선택하는 UI가 필요
-// 일정 생성시 등급별 참여 제한을 둘 수 있음
-///api/event/add-event API 이용
