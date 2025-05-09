@@ -73,10 +73,13 @@ extension EventListViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
+                    print("[EventListViewModel]  이벤트 생성 성공 \(result))")
+
                     self?.fetchEvents(for: clubId) // 성공 후 목록 리로드
+                    
                     completion(true)
                 case .failure(let error):
-                    print("[ViewModel] ❌ 이벤트 생성 실패: \(error.localizedDescription)")
+                    print("[EventList   ViewModel] ❌ 이벤트 생성 실패: \(error.localizedDescription)")
                     completion(false)
                 }
             }

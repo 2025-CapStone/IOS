@@ -21,6 +21,8 @@ import SwiftUI
 
 @main
 struct capstone_2025App: App {
+    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var appState = AppState.shared
 
     init() {
         // ✅ 앱 시작 시 토큰 초기화 (디버깅/테스트 목적)
@@ -33,5 +35,35 @@ struct capstone_2025App: App {
         WindowGroup {
             ContentView()
         }
+        .onChange(of: scenePhase) { newPhase in
+            switch newPhase {
+            case .active:
+                print("📲 [AppState] 앱 활성화됨")
+                logSessionInfo()
+
+            case .inactive:
+                print("⏸ [AppState] 앱 비활성화됨")
+
+            case .background:
+                print("📤 [AppState] 앱 백그라운드 진입")
+                logSessionInfo()
+
+            @unknown default:
+                print("⚠️ [AppState] 알 수 없는 상태")
+            }
+        }
+    }
+     func logSessionInfo() {
+        let isLoggedIn = appState.isLoggedIn
+        let userId = appState.user?.id ?? "Default UserId"
+        let accessToken = SessionStorage.shared.accessToken ?? "nil"
+        let refreshToken = SessionStorage.shared.refreshToken ?? "nil"
+
+        print("""
+        🔐 [AppState] 로그인 상태: \(isLoggedIn)
+        👤 [AppState] 사용자 ID: \(userId)
+        🔑 accessToken: \(accessToken)
+        ♻️ refreshToken: \(refreshToken)
+        """)
     }
 }

@@ -174,41 +174,13 @@
             filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
             landmarkName = "login()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "15CA473F-4419-404C-B971-62351783C376 - c6623090152c3be4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
-                  moduleName = "capstone_2025.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "25"
-                  endingLineNumber = "25">
-               </Location>
-               <Location
-                  uuid = "15CA473F-4419-404C-B971-62351783C376 - 60481954a32f4aa3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) await resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
-                  moduleName = "capstone_2025.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "25"
-                  endingLineNumber = "25">
-               </Location>
-               <Location
-                  uuid = "15CA473F-4419-404C-B971-62351783C376 - 19c48fa9dd747fea"
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - 19c48fa9dd747ee2"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -218,11 +190,39 @@
                   urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "25"
-                  endingLineNumber = "25">
+                  startingLineNumber = "33"
+                  endingLineNumber = "33">
                </Location>
                <Location
-                  uuid = "15CA473F-4419-404C-B971-62351783C376 - cc9a32c261619deb"
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - c6623090152c3aec"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33">
+               </Location>
+               <Location
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - 60481954a32f4bab"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for closure #1 () async -&gt; () in capstone_2025.LoginViewModel.login() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33">
+               </Location>
+               <Location
+                  uuid = "15CA473F-4419-404C-B971-62351783C376 - cc9a32c261619ce3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -232,8 +232,8 @@
                   urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "25"
-                  endingLineNumber = "25">
+                  startingLineNumber = "33"
+                  endingLineNumber = "33">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -248,8 +248,8 @@
             filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
             landmarkName = "login()"
             landmarkType = "7">
          </BreakpointContent>
@@ -472,6 +472,156 @@
             endingLineNumber = "45"
             landmarkName = "body"
             landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3A89BA15-56E7-4F02-B653-8C196EB160FA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
+            landmarkName = "logout()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FCFBACD8-EEC7-4490-B1B4-FDDA0A45DEBE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "logout()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FCFBACD8-EEC7-4490-B1B4-FDDA0A45DEBE - c0383c26c7009cbb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 () async throws -&gt; () in capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+               <Location
+                  uuid = "FCFBACD8-EEC7-4490-B1B4-FDDA0A45DEBE - 3a33cca7bcfa50b9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async throws -&gt; () in capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+               <Location
+                  uuid = "FCFBACD8-EEC7-4490-B1B4-FDDA0A45DEBE - 1e4f29a28299e421"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for closure #1 () async throws -&gt; () in capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+               <Location
+                  uuid = "FCFBACD8-EEC7-4490-B1B4-FDDA0A45DEBE - ed3d3469b5bc3eba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for closure #1 () async throws -&gt; () in capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+               <Location
+                  uuid = "FCFBACD8-EEC7-4490-B1B4-FDDA0A45DEBE - ed3d3469b5bc3eba"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for closure #1 () async throws -&gt; () in capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C4F4142F-0097-46BC-96F5-B4E16DF2235E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "capstone_2025/Preview Content/ViewModel/A_LoginViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "logout()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "C4F4142F-0097-46BC-96F5-B4E16DF2235E - d12240e9334c37ce"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "69"
+                  endingLineNumber = "69">
+               </Location>
+               <Location
+                  uuid = "C4F4142F-0097-46BC-96F5-B4E16DF2235E - d12240e9334c370c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "capstone_2025.LoginViewModel.logout() -&gt; ()"
+                  moduleName = "capstone_2025.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/yhs/Documents/GitHub/IOS/capstone_2025/capstone_2025/Preview%20Content/ViewModel/A_LoginViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "67"
+                  endingLineNumber = "67">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -432,6 +432,7 @@ struct CreateTaskView: View {
                     description: detail
                 ) { success in
                     if success {
+                        // 5/9 요청 사항 팝업 생성
                         showCreateTaskView = false
                     } else {
                         print("[CreateTaskView] ❌ 이벤트 생성 실패")

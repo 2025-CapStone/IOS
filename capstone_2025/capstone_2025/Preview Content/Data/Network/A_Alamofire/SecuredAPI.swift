@@ -51,3 +51,38 @@ final class SecuredAPI {
         }
     }
 }
+extension SecuredAPI {
+    func logout(refreshToken: String) async throws -> Data {
+        let url = "\(baseURL)/api/user/logout"
+        let headers: HTTPHeaders = [
+            // ❗️ Bearer 없이 토큰만
+            "Authorization": refreshToken,
+            "Content-Type": "application/json"
+        ]
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = AF.request(
+                url,
+                method: .post,
+                parameters: nil, // ✅ body는 없음
+                encoding: JSONEncoding.default,
+                headers: headers
+            )
+
+            request.cURLDescription { curl in
+                print("[SecuredAPI] cURL Logout Request:\n\(curl)")
+            }
+
+            request
+                .validate()
+                .responseData { response in
+                    switch response.result {
+                    case .success(let data):
+                        continuation.resume(returning: data)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+        }
+    }
+}
