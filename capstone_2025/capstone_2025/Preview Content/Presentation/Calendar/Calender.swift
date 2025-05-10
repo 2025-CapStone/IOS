@@ -22,6 +22,8 @@ struct MainCalendarView: View {
     var body: some View {
         ZStack {
             CalendarView(selectedDate: $selectedDate, showPopup: $showPopup)
+                .blur(radius: showCreateTaskView || showScheduleListView ? 5 : 0)
+                .disabled(showCreateTaskView || showScheduleListView)
 
             if showPopup {
                 Color.black.opacity(0.3).edgesIgnoringSafeArea(.all)
@@ -337,332 +339,61 @@ struct EventPopupView: View {
 }
 
 
-struct CreateTaskView: View {
-    @Binding var showCreateTaskView: Bool
-    var selectedDate: Date
 
-    @State private var name: String = ""
-    @State private var startTime: Date = Date()
-    @State private var endTime: Date = Date()
-    @State private var detail: String = ""
-    @State private var category: String = ""
-    @State private var longDetail: String = ""
+// 메인 칼랜더 프리뷰 부분 5/10
 
-    @EnvironmentObject var viewModel: EventListViewModel  // ✅ ViewModel 주입
-
-    let categories = ["운영진", "정회원", "휴회원", "기타"]
-
-    var body: some View {
-        VStack(spacing: 20) {
-            // 상단 바
-            HStack {
-                Button(action: { showCreateTaskView = false }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title2)
-                        .foregroundColor(.black)
-                }
-                Spacer()
-            }
-            .padding(.horizontal)
-
-            // Name
-            TextField("Name", text: $name)
-                .padding()
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-                .padding(.horizontal)
-
-            // Start Time & End Time
-            HStack(spacing: 12) {
-                HStack {
-                    Image(systemName: "flag.fill")
-                        .foregroundColor(.gray)
-                    DatePicker("", selection: $startTime, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-                }
-                .padding()
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-
-                HStack {
-                    Image(systemName: "play.fill")
-                        .foregroundColor(.gray)
-                    DatePicker("", selection: $endTime, displayedComponents: .hourAndMinute)
-                        .labelsHidden()
-                }
-                .padding()
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-            }
-            .padding(.horizontal)
-
-            // One-line Details
-            TextField("Details", text: $detail)
-                .padding()
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-                .padding(.horizontal)
-
-            // Task Category Picker
-            Picker(selection: $category, label: Text(category.isEmpty ? "참여 등급" : category)) {
-                Text("참여 등급").tag("")
-                ForEach(categories, id: \.self) { category in
-                    Text(category).tag(category)
-                }
-            }
-            .padding()
-            .background(Color.white)
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-            .padding(.horizontal)
-
-            // Multi-line Details
-            TextEditor(text: $longDetail)
-                .frame(height: 100)
-                .padding(8)
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-                .padding(.horizontal)
-
-            // ✅ Create 버튼: 이벤트 생성 호출
-            Button(action: {
-                let mergedStart = merge(date: selectedDate, time: startTime)
-                let mergedEnd = merge(date: selectedDate, time: endTime)
-
-                viewModel.createEvent(
-                    startTime: mergedStart,
-                    endTime: mergedEnd,
-                    description: detail
-                ) { success in
-                    if success {
-                        // 5/9 요청 사항 팝업 생성
-                        showCreateTaskView = false
-                    } else {
-                        print("[CreateTaskView] ❌ 이벤트 생성 실패")
-                    }
-                }
-            }) {
-                Text("Create")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.gray.opacity(0.4))
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding(.horizontal)
-            .padding(.bottom)
-        }
-        .padding(.top)
-        .background(Color.white)
-        .edgesIgnoringSafeArea(.bottom)
-    }
-
-    // ✅ 날짜 + 시간 병합
-    func merge(date: Date, time: Date) -> Date {
-        let cal = Calendar.current
-        let dateComponents = cal.dateComponents([.year, .month, .day], from: date)
-        let timeComponents = cal.dateComponents([.hour, .minute], from: time)
-
-        var merged = DateComponents()
-        merged.year = dateComponents.year
-        merged.month = dateComponents.month
-        merged.day = dateComponents.day
-        merged.hour = timeComponents.hour
-        merged.minute = timeComponents.minute
-
-        return cal.date(from: merged) ?? date
+extension MainCalendarView {
+    init(
+        clubId: Int?,
+        viewModel: EventListViewModel,
+        showCreateTaskView: Bool = false,
+        showScheduleListView: Bool = false
+    ) {
+        self.clubId = clubId
+        self._viewModel = ObservedObject(wrappedValue: viewModel)
+        self._showCreateTaskView = State(initialValue: showCreateTaskView)
+        self._showScheduleListView = State(initialValue: showScheduleListView)
+        self._showPopup = State(initialValue: false)
+        self._selectedDate = State(initialValue: Date())
     }
 }
 
-
-
-struct ScheduleListView: View {
-    @Binding var showScheduleListView: Bool
-    var selectedDate: Date
-    var events: [Event]
-
-    @State private var selectedSchedule: Event? = nil
-    @State private var showPopup = false
-
-    var filteredEvents: [Event] {
-        events.filter { Calendar.current.isDate($0.startTime, inSameDayAs: selectedDate) }
+extension EventListViewModel {
+    static func dummy() -> EventListViewModel {
+        let vm = EventListViewModel()
+        vm.events = [
+            Event(eventId: 1, clubId: 1, startTime: Date(), endTime: Date().addingTimeInterval(3600), description: "더미 1"),
+            Event(eventId: 2, clubId: 1, startTime: Date(), endTime: Date().addingTimeInterval(7200), description: "더미 2")
+        ]
+        return vm
     }
+}
+struct MainCalendarView_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            // 기본 상태
+            MainCalendarView(
+                clubId: 1,
+                viewModel: .dummy()
+            )
+            .previewDisplayName("기본 상태")
 
-    var body: some View {
-        ZStack {
-            VStack(spacing: 16) {
-                HStack {
-                    Image("ball").resizable().frame(width: 24, height: 24)
-                    Spacer()
-                    Button(action: { showScheduleListView = false }) {
-                        Image(systemName: "arrow.left")
-                    }
-                }
-                .padding(.horizontal)
+            // 일정 생성 화면이 활성화된 상태
+            MainCalendarView(
+                clubId: 1,
+                viewModel: .dummy(),
+                showCreateTaskView: true
+            )
+            .previewDisplayName("일정 생성 화면")
 
-                Text(formattedDate(selectedDate))
-                    .font(.title2)
-                    .bold()
-
-                ScrollView {
-                    if filteredEvents.isEmpty {
-                        Text("해당 날짜에 일정이 없습니다.")
-                            .foregroundColor(.gray)
-                            .padding(.top, 60)
-                    } else {
-                        ForEach(filteredEvents) { event in
-                            Button(action: {
-                                selectedSchedule = event
-                                showPopup = true
-                            }) {
-                                VStack(alignment: .leading) {
-                                    Text(event.startTime.formatted(date: .omitted, time: .shortened))
-                                        .foregroundColor(.brown)
-                                    Text(event.description)
-                                }
-                                .padding()
-                                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
-                            }
-                            .padding(.horizontal)
-                        }
-                    }
-                }
-            }
-
-            // ✅ 팝업이 있을 경우 어두운 배경 + 팝업 표시
-            if let event = selectedSchedule, showPopup {
-                Color.black.opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
-                    .onTapGesture {
-                        showPopup = false
-                    }
-
-                ScheduleCheckPopup(
-                    schedule: Schedule(
-                        eventId: event.eventId,
-                        startTime: event.startTime.formatted(date: .omitted, time: .shortened), endTime: event.endTime.formatted(date: .omitted, time: .shortened),
-                        title: event.description
-                    ),
-                    showPopup: $showPopup
-                )
-                .zIndex(1)
-                .transition(.scale)
-                .animation(.easeInOut, value: showPopup)
-            }
+            // 일정 리스트 화면이 활성화된 상태
+            MainCalendarView(
+                clubId: 1,
+                viewModel: .dummy(),
+                showScheduleListView: true
+            )
+            .previewDisplayName("일정 리스트 화면")
         }
-        .onAppear {
-            print("[ScheduleListView] ✅ onAppear 호출됨")
-//            if let clubId = ClubEventContext.shared.selectedClubId {
-//                // 최신 이벤트 목록 요청
-//                EventListViewModel().fetchEvents(for: clubId)
-//            }
-        }
-        .onDisappear {
-            print("[ScheduleListView] ✅ onDisappear 호출됨")
-        }
-    }
-
-    func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "yyyy년 MM월 dd일"
-        return formatter.string(from: date)
     }
 }
 
-// ✅ 날짜 포맷 함수
-private func formattedYearMonth(_ date: Date) -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy년 MM월"
-    return formatter.string(from: date)
-}
-
-struct ScheduleCheckPopup: View {
-    let schedule: Schedule
-    @Binding var showPopup: Bool
-
-    var body: some View {
-        VStack(spacing: 16) {
-            // 상단: 닫기 버튼
-            HStack {
-                Button(action: { showPopup = false }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title2)
-                        .foregroundColor(.black)
-                }
-                Spacer()
-            }
-            .padding(.horizontal)
-
-            // 시작시간과 종료시간
-            VStack(spacing: 8) {
-                HStack {
-                    Image(systemName: "flag.fill")
-                        .foregroundColor(.gray)
-                    Text("시작: \(schedule.startTime)")
-                    Spacer()
-                }
-                .padding()
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-
-                HStack {
-                    Image(systemName: "play.fill")
-                        .foregroundColor(.gray)
-                    Text("종료: \(schedule.endTime)")
-                    Spacer()
-                }
-                .padding()
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-            }
-            .padding(.horizontal)
-
-            // 설명
-            HStack {
-                Image(systemName: "doc.text")
-                    .foregroundColor(.gray)
-                Text(schedule.title)
-                Spacer()
-            }
-            .padding()
-            .background(Color.white)
-            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-            .padding(.horizontal)
-
-            // 위치 아이콘 (우측 정렬)
-            HStack {
-                Spacer()
-                Image(systemName: "mappin.and.ellipse")
-                    .font(.title3)
-                    .foregroundColor(.gray)
-            }
-            .padding(.horizontal)
-
-            // 참석 버튼
-            Button(action: {
-                print("[ScheduleCheckPopup] 참석 버튼 클릭")
-                // TODO: 참석 처리 로직 추가
-            }) {
-                Text("참석")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.gray.opacity(0.4))
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal)
-            .padding(.bottom)
-        }
-        .padding(.top)
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(radius: 10)
-        .padding()
-        .onAppear {
-            print("[ScheduleCheckPopup] ✅ 팝업 등장")
-        }
-        .onDisappear {
-            print("[ScheduleCheckPopup] ✅ 팝업 닫힘")
-        }
-    }
-}

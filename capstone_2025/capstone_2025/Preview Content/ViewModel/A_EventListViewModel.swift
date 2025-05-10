@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class EventListViewModel: ObservableObject {
+ final class EventListViewModel: ObservableObject {
     @Published var events: [Event] = []
     @Published var isLoading = false
     @Published var errorMessage: String?

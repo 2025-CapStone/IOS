@@ -58,3 +58,13 @@ struct Event: Identifiable, Hashable {
 
 
 }
+
+extension Event {
+    init(eventId: Int, clubId: Int, startTime: Date, endTime: Date, description: String) {
+        self.eventId = eventId
+        self.clubId = clubId
+        self.startTime = startTime
+        self.endTime = endTime
+        self.description = description
+    }
+}
