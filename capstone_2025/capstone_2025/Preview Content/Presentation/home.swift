@@ -150,12 +150,14 @@ struct home: View {
     @ViewBuilder
     private func clubLogo(for c: Club) -> some View {
         if let url = c.logoURL.flatMap(URL.init) {
+
             AsyncImage(url: url) { phase in
                 switch phase {
                 case .empty:
                     AnyView(ProgressView())
                 case .success(let img):
                     AnyView(img.resizable().scaledToFill())
+                   
                 case .failure(_):
                     AnyView(Image("defaultLogo").resizable().scaledToFill())
                 @unknown default:

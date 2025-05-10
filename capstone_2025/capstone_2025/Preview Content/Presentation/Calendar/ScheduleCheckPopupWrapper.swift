@@ -34,6 +34,7 @@ struct ScheduleCheckPopupWrapper: View {
             do {
                 let participants = try await ParticipantAPI.fetchAll(eventId: event.eventId)
                 let currentUserId = AppState.shared.user?.id
+                print(participants)
                 isJoined = participants.contains { $0.userId == Int(currentUserId!) }
             } catch {
                 print("❌ 참가자 조회 실패: \(error)")

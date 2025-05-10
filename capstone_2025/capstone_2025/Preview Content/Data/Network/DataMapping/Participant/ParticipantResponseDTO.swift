@@ -14,7 +14,16 @@ struct ParticipantResponseDTO: Codable, Identifiable, Hashable {
     let userId: Int
     let userName: String
     let gender: String
-    let lastGamedAt: String?
+    let lastGamedAt: Date?
     let career: Int
     let gameCount: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case userId
+        case userName
+        case gender
+        case lastGamedAt
+        case career
+        case gameCount
+    }
 }
