@@ -33,8 +33,13 @@ final class EventListViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success(let dtos):
-                    print(dtos)
-                    self?.events = dtos.map { Event(from: $0) }
+                    print("[EventAPI] ✅ 응답 DTO: \(dtos)")
+                    let mapped = dtos.map { Event(from: $0) }
+                    for e in mapped {
+                        print("[Mapped] \(e.eventId) - start: \(e.startTime), end: \(e.endTime)")
+                    }
+                    self?.events = mapped
+                    
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }

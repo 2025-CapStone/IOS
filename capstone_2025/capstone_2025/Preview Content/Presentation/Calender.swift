@@ -3,7 +3,9 @@ import SwiftUI
 
 struct Schedule: Identifiable {
     let id = UUID()
-    let time: String
+    let eventId : Int
+    let startTime: String
+    let endTime: String // 🔹 추가
     let title: String
 }
 
@@ -536,7 +538,8 @@ struct ScheduleListView: View {
 
                 ScheduleCheckPopup(
                     schedule: Schedule(
-                        time: event.startTime.formatted(date: .omitted, time: .shortened),
+                        eventId: event.eventId,
+                        startTime: event.startTime.formatted(date: .omitted, time: .shortened), endTime: event.endTime.formatted(date: .omitted, time: .shortened),
                         title: event.description
                     ),
                     showPopup: $showPopup
@@ -548,10 +551,10 @@ struct ScheduleListView: View {
         }
         .onAppear {
             print("[ScheduleListView] ✅ onAppear 호출됨")
-            if let clubId = ClubEventContext.shared.selectedClubId {
-                // 최신 이벤트 목록 요청
-                EventListViewModel().fetchEvents(for: clubId)
-            }
+//            if let clubId = ClubEventContext.shared.selectedClubId {
+//                // 최신 이벤트 목록 요청
+//                EventListViewModel().fetchEvents(for: clubId)
+//            }
         }
         .onDisappear {
             print("[ScheduleListView] ✅ onDisappear 호출됨")
@@ -572,7 +575,6 @@ private func formattedYearMonth(_ date: Date) -> String {
     formatter.dateFormat = "yyyy년 MM월"
     return formatter.string(from: date)
 }
-import SwiftUI
 
 struct ScheduleCheckPopup: View {
     let schedule: Schedule
@@ -580,64 +582,54 @@ struct ScheduleCheckPopup: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            // 상단 아이콘 및 닫기
+            // 상단: 닫기 버튼
             HStack {
-                Image("logo")
-                Spacer()
                 Button(action: { showPopup = false }) {
                     Image(systemName: "arrow.left")
                         .font(.title2)
                         .foregroundColor(.black)
                 }
+                Spacer()
             }
             .padding(.horizontal)
 
-            // 클릭한 일정의 시간과 제목 표시
-            VStack(spacing: 4) {
-                Text(schedule.title)
-                    .font(.body)
-                    .fontWeight(.medium)
-            }
-            .padding(.horizontal)
-
-            // 입력 필드들 (비활성화된 상태)
-            VStack(spacing: 12) {
-                TextField("Name", text: .constant(""))
-                    .disabled(true)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-
-                HStack(spacing: 12) {
-                    HStack {
-                        Image(systemName: "flag.fill")
-                        Text(schedule.time)
-                        Spacer()
-                    }
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-
-                    HStack {
-                        Image(systemName: "play.fill")
-                        Text("End Time")
-                        Spacer()
-                    }
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+            // 시작시간과 종료시간
+            VStack(spacing: 8) {
+                HStack {
+                    Image(systemName: "flag.fill")
+                        .foregroundColor(.gray)
+                    Text("시작: \(schedule.startTime)")
+                    Spacer()
                 }
+                .padding()
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
 
-                TextField("Details", text: .constant(""))
-                    .disabled(true)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-
-                TextField("Details", text: .constant(""))
-                    .disabled(true)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+                HStack {
+                    Image(systemName: "play.fill")
+                        .foregroundColor(.gray)
+                    Text("종료: \(schedule.endTime)")
+                    Spacer()
+                }
+                .padding()
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
             }
             .padding(.horizontal)
 
-            // 위치 아이콘
+            // 설명
+            HStack {
+                Image(systemName: "doc.text")
+                    .foregroundColor(.gray)
+                Text(schedule.title)
+                Spacer()
+            }
+            .padding()
+            .background(Color.white)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+            .padding(.horizontal)
+
+            // 위치 아이콘 (우측 정렬)
             HStack {
                 Spacer()
                 Image(systemName: "mappin.and.ellipse")
@@ -648,7 +640,8 @@ struct ScheduleCheckPopup: View {
 
             // 참석 버튼
             Button(action: {
-                // 출석 처리 로직 추가 가능
+                print("[ScheduleCheckPopup] 참석 버튼 클릭")
+                // TODO: 참석 처리 로직 추가
             }) {
                 Text("참석")
                     .frame(maxWidth: .infinity)

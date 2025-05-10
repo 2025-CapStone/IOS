@@ -46,6 +46,7 @@ struct SignUp: View {
                 .padding(.horizontal, 40)
 
                 Button(action: {
+
                     viewModel.signup()
                     showAlert = true
                 }) {
