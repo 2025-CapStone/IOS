@@ -23,8 +23,7 @@ struct ScheduleListView: View {
         ZStack {
             VStack(spacing: 16) {
                 HStack {
-                    Image("ball").resizable().frame(width: 24, height: 24)
-                    Spacer()
+                 
                     Button(action: { showScheduleListView = false }) {
                         Image(systemName: "arrow.left")
                     }

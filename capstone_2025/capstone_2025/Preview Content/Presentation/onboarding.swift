@@ -13,21 +13,8 @@ struct onboarding: View {
                 .edgesIgnoringSafeArea(.all)
 
             VStack(spacing: 20) {
-                // 닫기 버튼
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss() // 모달 닫기
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.title)
-                            .foregroundColor(.black)
-                            .padding()
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-
-                // 스마트폰 아이콘 (원형 배경 포함)
+               
+                /// 스마트폰 아이콘 (원형 배경 포함)
                 ZStack {
                     Circle()
                         .fill(Color.gray.opacity(0.2))
@@ -38,6 +25,8 @@ struct onboarding: View {
                         .scaledToFit()
                         .frame(width: 80, height: 80)
                 }
+                .padding(.top, 8)      // 👈 위쪽으로 12-pt 내려줌
+
 
                 // 앱 접근 권한 안내 제목
                 Text("앱 접근 권한 안내")
@@ -100,7 +89,7 @@ struct PermissionRow: View {
         VStack(spacing: 5) {
             Text("| \(title) |")
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundColor(.orange)
+                .foregroundColor(.green)
 
             Text(description)
                 .font(.system(size: 16))

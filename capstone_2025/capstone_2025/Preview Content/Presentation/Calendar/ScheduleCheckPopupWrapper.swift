@@ -132,7 +132,8 @@ struct ScheduleCheckPopup: View {
                         .padding()
                 }
             }
-            .background(isJoined ? Color.gray : Color.blue)
+            .background(isJoined ? Color.gray.opacity(0.4)
+                                  : Color.gray)              
             .foregroundColor(.white)
             .cornerRadius(12)
             .disabled(isJoined || isLoading)
