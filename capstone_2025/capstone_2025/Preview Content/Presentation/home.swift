@@ -2,30 +2,33 @@
 //  home.swift
 //  OnClub
 //
-//  Created by ChatGPT on 2025-05-12.
-//
 
 import SwiftUI
 
 struct home: View {
-    // MARK: - View Models -----------------------------------------------------
-    @StateObject private var viewModel       = ClubListViewModel()
-    @StateObject private var loginViewModel  = LoginViewModel()
-    @EnvironmentObject   var router          : NavigationRouter
+    // MARK: - ViewModels & Router --------------------------------------------
+    @StateObject private var viewModel      = ClubListViewModel()
+    @StateObject private var loginViewModel = LoginViewModel()
+    @EnvironmentObject   var router         : NavigationRouter
 
     // MARK: - UI State --------------------------------------------------------
-    @State private var searchText            = ""
-    @State private var isLogoutAlertVisible  = false
-    @State private var showJoinPopup         = false        // + 버튼용 팝업
+    @State private var searchText           = ""
+    @State private var isLogoutAlertVisible = false
 
-    // MARK: - Layout Helpers --------------------------------------------------
+    @State private var showJoinPopup        = false          // + 버튼 팝업
+    @State private var showJoinSuccess      = false          // 가입 성공 팝업
+    @State private var successMessage       = ""             // 성공 문구
+
+    @State private var showJoinError        = false          // 가입 실패 Alert
+    @State private var errorMessage         = ""             // 실패 문구
+
+    // MARK: - Grid Layout -----------------------------------------------------
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 20), count: 2)
 
     // MARK: - Derived Data ----------------------------------------------------
     private var clubs: [Club] {
         viewModel.clubs.map(Club.init(from:))
     }
-
     private var filteredClubs: [Club] {
         let key = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         return key.isEmpty ? clubs
@@ -35,7 +38,7 @@ struct home: View {
     // MARK: - Body ------------------------------------------------------------
     var body: some View {
         ZStack {
-            // 메인 콘텐츠
+            // ───────────────── 메인 콘텐츠 ─────────────────
             VStack(spacing: 0) {
                 header
 
@@ -78,27 +81,37 @@ struct home: View {
             }
             .onAppear { viewModel.fetchClubs() }
 
-            // + 버튼 팝업 (클럽 ID 입력 → 참가)
+            // ──────────────── 팝업들 ────────────────
             if showJoinPopup {
                 JoinClubPopupView(isVisible: $showJoinPopup) { clubId in
-                    joinClub(with: clubId)
+                    joinClub(with: clubId)      // ← 목업 백엔드 호출
+                }
+            }
+            if showJoinSuccess {
+                JoinSuccessPopupView(message: successMessage) {
+                    showJoinSuccess = false
                 }
             }
         }
-        .alert(isPresented: $isLogoutAlertVisible) {
-            Alert(
-                title: Text("로그아웃"),
-                message: Text("정말 로그아웃 하시겠습니까?"),
-                primaryButton: .destructive(Text("로그아웃")) { handleLogout() },
-                secondaryButton: .cancel()
-            )
-        }
+        // ──────────────── Alert 들 ────────────────
+        .alert("로그아웃",
+               isPresented: $isLogoutAlertVisible,
+               actions: {
+                   Button("취소", role: .cancel) {}
+                   Button("로그아웃", role: .destructive) { handleLogout() }
+               },
+               message: { Text("정말 로그아웃 하시겠습니까?") })
+
+        .alert("가입 실패",
+               isPresented: $showJoinError,
+               actions: { Button("확인", role: .cancel) {} },
+               message: { Text(errorMessage) })
     }
 
     // MARK: - Header ----------------------------------------------------------
     private var header: some View {
         VStack(spacing: 14) {
-            // 상단 바 ----------------------------------------------------------
+            // 상단 바
             HStack {
                 Image("ball")
                     .resizable()
@@ -110,16 +123,14 @@ struct home: View {
 
                 Spacer()
 
-                Button(action: { isLogoutAlertVisible = true }) {
-                    Text("로그아웃")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.red)
-                }
+                Button("로그아웃") { isLogoutAlertVisible = true }
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.red)
             }
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
-            // 검색창 + +버튼 ----------------------------------------------------
+            // 검색창 + +버튼
             HStack(spacing: 12) {
                 HStack {
                     Image(systemName: "magnifyingglass")
@@ -134,7 +145,9 @@ struct home: View {
                 .background(RoundedRectangle(cornerRadius: 15).fill(Color.white))
                 .shadow(radius: 1)
 
-                Button { showJoinPopup = true } label: {
+                Button {
+                    showJoinPopup = true       // 클럽 ID 입력 팝업 띄우기
+                } label: {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .frame(width: 34, height: 34)
@@ -167,14 +180,10 @@ struct home: View {
         if let url = c.logoURL.flatMap(URL.init) {
             AsyncImage(url: url) { phase in
                 switch phase {
-                case .empty:
-                    AnyView(ProgressView())
+                case .empty:    AnyView(ProgressView())
                 case .success(let img):
-                    AnyView(img.resizable().scaledToFill())
-                case .failure:
-                    AnyView(Image("defaultLogo").resizable().scaledToFill())
-                @unknown default:
-                    AnyView(Image("defaultLogo").resizable().scaledToFill())
+                                AnyView(img.resizable().scaledToFill())
+                default:        AnyView(Image("defaultLogo").resizable().scaledToFill())
                 }
             }
         } else {
@@ -184,14 +193,26 @@ struct home: View {
         }
     }
 
-    // MARK: - Join / Logout ----------------------------------------------------
-    private func joinClub(with clubId: String) {
-        // TODO: 백엔드 API 호출 → 참가여부 확인 / 오류 처리
-        print("참가 요청할 클럽 ID:", clubId)
+    // MARK: - Join / Logout / Mock --------------------------------------------
+    /// 목업 백엔드를 이용해 가입 시도
+    private func joinClub(with idString: String) {
+        guard let id = Int(idString) else {
+            errorMessage = "숫자 형태의 클럽 ID를 입력하세요."
+            showJoinError = true
+            return
+        }
 
-        // 임시 처리: 팝업 닫고 새로고침
-        showJoinPopup = false
-        viewModel.fetchClubs()
+        let (ok, name) = MockBackend.shared.joinClub(id: id)
+
+        if ok, let clubName = name {
+            showJoinPopup   = false
+            successMessage  = "\(clubName)에 가입되었습니다."
+            showJoinSuccess = true
+            viewModel.fetchClubs()          // 필요 시 새로고침
+        } else {
+            errorMessage = "해당 ID의 클럽을 찾을 수 없습니다."
+            showJoinError = true
+        }
     }
 
     private func handleLogout() {
