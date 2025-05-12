@@ -2,21 +2,24 @@ import SwiftUI
 
 /// 클럽 ID를 입력해 가입을 시도하는 팝업
 struct JoinClubPopupView: View {
-    @Binding var isVisible: Bool          // 외부에서 on/off 제어
-    var onJoin: (String) -> Void          // "가입" 버튼 액션
+    @Binding var isVisible: Bool
+    var onJoin: (String) -> Void          // 최종 가입 액션
 
-    @State private var clubIdText = ""    // 입력받을 클럽 ID
+    @State private var clubIdText = ""    // 입력한 ID
+    @State private var showConfirm = false
+    @State private var confirmClubName = ""   // 확인 팝업용 이름
+    @State private var errorMessage = ""      // 존재하지 않을 때
 
     var body: some View {
         ZStack {
-            // 반투명 배경
+            //------------------------------------------------------------------
             Color.black.opacity(0.3)
                 .ignoresSafeArea()
                 .onTapGesture { isVisible = false }
 
-            // 팝업 본문
+            //------------------------------------------------------------------
             VStack(spacing: 16) {
-                Image("popupHeader")              // 헤더 이미지
+                Image("popupHeader")
                     .resizable()
                     .scaledToFill()
                     .frame(height: 120)
@@ -31,10 +34,19 @@ struct JoinClubPopupView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(height: 40)
                     .padding(.horizontal, 24)
+                    .keyboardType(.numberPad)
+
+                // 에러 메시지
+                if !errorMessage.isEmpty {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.top, -8)
+                }
 
                 HStack(spacing: 40) {
-                    Button("가입")  { onJoin(clubIdText) }   // “가입”
-                    Button("닫기")  { isVisible = false  }   // “닫기”
+                    Button("가입")  { tryShowConfirm() }
+                    Button("닫기")  { isVisible = false }
                 }
                 .font(.system(size: 14, weight: .semibold))
                 .padding(.bottom, 12)
@@ -43,6 +55,38 @@ struct JoinClubPopupView: View {
             .background(Color(UIColor.systemGray6))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .shadow(radius: 6)
+
+            //------------------------------------------------------------------
+            // 중간 확인 팝업
+            if showConfirm {
+                JoinConfirmPopupView(
+                    clubId: clubIdText,
+                    clubName: confirmClubName,
+                    isVisible: $showConfirm,
+                    onConfirm: {
+                        onJoin(clubIdText)     // 최종 가입
+                        isVisible = false      // 입력 팝업 닫기
+                    }
+                )
+            }
+        }
+    }
+
+    // MARK: - Helpers ---------------------------------------------------------
+    private func tryShowConfirm() {
+        errorMessage = ""
+        let trimmed = clubIdText.trimmingCharacters(in: .whitespaces)
+        guard let id = Int(trimmed) else {
+            errorMessage = "숫자 형태의 ID를 입력하세요."
+            return
+        }
+
+        // 목업 데이터에서 이름 조회
+        if let name = MockBackend.shared.clubName(id: id) {
+            confirmClubName = name
+            showConfirm = true            // -> 확인 팝업
+        } else {
+            errorMessage = "존재하지 않는 ID입니다."
         }
     }
 }
