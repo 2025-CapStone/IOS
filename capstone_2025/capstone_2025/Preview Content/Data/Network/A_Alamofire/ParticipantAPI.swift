@@ -11,19 +11,92 @@ import Alamofire
 
 enum ParticipantAPI {
     static func join(userId: Int, eventId: Int) async throws -> Bool {
-        let path = "/api/participant/join"
-        let parameters: [String: Any] = [
-            "userId": userId,
-            "eventId": eventId
-        ]
-        _ = try await SecuredAPI.shared.request(
-            path: path,
-            method: .post,
-            parameters: parameters
-        )
-        return true
-    }
-    
+           guard let accessToken = SessionStorage.shared.accessToken else {
+               throw URLError(.userAuthenticationRequired)
+           }
+
+           let url = "http://43.201.191.12:8080/api/participant/join?userId=\(userId)&eventId=\(eventId)"
+           let headers: HTTPHeaders = [
+               "Authorization": "Bearer \(accessToken)",
+               "Content-Type": "application/x-www-form-urlencoded"
+           ]
+
+           return try await withCheckedThrowingContinuation { continuation in
+               let request = AF.request(
+                   url,
+                   method: .post,
+                   parameters: nil,  // ✅ requestBody 없음
+                   encoding: URLEncoding.default,
+                   headers: headers
+               )
+
+               // ✅ cURL 출력
+               request.cURLDescription { curl in
+                   print("[SecuredAPI] 🌀 cURL Query Request:\n\(curl)")
+               }
+
+               request
+                   .validate()
+                   .responseData { response in
+                       switch response.result {
+                       case .success:
+                           continuation.resume(returning: true)
+                       case .failure(let error):
+                           continuation.resume(throwing: error)
+                       }
+                   }
+           }
+       }
+    static func joinclubByGuest(userId: Int, eventId: Int) async throws -> Bool {
+         guard let accessToken = SessionStorage.shared.accessToken else {
+             throw URLError(.userAuthenticationRequired)
+         }
+
+         let url = "http://43.201.191.12:8080/api/guest/attend/request"
+         let headers: HTTPHeaders = [
+             "Authorization": "Bearer \(accessToken)",
+             "Content-Type": "application/json"
+         ]
+
+         let parameters: [String: Any] = [
+             "userId": userId,
+             "eventId": eventId
+         ]
+
+         return try await withCheckedThrowingContinuation { continuation in
+             let request = AF.request(
+                 url,
+                 method: .post,
+                 parameters: parameters,
+                 encoding: JSONEncoding.default,
+                 headers: headers
+             )
+
+             // ✅ cURL 출력
+             request.cURLDescription { curl in
+                 print("[JoinAPI] 🌀 cURL Guest Join Request:\n\(curl)")
+             }
+
+             request
+                 .validate()
+                 .responseString { response in
+                     switch response.result {
+                     case .success(let message):
+                         print("[JoinAPI] ✅ 게스트로 참석 성공: \(message)")
+                         continuation.resume(returning: true)
+
+                     case .failure(let error):
+                         print("[JoinAPI] ❌ 게스트로 참석 실패: \(error.localizedDescription)")
+
+                         if let data = response.data, let raw = String(data: data, encoding: .utf8) {
+                             print("[JoinAPI] ⚠️ 응답 본문: \(raw)")
+                         }
+
+                         continuation.resume(throwing: error)
+                     }
+                 }
+         }
+     }
     //    static func fetchAll(eventId: Int) async throws -> [ParticipantResponseDTO] {
     //        let path = "/api/participant/all"
     //        let parameters: [String: Any] = [

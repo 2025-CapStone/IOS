@@ -56,6 +56,7 @@ extension SecuredAPI {
         let url = "\(baseURL)/api/user/logout"
         let headers: HTTPHeaders = [
             // ❗️ Bearer 없이 토큰만
+            //"Authorization": "Bearer \(refreshToken)",
             "Authorization": refreshToken,
             "Content-Type": "application/json"
         ]
@@ -85,4 +86,46 @@ extension SecuredAPI {
                 }
         }
     }
+    
+    func requestWithQueryParams(
+        path: String,
+        method: HTTPMethod,
+        queryParameters: [String: Any]
+    ) async throws -> Data {
+        let url = "\(baseURL)\(path)"
+        guard let accessToken = SessionStorage.shared.accessToken else {
+            throw URLError(.userAuthenticationRequired)
+        }
+
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(accessToken)",
+            "Content-Type": "application/json"
+        ]
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let request = session.request(
+                url,
+                method: method,
+                parameters: queryParameters,
+                encoding: URLEncoding(destination: .queryString), // ✅ 쿼리 파라미터로 명시
+                headers: headers
+            )
+
+            request.cURLDescription { curl in
+                print("[SecuredAPI] 🌀 cURL Query Request:\n\(curl)")
+            }
+
+            request
+                .validate()
+                .responseData { response in
+                    switch response.result {
+                    case .success(let data):
+                        continuation.resume(returning: data)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+        }
+    }
+
 }

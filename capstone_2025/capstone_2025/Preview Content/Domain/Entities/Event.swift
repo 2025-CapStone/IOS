@@ -15,6 +15,12 @@ struct Event: Identifiable, Hashable {
     let startTime: Date
     let endTime: Date
     let description: String
+   // var isUserParticipated : Bool = false
+    //var isUserWillbeParticipated : Bool = false
+    
+    
+    
+    // gpt 요청사항1
 
 //    init(from dto: EventResponseDTO) {
 //        self.eventId = dto.eventId

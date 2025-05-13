@@ -79,7 +79,7 @@ struct home: View {
                     }
                 }
             }
-            .onAppear { viewModel.fetchClubs() }
+            .onAppear { viewModel.fetchAllClubs() }
 
             // ──────────────── 팝업들 ────────────────
             if showJoinPopup {
@@ -212,7 +212,7 @@ struct home: View {
             showJoinPopup   = false
             successMessage  = "\(clubName)에 가입되었습니다."
             showJoinSuccess = true
-            viewModel.fetchClubs()          // 필요 시 새로고침
+            viewModel.fetchAllClubs()          // 필요 시 새로고침
         } else {
             errorMessage = "해당 ID의 클럽을 찾을 수 없습니다."
             showJoinError = true

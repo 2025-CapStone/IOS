@@ -9,13 +9,15 @@
 import Alamofire
 
 enum MembershipAPI {
+    
+    
     static func joinClub(
         userId: Int,
         clubId: Int,
         accessToken: String,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-        let url = "http://43.201.191.12:8080/api/membership/join"
+        let url = "http://43.201.191.12:8080/api/membership/join/request"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"

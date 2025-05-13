@@ -5,6 +5,7 @@
 //  Created by ㅇㅇ ㅇ on 5/10/25.
 //
 import SwiftUI
+import Alamofire
 
 struct ScheduleCheckPopupWrapper: View {
     let event: Event
@@ -46,6 +47,8 @@ struct ScheduleCheckPopupWrapper: View {
 }
 
 struct ScheduleCheckPopup: View {
+    @State private var showGuestJoinAlert = false
+
     let schedule: Schedule
     let isJoinedInitial: Bool
     @Binding var showPopup: Bool
@@ -144,10 +147,17 @@ struct ScheduleCheckPopup: View {
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 10)
-        .padding()
+        .padding().alert("게스트로 참석하시겠습니까?", isPresented: $showGuestJoinAlert) {
+            Button("예", role: .none) {
+                Task {
+                    await handleGuestJoin()
+                }
+            }
+            Button("아니오", role: .cancel) {}
+        } message: {
+            Text("현재 클럽에 가입되어 있지 않거나 유효하지 않은 요청입니다.")
+        }
     }
-
-    // ✅ 서버로 참가 요청
     func handleJoin() async {
         guard let userId = AppState.shared.user?.id else {
             errorMessage = "로그인이 필요합니다"
@@ -161,11 +171,65 @@ struct ScheduleCheckPopup: View {
             let _ = try await ParticipantAPI.join(userId: Int(userId)!, eventId: schedule.eventId)
             isJoined = true
         } catch {
-            errorMessage = "서버 요청 실패: \(error.localizedDescription)"
+            print("[ScheduleCheckPopup] ❌ 참가 실패: \(error.localizedDescription)")
+
+            // 상태코드 확인
+            if let afError = error as? AFError,
+               let responseCode = afError.responseCode {
+                switch responseCode {
+                case 404:
+                    showGuestJoinAlert = true // ✅ 팝업 띄우기
+                default:
+                    errorMessage = "서버 오류: \(responseCode)"
+                }
+            } else {
+                errorMessage = "알 수 없는 오류: \(error.localizedDescription)"
+            }
         }
 
         isLoading = false
     }
+    
+    func handleGuestJoin() async {
+        guard let userId = AppState.shared.user?.id else {
+            errorMessage = "로그인이 필요합니다"
+            return
+        }
+
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            let _ = try await ParticipantAPI.joinclubByGuest(userId: Int(userId)!, eventId: schedule.eventId)
+            isJoined = true
+        } catch {
+            errorMessage = "게스트 참석 실패: \(error.localizedDescription)"
+            print("[ScheduleCheckPopup] ❌ 게스트 참석 실패: \(error)")
+        }
+
+        isLoading = false
+    }
+
+//    // ✅ 서버로 참가 요청
+//    func handleJoin() async {
+//        guard let userId = AppState.shared.user?.id else {
+//            errorMessage = "로그인이 필요합니다"
+//            return
+//        }
+//
+//        isLoading = true
+//        errorMessage = nil
+//
+//        do {
+//            let _ = try await ParticipantAPI.join(userId: Int(userId)!, eventId: schedule.eventId)
+//            isJoined = true
+//        } catch {
+//            errorMessage = "서버 요청 실패: \(error.localizedDescription)"
+//            print(error.localizedDescription)
+//        }
+//
+//        isLoading = false
+//    }
 }
 struct ScheduleCheckPopupWrapper_Previews: PreviewProvider {
     static var previews: some View {

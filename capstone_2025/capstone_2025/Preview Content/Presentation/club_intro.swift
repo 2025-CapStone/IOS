@@ -10,7 +10,8 @@ struct club_intro: View {
     @State private var deniedMessage    = ""
     
     @EnvironmentObject var router: NavigationRouter
-    
+   // @ObservedObject var viewModel: ClubListViewModel
+     //   .environmentObject(viewModel)
     init(club: Club, onUpdate: @escaping (Club) -> Void) {
         _club = State(initialValue: club)
         self.onUpdate = onUpdate
@@ -45,7 +46,22 @@ struct club_intro: View {
                     .font(.system(size: 16, weight: .bold))
                     .padding(.horizontal, 16)
                     .multilineTextAlignment(.center)
-                
+       
+
+                Button(action: {
+                  //  viewmodel.joinClub()
+                }) {
+                    Text("가입하기")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 50)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
+
+                Spacer()
+
                 Spacer()
             }
             
@@ -129,7 +145,7 @@ struct club_intro: View {
                 Spacer()
                 VStack(alignment: .leading, spacing: 10) {
                     // 일정관리 (정상 진입)
-                    MenuItem(title: "일정관리", clubId: club.id)
+                    MenuItem(title: "일정관리", selectedClubId: club.id)
                     
                     // 회원관리 (제한)
                     MenuItem(
@@ -176,7 +192,7 @@ struct club_intro: View {
 struct MenuItem: View {
     var title: String
     var isLogout: Bool  = false
-    var clubId: Int?    = nil
+    var selectedClubId: Int?    = nil
     var restricted: Bool = false
     var action: (() -> Void)? = nil
     
@@ -187,7 +203,7 @@ struct MenuItem: View {
             action?()
             guard !restricted else { return }
             
-            if title.hasPrefix("일정"), let id = clubId {
+            if title.hasPrefix("일정"), let id = selectedClubId {
                 ClubEventContext.shared.selectedClubId = id
                 router.path.append(AppRoute.calendar)
             } else if title.hasPrefix("예산") {
