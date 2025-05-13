@@ -150,7 +150,7 @@ struct home: View {
                 .shadow(radius: 1)
 
                 Button {
-                    showJoinPopup = true       // 클럽 ID 입력 팝업 띄우기
+                    showJoinPopup = false       // 클럽 ID 입력 팝업 띄우기
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
