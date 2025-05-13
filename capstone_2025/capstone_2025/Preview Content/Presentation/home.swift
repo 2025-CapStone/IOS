@@ -83,9 +83,13 @@ struct home: View {
 
             // ──────────────── 팝업들 ────────────────
             if showJoinPopup {
-                JoinClubPopupView(isVisible: $showJoinPopup) { clubId in
-                    joinClub(with: clubId)      // ← 목업 백엔드 호출
-                }
+                JoinClubPopupView(
+                    isVisible: $showJoinPopup,
+                    onJoin: { clubId in
+                        joinClub(with: clubId)
+                    },
+                    viewModel: viewModel
+                )
             }
             if showJoinSuccess {
                 JoinSuccessPopupView(message: successMessage) {

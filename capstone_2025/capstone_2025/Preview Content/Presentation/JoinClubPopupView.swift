@@ -9,6 +9,7 @@ struct JoinClubPopupView: View {
     @State private var showConfirm = false
     @State private var confirmClubName = ""   // 확인 팝업용 이름
     @State private var errorMessage = ""      // 존재하지 않을 때
+    @ObservedObject var viewModel: ClubListViewModel
 
     var body: some View {
         ZStack {
@@ -64,8 +65,20 @@ struct JoinClubPopupView: View {
                     clubName: confirmClubName,
                     isVisible: $showConfirm,
                     onConfirm: {
-                        onJoin(clubIdText)     // 최종 가입
-                        isVisible = false      // 입력 팝업 닫기
+                        guard let clubId = Int(clubIdText) else { return }
+
+                        viewModel.joinClub(clubId: clubId) { result in
+                            DispatchQueue.main.async {
+                                switch result {
+                                case .success:
+                                    isVisible = false  // 팝업 닫기
+                                    showConfirm = false
+                                case .failure(let error):
+                                    errorMessage = error.localizedDescription
+                                    showConfirm = false
+                                }
+                            }
+                        }
                     }
                 )
             }
@@ -81,12 +94,20 @@ struct JoinClubPopupView: View {
             return
         }
 
-        // 목업 데이터에서 이름 조회
-        if let name = MockBackend.shared.clubName(id: id) {
-            confirmClubName = name
-            showConfirm = true            // -> 확인 팝업
-        } else {
-            errorMessage = "존재하지 않는 ID입니다."
+        viewModel.findClubNameById(id: id) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let name):
+                    confirmClubName = name
+                    showConfirm = true
+                case .failure:
+                    errorMessage = "존재하지 않는 ID입니다."
+                }
+            }
         }
     }
+    
+    
+    
+
 }
