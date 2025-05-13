@@ -1,80 +1,56 @@
-//
-//  club_intro.swift
-//  OnClub
-//
-//
-
 import SwiftUI
 
 // MARK: - 클럽 소개 ------------------------------------------------------------
 struct club_intro: View {
     @State private var club: Club
     let onUpdate: (Club) -> Void
-
+    
     @State private var isMenuOpen       = false
     @State private var showAccessDenied = false
     @State private var deniedMessage    = ""
     
     @EnvironmentObject var router: NavigationRouter
-
+    
     init(club: Club, onUpdate: @escaping (Club) -> Void) {
         _club = State(initialValue: club)
         self.onUpdate = onUpdate
     }
-
+    
     var body: some View {
+        // ---------- 1단계 : 배경 이미지를 가장 뒤에 깔아준다 ----------
         ZStack {
-            // ---------- 본문 ----------
+            clubBackground               // 배경 이미지
+                .ignoresSafeArea()
+            
+            // ---------- 2단계 : 흐린 오버레이(선택) ----------
+            Color.white.opacity(0.9)     // 텍스트 가독용
+                .ignoresSafeArea()
+            
+            // ---------- 3단계 : 본문 ----------
             VStack(spacing: 30) {
+                navBar
                 
-                // 네비게이션 바 -------------------------------------------------
-                HStack {
-                    Image("ball")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 32, height: 32)
-                    
-                    Spacer()
-                    
-                    Button { isMenuOpen.toggle() } label: {
-                        Image(systemName: "ellipsis")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(.black)
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-
-                // 클럽 로고 ----------------------------------------------------
-                clubLogo
+                clubLogo                  // 로고
                     .frame(width: 120, height: 120)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
-
-                // 클럽 이름 ----------------------------------------------------
+                
                 Text(club.name)
                     .font(.system(size: 18, weight: .bold))
-
-                // SINCE (생성일) ----------------------------------------------
+                
                 Text("SINCE \(club.createdAt.formatted(date: .numeric, time: .omitted))")
                     .font(.footnote)
                     .foregroundColor(.gray)
-
-                // 설명 ---------------------------------------------------------
+                
                 Text(club.description)
                     .font(.system(size: 16, weight: .bold))
                     .padding(.horizontal, 16)
                     .multilineTextAlignment(.center)
-
+                
                 Spacer()
             }
-            .background(Color.white.ignoresSafeArea())
-
-            // ---------- 사이드 메뉴 ----------
+            
             if isMenuOpen { menuPopup }
-
-            // ---------- 접근 제한 팝업 ----------
+            
             if showAccessDenied {
                 AccessDeniedPopup(message: deniedMessage) {
                     showAccessDenied = false
@@ -82,8 +58,28 @@ struct club_intro: View {
             }
         }
     }
-
-    // MARK: - 로고 -------------------------------------------------------------
+    
+    // MARK: - 네비게이션 바 ----------------------------------------------------
+    private var navBar: some View {
+        HStack {
+            Image("ball")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 32, height: 32)
+            Spacer()
+            Button { isMenuOpen.toggle() } label: {
+                Image(systemName: "ellipsis")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(.black)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 20)
+    }
+    
+    // MARK: - ① 로고 ----------------------------------------------------------
     private var clubLogo: some View {
         Group {
             if let url = club.logoURL.flatMap(URL.init) {
@@ -104,7 +100,28 @@ struct club_intro: View {
             }
         }
     }
-
+    
+    // MARK: - ② 배경 ----------------------------------------------------------
+    private var clubBackground: some View {
+        Group {
+            if let url = club.backgroundURL.flatMap(URL.init) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        Color.clear               // 로딩 중 투명
+                    case .success(let img):
+                        img.resizable()
+                           .scaledToFill()        // 전체 채우기
+                    default:
+                        Color.gray.opacity(0.1)   // 실패 시 기본 색
+                    }
+                }
+            } else {
+                Color.gray.opacity(0.1)           // URL 없음
+            }
+        }
+    }
+    
     // MARK: - 메뉴 팝업 --------------------------------------------------------
     private var menuPopup: some View {
         VStack {
@@ -113,7 +130,7 @@ struct club_intro: View {
                 VStack(alignment: .leading, spacing: 10) {
                     // 일정관리 (정상 진입)
                     MenuItem(title: "일정관리", clubId: club.id)
-
+                    
                     // 회원관리 (제한)
                     MenuItem(
                         title: "회원관리",
@@ -124,7 +141,7 @@ struct club_intro: View {
                             showAccessDenied = true
                         }
                     )
-
+                    
                     // 예산관리 (제한)
                     MenuItem(
                         title: "예산관리",
@@ -135,9 +152,9 @@ struct club_intro: View {
                             showAccessDenied = true
                         }
                     )
-
+                    
                     Divider()
-
+                    
                     // 로그아웃
                     MenuItem(title: "로그아웃", isLogout: true)
                 }
@@ -162,14 +179,14 @@ struct MenuItem: View {
     var clubId: Int?    = nil
     var restricted: Bool = false
     var action: (() -> Void)? = nil
-
+    
     @EnvironmentObject var router: NavigationRouter
-
+    
     var body: some View {
         Button(action: {
             action?()
             guard !restricted else { return }
-
+            
             if title.hasPrefix("일정"), let id = clubId {
                 ClubEventContext.shared.selectedClubId = id
                 router.path.append(AppRoute.calendar)
@@ -199,13 +216,13 @@ struct MenuItem: View {
 struct AccessDeniedPopup: View {
     var message: String
     var onClose: () -> Void
-
+    
     var body: some View {
         VStack(spacing: 20) {
             Text(message)
                 .font(.system(size: 16, weight: .medium))
                 .multilineTextAlignment(.center)
-
+            
             Button("닫기") {
                 onClose()
             }
