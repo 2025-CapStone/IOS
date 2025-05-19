@@ -12,4 +12,6 @@ final class ClubEventContext {
     private init() { }
 
     var selectedClubId: Int?
+    var selectedClubName: String?
+
 }

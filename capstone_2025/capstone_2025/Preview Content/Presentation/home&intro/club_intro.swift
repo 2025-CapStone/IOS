@@ -10,10 +10,17 @@ struct club_intro: View {
     @State private var deniedMessage    = ""
     
     @EnvironmentObject var router: NavigationRouter
-   // @ObservedObject var viewModel: ClubListViewModel
+   @ObservedObject var viewModel: ClubListViewModel
      //   .environmentObject(viewModel)
-    init(club: Club, onUpdate: @escaping (Club) -> Void) {
-        _club = State(initialValue: club)
+    @State var isVisible : Bool = false
+    @State var isAleardyRequestJoined : Bool = false
+ 
+    @State var showJoinError: Bool = false
+    @State var errorMessage: String = ""
+    
+    init(viewModel: ClubListViewModel, club: Club, onUpdate: @escaping (Club) -> Void) {
+        self._club = State(initialValue: club)
+        self.viewModel = viewModel
         self.onUpdate = onUpdate
     }
     
@@ -49,7 +56,19 @@ struct club_intro: View {
        
 
                 Button(action: {
-                  //  viewmodel.joinClub()
+                    viewModel.joinClub(clubId: club.id) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .success(let clubName):
+                                print("[club_intro] ✅ 가입 성공: \(clubName)")
+                                isVisible = true
+                            case .failure(let error):
+                                print("[club_intro] ❌ 가입 실패: \(error.localizedDescription)")
+                                errorMessage = error.localizedDescription
+                                showJoinError = true
+                            }
+                        }
+                    }
                 }) {
                     Text("가입하기")
                         .font(.system(size: 16, weight: .bold))
@@ -59,6 +78,7 @@ struct club_intro: View {
                         .background(Color.blue)
                         .cornerRadius(10)
                 }
+
 
                 Spacer()
 
@@ -72,6 +92,18 @@ struct club_intro: View {
                     showAccessDenied = false
                 }
             }
+            if isVisible {
+                JoinSuccessPopupView(message: "\(club.name)에 가입되었습니다.") {
+                    isVisible = false
+                }
+            }
+
+            // ✅ 가입 실패 알림
+
+        }.alert("가입 실패", isPresented: $showJoinError) {
+            Button("확인", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
         }
     }
     
@@ -145,7 +177,7 @@ struct club_intro: View {
                 Spacer()
                 VStack(alignment: .leading, spacing: 10) {
                     // 일정관리 (정상 진입)
-                    MenuItem(title: "일정관리", selectedClubId: club.id)
+                    MenuItem(title: "일정관리", selectedClubId: club.id,selectedClubName: club.name)
                     
                     // 회원관리 (제한)
                     MenuItem(
@@ -193,6 +225,8 @@ struct MenuItem: View {
     var title: String
     var isLogout: Bool  = false
     var selectedClubId: Int?    = nil
+    var selectedClubName: String?    = nil
+
     var restricted: Bool = false
     var action: (() -> Void)? = nil
     
@@ -205,6 +239,7 @@ struct MenuItem: View {
             
             if title.hasPrefix("일정"), let id = selectedClubId {
                 ClubEventContext.shared.selectedClubId = id
+                ClubEventContext.shared.selectedClubName = selectedClubName
                 router.path.append(AppRoute.calendar)
             } else if title.hasPrefix("예산") {
                 router.path.append(AppRoute.budget)
@@ -268,12 +303,15 @@ struct AccessDeniedPopup: View {
     let dto = ClubResponseDTO(
         clubId: 99,
         clubName: "프리뷰 테스트 클럽",
-        clubDescription: "프리뷰용 설명입니다.",
+        clubDescription: "그냥 그냥 그냥",
         clubLogoURL: nil,
         clubBackgroundURL: nil,
         clubCreatedAt: "2025-03-08T18:20:56Z"
     )
     let club = Club(from: dto)
-    return club_intro(club: club) { _ in }
-        .environmentObject(NavigationRouter())
+    let viewModel = ClubListViewModel()
+    let router = NavigationRouter()
+
+    return club_intro(viewModel: viewModel, club: club) { _ in }
+        .environmentObject(router)
 }

@@ -10,7 +10,7 @@ import SwiftUI
 struct CreateTaskView: View {
     @Binding var showCreateTaskView: Bool
     var selectedDate: Date
-
+    @State private var selectedClubName: String = ""
     @State private var descriptionText: String = ""
     @State private var startTime: Date = Date()
     @State private var endTime: Date = Date()
@@ -67,19 +67,23 @@ struct CreateTaskView: View {
             }
             .padding(.horizontal)
 
-            // 🔸 상세 내용 입력
-            TextEditor(text: $longDetail)
-                .frame(height: 100)
-                .padding(8)
-                .background(Color.white)
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
-                .padding(.horizontal)
+            // 🔸 소속 클럽 선택
+            Picker("소속 클럽 선택", selection: $selectedClubName) {
+                ForEach(AppState.shared.user!.joinedClub.map(\.clubName), id: \.self) { clubName in
+                    Text(clubName).tag(clubName)
+                }
+            }
+            .pickerStyle(WheelPickerStyle())
+            .frame(height: 100)
+            .padding(.horizontal)
+
 
             // 🔘 생성 버튼
             Button(action: {
                 let mergedStart = merge(date: selectedDate, time: startTime)
                 let mergedEnd = merge(date: selectedDate, time: endTime)
-
+                let clubId = AppState.shared.user!.joinedClub.first(where: { $0.clubName == selectedClubName })!.clubId
+                viewModel.setClubId(clubId)
                 viewModel.createEvent(
                     startTime: mergedStart,
                     endTime: mergedEnd,

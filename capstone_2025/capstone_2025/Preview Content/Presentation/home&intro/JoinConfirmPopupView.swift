@@ -6,8 +6,8 @@ struct JoinConfirmPopupView: View {
     var clubId: String             // 사용자가 입력한 ID (표시용)
     var clubName: String           // 조회된 클럽 이름
     @Binding var isVisible: Bool
+    @Binding var isAleardyRequestJoined : Bool
     var onConfirm: () -> Void      // “확인” → 실제 가입 실행
-    
 
     var body: some View {
         ZStack {

@@ -37,7 +37,7 @@ enum ParticipantAPI {
 
                request
                    .validate()
-                   .responseData { response in
+                   .response { response in
                        switch response.result {
                        case .success:
                            continuation.resume(returning: true)

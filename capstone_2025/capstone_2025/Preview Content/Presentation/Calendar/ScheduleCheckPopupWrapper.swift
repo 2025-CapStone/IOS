@@ -21,7 +21,10 @@ struct ScheduleCheckPopupWrapper: View {
             } else {
                 ScheduleCheckPopup(
                     schedule: Schedule(
+                        
                         eventId: event.eventId,
+                        startDate: event.startTime.formatted(date: .abbreviated, time: .omitted),
+                        endDate: event.endTime.formatted(date: .abbreviated, time: .omitted),
                         startTime: event.startTime.formatted(date: .omitted, time: .shortened),
                         endTime: event.endTime.formatted(date: .omitted, time: .shortened),
                         title: event.description
@@ -65,22 +68,26 @@ struct ScheduleCheckPopup: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            HStack {
-                Button(action: { showPopup = false }) {
-                    Image(systemName: "arrow.left")
-                        .font(.title2)
-                        .foregroundColor(.black)
-                }
-                Spacer()
-            }
-            .padding(.horizontal)
+           VStack(spacing: 16) {
+               HStack{
+                   Button(action: { showPopup = false }) {
 
+                   }
+                   Spacer()
+                   Text(schedule.startDate) // ⬅ 시작 날짜 기반으로 포맷
+                       .font(.title).bold().padding(.bottom, 10)
+                   Spacer()
+                   Button(action: { showPopup = false }) {
+         
+                   }
+                   
+                   
+               }.padding(.horizontal, 40).padding(.vertical, 10)
             VStack(spacing: 8) {
                 HStack {
                     Image(systemName: "flag.fill")
                         .foregroundColor(.gray)
-                    Text("시작: \(schedule.startTime)")
+                    Text("시작 : \(schedule.startTime)" )
                     Spacer()
                 }
                 .padding()
@@ -90,7 +97,7 @@ struct ScheduleCheckPopup: View {
                 HStack {
                     Image(systemName: "play.fill")
                         .foregroundColor(.gray)
-                    Text("종료: \(schedule.endTime)")
+                    Text("종료 : \(schedule.endTime)" )
                     Spacer()
                 }
                 .padding()
@@ -109,6 +116,7 @@ struct ScheduleCheckPopup: View {
             .background(Color.white)
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
             .padding(.horizontal)
+               
 
             if let errorMessage = errorMessage {
                 Text("❌ \(errorMessage)").foregroundColor(.red).padding(.top, 5)
@@ -135,8 +143,8 @@ struct ScheduleCheckPopup: View {
                         .padding()
                 }
             }
-            .background(isJoined ? Color.gray.opacity(0.4)
-                                  : Color.gray)              
+            .background(isJoined ? Color.gray.opacity(0.1)
+                        : Color.green.opacity(0.9))
             .foregroundColor(.white)
             .cornerRadius(12)
             .disabled(isJoined || isLoading)
@@ -158,6 +166,8 @@ struct ScheduleCheckPopup: View {
             Text("현재 클럽에 가입되어 있지 않거나 유효하지 않은 요청입니다.")
         }
     }
+    
+    
     func handleJoin() async {
         guard let userId = AppState.shared.user?.id else {
             errorMessage = "로그인이 필요합니다"
@@ -209,27 +219,14 @@ struct ScheduleCheckPopup: View {
 
         isLoading = false
     }
+    func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "yyyy년 MM월 dd일"
+        return formatter.string(from: date)
+    }
 
-//    // ✅ 서버로 참가 요청
-//    func handleJoin() async {
-//        guard let userId = AppState.shared.user?.id else {
-//            errorMessage = "로그인이 필요합니다"
-//            return
-//        }
-//
-//        isLoading = true
-//        errorMessage = nil
-//
-//        do {
-//            let _ = try await ParticipantAPI.join(userId: Int(userId)!, eventId: schedule.eventId)
-//            isJoined = true
-//        } catch {
-//            errorMessage = "서버 요청 실패: \(error.localizedDescription)"
-//            print(error.localizedDescription)
-//        }
-//
-//        isLoading = false
-//    }
+
 }
 struct ScheduleCheckPopupWrapper_Previews: PreviewProvider {
     static var previews: some View {

@@ -57,8 +57,6 @@ struct ContentView: View {
                     case .calendar:
                         MainCalendarView(viewModel: AppDIContainer.shared.makeEventListViewModel())
                             .environmentObject(router)
-
-
                     case .login:
                         Login(viewModel: AppDIContainer.shared.makeLoginViewModel())
                             .environmentObject(router)
@@ -75,7 +73,8 @@ struct ContentView: View {
                         introduce_3()
                             .environmentObject(router)
                     case .home:
-                        home()
+//                        home(viewModel: AppDIContainer.shared.makeClubListViewModel(), loginViewModel: AppDIContainer.shared.makeLoginViewModel())
+                        home().environmentObject(router)
                             .environmentObject(router)
                     case .onboarding:
                         onboarding()

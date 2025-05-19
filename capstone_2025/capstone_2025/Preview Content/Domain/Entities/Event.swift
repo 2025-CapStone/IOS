@@ -11,7 +11,7 @@ import Foundation
 struct Event: Identifiable, Hashable {
     let id = UUID()
     let eventId : Int
-    let clubId: Int
+    let clubId: Int?
     let startTime: Date
     let endTime: Date
     let description: String

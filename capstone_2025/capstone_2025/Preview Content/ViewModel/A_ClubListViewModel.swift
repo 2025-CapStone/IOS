@@ -8,6 +8,7 @@ final class ClubListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     //@Published var Joinedclubs: [ClubResponseDTO] = []
+    init(){print("ClubListViewModel Created || \(Date())")}
 
     func fetchAllClubs() {
         guard let accessToken = SessionStorage.shared.accessToken else {
@@ -51,8 +52,11 @@ final class ClubListViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success(let clubs):
-                    self?.clubs = clubs
+                    //self?.clubs = clubs
+                    AppState.shared.user!.joinedClub = clubs
+                    
                     print("[ClubListViewModel] ✅ clubs: \(clubs.map { $0.clubName })")
+                    
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                     print("[ClubListViewModel] ❌ error: \(error)")
@@ -60,42 +64,20 @@ final class ClubListViewModel: ObservableObject {
             }
         }
     }
-//    
-//    /// ✅ 실제 API를 통해 동호회 가입 요청을 보냄
-//      func joinClub(clubId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
-//          guard let user = AppState.shared.user,
-//                let userId = Int(user.id) else {
-//              completion(.failure(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "로그인이 필요합니다."])))
-//              return
-//          }
-//
-//          let parameters: [String: Any] = [
-//              "userId": userId,
-//              "clubId": clubId
-//          ]
-//
-//          Task {
-//              do {
-//                  _ = try await SecuredAPI.shared.request(
-//                      path: "/api/membership/join",
-//                      method: .post,
-//                      parameters: parameters
-//                  )
-//                  print("[ClubListViewModel] ✅ 동호회 가입 요청 성공")
-//                  completion(.success(()))
-//              } catch {
-//                  print("[ClubListViewModel] ❌ 동호회 가입 요청 실패: \(error.localizedDescription)")
-//                  completion(.failure(error))
-//              }
-//          }
-//      }
+
     
     func findClubNameById(id: Int, completion: @escaping (Result<String, Error>) -> Void) {
         guard let accessToken = SessionStorage.shared.accessToken else {
             completion(.failure(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "토큰이 없습니다."])))
             return
         }
-
+        guard let user = AppState.shared.user,
+              let accessToken = SessionStorage.shared.accessToken,
+              let userId = Int(user.id)else {
+            print("[ClubListViewModel] 유저 또는 토큰 없음 - fetchClubs() 실패")
+            self.errorMessage = "로그인이 필요합니다."
+            return
+        }
         ClubAPI.findClubById(clubId: id, accessToken: accessToken) { result in
             switch result {
             case .success(let club):
@@ -105,40 +87,7 @@ final class ClubListViewModel: ObservableObject {
             }
         }
     }
-//    func joinClub(clubId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
-//        guard
-//            let user = AppState.shared.user,
-//            let accessToken = SessionStorage.shared.accessToken,
-//            let userId = Int(user.id)
-//        else {
-//            completion(.failure(NSError(domain: "", code: 401, userInfo: [NSLocalizedDescriptionKey: "로그인이 필요합니다."])))
-//            return
-//        }
-//
-//        let path = "/api/membership/join"
-//        let parameters: [String: Any] = [
-//            "userId": userId,
-//            "clubId": clubId
-//        ]
-//
-//        Task {
-//            do {
-//                _ = try await SecuredAPI.shared.request(
-//                    path: path,
-//                    method: .post,
-//                    parameters: parameters
-//                )
-//
-//                print("[ClubListViewModel] ✅ 클럽 가입 성공")
-//                completion(.success(()))  // clubName 없이 성공만 알림
-//
-//            } catch {
-//                print("[ClubListViewModel] ❌ 클럽 가입 실패: \(error.localizedDescription)")
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-//    
+
     func joinClub(clubId: Int, completion: @escaping (Result<String, Error>) -> Void) {
         guard
             let user = AppState.shared.user,

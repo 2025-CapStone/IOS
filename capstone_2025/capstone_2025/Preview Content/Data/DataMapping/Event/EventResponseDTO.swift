@@ -8,7 +8,7 @@
 
 struct EventResponseDTO: Decodable {
     let eventId : Int
-    let clubId: Int
+    let clubId: Int?
     let eventStartTime: String
     let eventEndTime: String
     let eventDescription: String

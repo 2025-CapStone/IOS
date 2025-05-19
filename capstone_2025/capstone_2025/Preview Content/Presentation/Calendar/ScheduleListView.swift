@@ -133,15 +133,15 @@ struct ScheduleListView_Previews: PreviewProvider {
             Event(
                 eventId: 1,
                 clubId: 1,
-                startTime: formatter.date(from: "2025-05-10T10:00:00Z")!,
-                endTime: formatter.date(from: "2025-05-10T12:00:00Z")!,
+                startTime: formatter.date(from: "2025-05-14T09:00:00Z")!,
+                endTime: formatter.date(from: "2025-05-14T12:00:00Z")!,
                 description: "더미 이벤트 A"
             ),
             Event(
                 eventId: 2,
                 clubId: 1,
-                startTime: formatter.date(from: "2025-05-10T15:00:00Z")!,
-                endTime: formatter.date(from: "2025-05-10T16:30:00Z")!,
+                startTime: formatter.date(from: "2025-05-14T15:00:00Z")!,
+                endTime: formatter.date(from: "2025-05-14T16:30:00Z")!,
                 description: "더미 이벤트 B"
             )
         ]

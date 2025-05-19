@@ -7,8 +7,8 @@ import SwiftUI
 
 struct home: View {
     // MARK: - ViewModels & Router --------------------------------------------
-    @StateObject private var viewModel      = ClubListViewModel()
-    @StateObject private var loginViewModel = LoginViewModel()
+    @ObservedObject private var viewModel      = ClubListViewModel()
+    @ObservedObject private var loginViewModel = LoginViewModel()
     @EnvironmentObject   var router         : NavigationRouter
 
     // MARK: - UI State --------------------------------------------------------
@@ -53,23 +53,23 @@ struct home: View {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 20) {
                             ForEach(filteredClubs) { club in
-                                NavigationLink(
-                                    destination: club_intro(
-                                        club: club,
-                                        onUpdate: { updated in
-                                            if let i = viewModel.clubs.firstIndex(where: { $0.clubId == updated.id }) {
-                                                viewModel.clubs[i] = ClubResponseDTO(
-                                                    clubId: updated.id,
-                                                    clubName: updated.name,
-                                                    clubDescription: updated.description,
-                                                    clubLogoURL: updated.logoURL,
-                                                    clubBackgroundURL: updated.backgroundURL,
-                                                    clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt)
-                                                )
-                                            }
-                                        }
-                                    )
-                                ) {
+                                let destinationView = club_intro(
+                                    viewModel: viewModel,
+                                    club: club
+                                ) { updated in
+                                    if let i = viewModel.clubs.firstIndex(where: { $0.clubId == updated.id }) {
+                                        viewModel.clubs[i] = ClubResponseDTO(
+                                            clubId: updated.id,
+                                            clubName: updated.name,
+                                            clubDescription: updated.description,
+                                            clubLogoURL: updated.logoURL,
+                                            clubBackgroundURL: updated.backgroundURL,
+                                            clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt)
+                                        )
+                                    }
+                                }
+
+                                NavigationLink(destination: destinationView) {
                                     clubCard(for: club)
                                 }
                             }
@@ -79,23 +79,25 @@ struct home: View {
                     }
                 }
             }
-            .onAppear { viewModel.fetchAllClubs() }
+            .onAppear { viewModel.fetchAllClubs()
+                viewModel.fetchClubs()
+            }
 
             // ──────────────── 팝업들 ────────────────
-            if showJoinPopup {
-                JoinClubPopupView(
-                    isVisible: $showJoinPopup,
-                    onJoin: { clubId in
-                        joinClub(with: clubId)
-                    },
-                    viewModel: viewModel
-                )
-            }
-            if showJoinSuccess {
-                JoinSuccessPopupView(message: successMessage) {
-                    showJoinSuccess = false
-                }
-            }
+//            if showJoinPopup {
+//                JoinClubPopupView(
+//                    isVisible: $showJoinPopup,
+//                    onJoin: { clubId in
+//                        joinClub(with: clubId)
+//                    },
+//                    viewModel: viewModel
+//                )
+//            }
+//            if showJoinSuccess {
+//                JoinSuccessPopupView(message: successMessage) {
+//                    showJoinSuccess = false
+//                }
+//            }
         }
         // ──────────────── Alert 들 ────────────────
         .alert("로그아웃",

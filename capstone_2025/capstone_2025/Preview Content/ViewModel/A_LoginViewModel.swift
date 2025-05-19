@@ -38,7 +38,7 @@ final class LoginViewModel: ObservableObject {
                 SessionStorage.shared.refreshToken = response.refreshToken
 
                 // ✅ 유저 정보 저장
-                AppState.shared.user = User(id: response.userId)
+                AppState.shared.user = User(id: response.userId, joinedClub: [])
                 AppState.shared.isLoggedIn = true
 
                 DispatchQueue.main.async {
@@ -46,7 +46,7 @@ final class LoginViewModel: ObservableObject {
                     self.isSuccess = true
                     print("🔹 로그인 성공 (User: \(AppState.shared.user)")
                     print("🔹 로그인 성공 (refreshToken: \(SessionStorage.shared.refreshToken)")
-
+                    print("로그인 초기 joinedClub \(AppState.shared.user!.joinedClub)")
                 }
             } catch {
                 DispatchQueue.main.async {

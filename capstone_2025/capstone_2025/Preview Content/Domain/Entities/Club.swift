@@ -15,7 +15,8 @@ struct Club: Identifiable, Hashable {
     var logoURL: String?
     var backgroundURL: String?
     let createdAt: Date
-
+    
+    
     init(from dto: ClubResponseDTO) {
         self.id = dto.clubId
         self.name = dto.clubName
