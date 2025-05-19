@@ -323,7 +323,9 @@ struct AccessDeniedPopup: View {
         clubLogoURL: nil,
         clubBackgroundURL: nil,
         clubCreatedAt: "2025-03-08T18:20:56Z",
-        tag:  ["Demo","test"]
+        tagOne: "Swift",
+        tagTwo: "iOS",
+        tagThree: "스터디"
         
     )
     let club = Club(from: dto)

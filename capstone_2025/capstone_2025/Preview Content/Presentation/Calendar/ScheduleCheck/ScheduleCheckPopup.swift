@@ -188,10 +188,9 @@ extension Date {
     }
 }
 
-
 struct ScheduleCheckPopup_Previews: PreviewProvider {
     static var previews: some View {
-        // AppState의 로그인 유저 설정 (프리뷰 전용)
+        // ✅ AppState의 더미 유저 설정
         AppState.shared.user = User(
             id: "1",
             joinedClub: [
@@ -201,21 +200,24 @@ struct ScheduleCheckPopup_Previews: PreviewProvider {
                     clubDescription: "SwiftUI 공부 모임",
                     clubLogoURL: nil,
                     clubBackgroundURL: nil,
-                    clubCreatedAt: "String",
-                    tag:  ["Demo","test"]
-
+                    clubCreatedAt: "2025-05-19T12:00:00Z",
+                    tagOne: "Swift",
+                    tagTwo: "iOS",
+                    tagThree: "스터디"
                 )
             ]
         )
 
+        // ✅ 더미 이벤트
         let dummyEvent = Event(
             eventId: 1,
             clubId: 1,
             startTime: Date(),
             endTime: Calendar.current.date(byAdding: .hour, value: 2, to: Date())!,
-            description: "프리뷰 이벤트"
+            description: "프리뷰 이벤트입니다"
         )
 
+        // ✅ 더미 참가자 뷰모델
         let viewModel = ParticipantViewModel()
         viewModel.participants = [
             Participant(
@@ -238,9 +240,11 @@ struct ScheduleCheckPopup_Previews: PreviewProvider {
 
         return ScheduleCheckPopup(
             schedule: dummyEvent,
-            isJoined: true,
+            isJoined: false,
             showPopup: .constant(true),
             participantViewModel: viewModel
         )
+        .previewDisplayName("ScheduleCheckPopup Preview")
     }
 }
+

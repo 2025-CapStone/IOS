@@ -86,7 +86,9 @@ struct ScheduleCheckPopupWrapper_Previews: PreviewProvider {
             clubLogoURL: nil,
             clubBackgroundURL: nil,
             clubCreatedAt: "2025-01-01T00:00:00",
-            tag:  ["Demo","test"]
+            tagOne: "Swift",
+            tagTwo: "iOS",
+            tagThree: "스터디"
 
         )
 

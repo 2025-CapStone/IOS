@@ -56,6 +56,8 @@ final class ClubListViewModel: ObservableObject {
                     AppState.shared.user!.joinedClub = clubs
                     
                     print("[ClubListViewModel] ✅ clubs: \(clubs.map { $0.clubName })")
+                    print("[ClubListViewModel] ✅ clubs: \(clubs)")
+
                     
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription

@@ -76,29 +76,7 @@ struct home: View {
                 } else {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 20) {
-                            ForEach(filteredClubs) { club in
-                                let destinationView = club_intro(
-                                    viewModel: viewModel,
-                                    club: club
-                                ) { updated in
-                                    if let i = viewModel.clubs.firstIndex(where: { $0.clubId == updated.id }) {
-                                        viewModel.clubs[i] = ClubResponseDTO(
-                                            clubId: updated.id,
-                                            clubName: updated.name,
-                                            clubDescription: updated.description,
-                                            clubLogoURL: updated.logoURL,
-                                            clubBackgroundURL: updated.backgroundURL,
-                                            clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt),
-                                            tag:  ["Demo","test"]
-
-                                        )
-                                    }
-                                }
-
-                                NavigationLink(destination: destinationView) {
-                                    clubCard(for: club)
-                                }
-                            }
+                            ForEach(filteredClubs, content: clubCardNavigation)
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
@@ -235,6 +213,33 @@ struct home: View {
             router.path.append(AppRoute.onboarding)
         }
     }
+    
+    @ViewBuilder
+    private func clubCardNavigation(for club: Club) -> some View {
+        let destinationView = club_intro(
+            viewModel: viewModel,
+            club: club
+        ) { updated in
+            if let i = viewModel.clubs.firstIndex(where: { $0.clubId == updated.id }) {
+                viewModel.clubs[i] = ClubResponseDTO(
+                    clubId: updated.id,
+                    clubName: updated.name,
+                    clubDescription: updated.description,
+                    clubLogoURL: updated.logoURL,
+                    clubBackgroundURL: updated.backgroundURL,
+                    clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt),
+                    tagOne: updated.tag.count > 0 ? updated.tag[0] : "",
+                    tagTwo: updated.tag.count > 1 ? updated.tag[1] : "",
+                    tagThree: updated.tag.count > 2 ? updated.tag[2] : ""
+                )
+            }
+        }
+
+        NavigationLink(destination: destinationView) {
+            clubCard(for: club)
+        }
+    }
+
 }
 #Preview {
     let dummyViewModel = ClubListViewModel()
@@ -246,7 +251,9 @@ struct home: View {
             clubLogoURL: nil,
             clubBackgroundURL: nil,
             clubCreatedAt: "2025-05-18T12:00:00Z",
-            tag:  ["Demo","test"]
+            tagOne: "Swift",
+            tagTwo: "iOS",
+            tagThree: "스터디"
 
         ),
         ClubResponseDTO(
@@ -256,7 +263,9 @@ struct home: View {
             clubLogoURL: nil,
             clubBackgroundURL: nil,
             clubCreatedAt: "2025-05-10T15:30:00Z",
-            tag:  ["Demo","test"]
+            tagOne: "Swift",
+            tagTwo: "iOS",
+            tagThree: "스터디"
 
         )
     ]

@@ -13,7 +13,13 @@ struct ClubResponseDTO: Decodable {
     let clubLogoURL: String?
     let clubBackgroundURL: String?
     let clubCreatedAt: String
-    let tag: [String]
+    let tagOne: String
+    let tagTwo: String
+    let tagThree: String
+
+    var tags: [String] {
+        return [tagOne, tagTwo, tagThree].filter { !$0.isEmpty }
+    }
 
     private enum CodingKeys: String, CodingKey {
         case clubId = "club_id"
@@ -22,7 +28,7 @@ struct ClubResponseDTO: Decodable {
         case clubLogoURL
         case clubBackgroundURL = "clubBackgroundImageURL"
         case clubCreatedAt = "clubWhenCreated"
-        case tag
+        case tagOne, tagTwo, tagThree
     }
 
     // ✅ 커스텀 디코딩 구현
@@ -36,32 +42,31 @@ struct ClubResponseDTO: Decodable {
         clubBackgroundURL = try container.decodeIfPresent(String.self, forKey: .clubBackgroundURL)
         clubCreatedAt     = try container.decode(String.self, forKey: .clubCreatedAt)
 
-        // ✅ 태그가 없거나 null인 경우 랜덤 태그 생성
-        if let decodedTags = try? container.decodeIfPresent([String].self, forKey: .tag) {
-            tag = decodedTags ?? ClubResponseDTO.generateRandomTags()
-        } else {
-            tag = ClubResponseDTO.generateRandomTags()
-        }
-    }
-
-    // ✅ 랜덤 태그 생성 함수
-    static func generateRandomTags() -> [String] {
-        let samples = ["테니스", "운동", "자유", "소셜", "야외", "모임", "주말", "도전", "친목", "실내"]
-        let count = Int.random(in: 1...3)
-        return Array(samples.shuffled().prefix(count))
+        // ✅ 태그가 없거나 null인 경우 랜덤 생성
+        tagOne = (try? container.decodeIfPresent(String.self, forKey: .tagOne)) ?? ClubResponseDTO.randomTag()
+        tagTwo = (try? container.decodeIfPresent(String.self, forKey: .tagTwo)) ?? ClubResponseDTO.randomTag()
+        tagThree = (try? container.decodeIfPresent(String.self, forKey: .tagThree)) ?? ClubResponseDTO.randomTag()
     }
 }
 
-
+// ✅ 랜덤 태그 유틸리티
 extension ClubResponseDTO {
+    static func randomTag() -> String {
+        let samples = ["T테니스", "T운동", "T소셜", "T자유", "T모임", "T야외", "T주말", "T도전", "T실내", "T친목"]
+        return samples.randomElement() ?? "T기본"
+    }
+    
+    
     init(
         clubId: Int,
         clubName: String,
         clubDescription: String,
-        clubLogoURL: String? = nil,
-        clubBackgroundURL: String? = nil,
-        clubCreatedAt: String = ISO8601DateFormatter().string(from: Date()),
-        tag: [String] = ["Demo"]
+        clubLogoURL: String?,
+        clubBackgroundURL: String?,
+        clubCreatedAt: String,
+        tagOne: String,
+        tagTwo: String,
+        tagThree: String
     ) {
         self.clubId = clubId
         self.clubName = clubName
@@ -69,25 +74,8 @@ extension ClubResponseDTO {
         self.clubLogoURL = clubLogoURL
         self.clubBackgroundURL = clubBackgroundURL
         self.clubCreatedAt = clubCreatedAt
-        self.tag = tag
+        self.tagOne = tagOne
+        self.tagTwo = tagTwo
+        self.tagThree = tagThree
     }
 }
-
-
-//struct ClubResponseDTO: Decodable {
-//    let clubId: Int
-//    let clubName: String
-//    let clubDescription: String
-//    let clubLogoURL: String?
-//    let clubBackgroundURL: String?
-//    let clubCreatedAt: String
-//
-//    enum CodingKeys: String, CodingKey {
-//        case clubId = "club_id"
-//        case clubName
-//        case clubDescription
-//        case clubLogoURL
-//        case clubBackgroundURL = "clubBackgroundImageURL"
-//        case clubCreatedAt = "clubWhenCreated"
-//    }
-//}
