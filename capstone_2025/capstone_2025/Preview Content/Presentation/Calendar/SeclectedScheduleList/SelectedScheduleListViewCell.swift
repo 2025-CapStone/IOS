@@ -5,7 +5,6 @@
 //  Created by ㅇㅇ ㅇ on 5/16/25.
 //
 import SwiftUI
-
 struct SelectedScheduleListViewCell: View {
     let event: Event
     let onSelect: (Event) -> Void
@@ -14,25 +13,24 @@ struct SelectedScheduleListViewCell: View {
         Button(action: {
             onSelect(event)
         }) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(event.startTime.formatted(date: .omitted, time: .shortened))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
 
                 Text(event.description)
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.black)
                     .lineLimit(2)
-                    .multilineTextAlignment(.leading)
             }
             .padding()
             .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(.systemBackground))
-                    .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white)
+                    .shadow(color: .gray.opacity(0.2), radius: 2, x: 0, y: 2)
             )
         }
         .buttonStyle(PlainButtonStyle())
-        .frame(width: 180) // 적절한 너비
+        .frame(width: 180)
     }
 }

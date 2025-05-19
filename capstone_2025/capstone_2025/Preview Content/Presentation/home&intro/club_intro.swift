@@ -51,7 +51,9 @@ struct club_intro: View {
                 Text("SINCE \(club.createdAt.formatted(date: .numeric, time: .omitted))")
                     .font(.footnote)
                     .foregroundColor(.gray)
-                
+                Text("🏷️ : \(club.tag.joined(separator: ", "))")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
                 Text(club.description)
                     .font(.system(size: 16, weight: .bold))
                     .padding(.horizontal, 16)
@@ -320,7 +322,9 @@ struct AccessDeniedPopup: View {
         clubDescription: "그냥 그냥 그냥",
         clubLogoURL: nil,
         clubBackgroundURL: nil,
-        clubCreatedAt: "2025-03-08T18:20:56Z"
+        clubCreatedAt: "2025-03-08T18:20:56Z",
+        tag:  ["Demo","test"]
+        
     )
     let club = Club(from: dto)
     let viewModel = ClubListViewModel()

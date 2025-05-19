@@ -11,6 +11,8 @@ struct home: View {
     @ObservedObject private var loginViewModel = LoginViewModel()
     @EnvironmentObject   var router         : NavigationRouter
 
+    @State private var isTagSearchMode: Bool = false
+
     // MARK: - UI State --------------------------------------------------------
     @State private var searchText           = ""
     @State private var isLogoutAlertVisible = false
@@ -35,12 +37,24 @@ struct home: View {
         return source.map(Club.init(from:))
     }
     
+    
+//    private var filteredClubs: [Club] {
+//        let key = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+//        return key.isEmpty ? clubs
+//                           : clubs.filter { $0.name.localizedCaseInsensitiveContains(key) }
+//    }
     private var filteredClubs: [Club] {
         let key = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        return key.isEmpty ? clubs
-                           : clubs.filter { $0.name.localizedCaseInsensitiveContains(key) }
+        guard !key.isEmpty else { return clubs }
+
+        if isTagSearchMode {
+            return clubs.filter { club in
+                club.tag.contains(where: { $0.localizedCaseInsensitiveContains(key) })
+            }
+        } else {
+            return clubs.filter { $0.name.localizedCaseInsensitiveContains(key) }
+        }
     }
-    
     private var menuListText: String {
         showOnlyJoinedClubs ? "전체 클럽을 보시겠습니까?" : "가입된 클럽만 보시나요?"
     }
@@ -74,7 +88,9 @@ struct home: View {
                                             clubDescription: updated.description,
                                             clubLogoURL: updated.logoURL,
                                             clubBackgroundURL: updated.backgroundURL,
-                                            clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt)
+                                            clubCreatedAt: ISO8601DateFormatter().string(from: updated.createdAt),
+                                            tag:  ["Demo","test"]
+
                                         )
                                     }
                                 }
@@ -142,13 +158,16 @@ struct home: View {
             .padding(.horizontal, 20)
             .padding(.top, 10)
 
-            // 검색창 + +버튼
             HStack(spacing: 12) {
                 HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.gray)
+                    Button(action: {
+                        isTagSearchMode.toggle()
+                    }) {
+                        Image(systemName: isTagSearchMode ? "tag.fill" : "magnifyingglass")
+                            .foregroundColor(.gray)
+                    }
 
-                    TextField("동호회 이름 검색", text: $searchText)
+                    TextField(isTagSearchMode ? "태그 검색" : "동호회 이름 검색", text: $searchText)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
                 }
@@ -159,7 +178,6 @@ struct home: View {
 
                 Button {
                     isMenuListClicked.toggle()
-                    //showJoinPopup = false       // 클럽 ID 입력 팝업 띄우기
                 } label: {
                     Image("menu")
                         .resizable()
@@ -168,6 +186,7 @@ struct home: View {
                 }
             }
             .padding(.horizontal, 20)
+
         }
     }
 
@@ -226,7 +245,9 @@ struct home: View {
             clubDescription: "이것은 테스트 클럽입니다.",
             clubLogoURL: nil,
             clubBackgroundURL: nil,
-            clubCreatedAt: "2025-05-18T12:00:00Z"
+            clubCreatedAt: "2025-05-18T12:00:00Z",
+            tag:  ["Demo","test"]
+
         ),
         ClubResponseDTO(
             clubId: 2,
@@ -234,7 +255,9 @@ struct home: View {
             clubDescription: "두 번째 클럽입니다.",
             clubLogoURL: nil,
             clubBackgroundURL: nil,
-            clubCreatedAt: "2025-05-10T15:30:00Z"
+            clubCreatedAt: "2025-05-10T15:30:00Z",
+            tag:  ["Demo","test"]
+
         )
     ]
 

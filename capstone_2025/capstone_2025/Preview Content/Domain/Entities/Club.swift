@@ -15,6 +15,7 @@ struct Club: Identifiable, Hashable {
     var logoURL: String?
     var backgroundURL: String?
     let createdAt: Date
+    let tag : [String]
     
     
     init(from dto: ClubResponseDTO) {
@@ -24,6 +25,7 @@ struct Club: Identifiable, Hashable {
         self.logoURL = dto.clubLogoURL
         self.backgroundURL = dto.clubBackgroundURL
         self.createdAt = ISO8601DateFormatter().date(from: dto.clubCreatedAt) ?? Date()
+        self.tag = dto.tag
     }
     
     // 🔧 추가해 주세요
@@ -34,5 +36,6 @@ struct Club: Identifiable, Hashable {
         self.logoURL = logoURL
         self.backgroundURL = backgroundURL
         self.createdAt = createdAt
+        self.tag = ["demo"]
     }
 }

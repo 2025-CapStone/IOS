@@ -15,27 +15,8 @@ struct Event: Identifiable, Hashable {
     let startTime: Date
     let endTime: Date
     let description: String
-   // var isUserParticipated : Bool = false
-    //var isUserWillbeParticipated : Bool = false
-    
-    
-    
-    // gpt 요청사항1
 
-//    init(from dto: EventResponseDTO) {
-//        self.eventId = dto.eventId
-//        self.clubId = dto.clubId
-//        self.startTime = Event.isoFormatter.date(from: dto.eventStartTime) ?? Date()
-//        self.endTime = Event.isoFormatter.date(from: dto.eventEndTime) ?? Date()
-//        self.description = dto.eventDescription
-//    }
-//    
-//    static let isoFormatter: ISO8601DateFormatter = {
-//        let formatter = ISO8601DateFormatter()
-//        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-//        return formatter
-//    }()
-//
+
     static let legacyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"

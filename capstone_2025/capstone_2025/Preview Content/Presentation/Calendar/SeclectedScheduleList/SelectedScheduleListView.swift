@@ -21,8 +21,8 @@ struct SelectedScheduleListView: View {
         VStack(alignment: .leading, spacing: 12) {
             if filteredEvents.isEmpty {
                 Text("일정이 없습니다.")
+                    .font(.system(size: 14))
                     .foregroundColor(.gray)
-                    .font(.subheadline)
                     .padding(.horizontal)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {

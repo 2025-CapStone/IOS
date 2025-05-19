@@ -141,177 +141,7 @@ struct MainCalendarView: View {
         }
     }
 }
-//struct MainCalendarView: View {
-//    var clubId: Int?
-//    var clubName: String? = ClubEventContext.shared.selectedClubName
-//    @ObservedObject var viewModel: EventListViewModel
-//
-//    @State private var showCreateTaskView = false
-//    @State private var showScheduleListView = false
-//    @State private var showPopup = false
-//    @State private var selectedDate = Date()
-//    @State private var selectedEvent: Event? = nil
-//    @State private var selectedOption: FilterOption = .selectedClub
-//
-//    var body: some View {
-//        ZStack {
-//            VStack(spacing: 10) {
-//                RadioButtonGroup { old, new in
-//                    selectedOption = new
-//                    switch new {
-//                    case .selectedClub:
-//                        if let cid = ClubEventContext.shared.selectedClubId {
-//                            viewModel.fetchClubEvents(for: cid)
-//                        }
-//                    case .joinedClubs:
-//                        viewModel.fetchClubUserEvents()
-//                    case .checkedEvents:
-//                        viewModel.fetchUserEvents()
-//                    }
-//                }
-//
-//                if selectedOption == .selectedClub, let name = clubName {
-//                    Text(name)
-//                        .font(.title).bold()
-//                        .padding(.top, -20)
-//                }
-//
-//                CalendarView(
-//                    selectedDate: $selectedDate,
-//                    showPopup: $showPopup,
-//                    showCreateTaskView: $showCreateTaskView,
-//                    showScheduleListView: $showScheduleListView,
-//                    events: viewModel.events // ✅ 전달
-//                )
-//                .blur(radius: showCreateTaskView || showScheduleListView ? 5 : 0)
-//                .disabled(showCreateTaskView || showScheduleListView)
-//
-//                // ✅ 일정 리스트 또는 "일정 없음" 메시지
-//                if showScheduleListView {
-//                    SelectedScheduleListView(
-//                        events: viewModel.events,
-//                        selectedDate: selectedDate,
-//                        selectedEvent: $selectedEvent,
-//                        showPopup: $showPopup
-//                    )
-//                    .background(Color.white)
-//                }
-//            }
-//
-//            // ✅ 팝업
-//            if showPopup, let selected = selectedEvent {
-//                Color.black.opacity(0.4).ignoresSafeArea()
-//                    .onTapGesture { showPopup = false }
-//
-//                ScheduleCheckPopupWrapper(event: selected, showPopup: $showPopup)
-//                    .transition(.scale)
-//            }
-//
-//            if showCreateTaskView {
-//                CreateTaskView(
-//                    showCreateTaskView: $showCreateTaskView,
-//                    selectedDate: selectedDate
-//                )
-//                .environmentObject(viewModel)
-//            }
-//        }
-//        .onAppear {
-//            if let cid = ClubEventContext.shared.selectedClubId {
-//                viewModel.fetchClubEvents(for: cid)
-//            }
-//        }
-//    }
-//}
 
-//struct MainCalendarView: View {
-//    var clubId: Int?
-//    var clubName: String? = ClubEventContext.shared.selectedClubName
-//    @ObservedObject var viewModel: EventListViewModel
-//    
-//    @State private var showCreateTaskView = false
-//    @State private var showScheduleListView = false
-//    @State private var showPopup = false
-//    @State private var selectedDate = Date()
-//    
-//    @State private var selectedOption: FilterOption = .selectedClub
-//    
-//    var body: some View {
-//        ZStack {
-//            VStack(spacing: 10) {
-//                // ✅ 필터 라디오 버튼
-//                RadioButtonGroup { old, new in
-//                    selectedOption = new
-//                    switch new {
-//                    case .selectedClub:
-//                        if let cid = ClubEventContext.shared.selectedClubId {
-//                            viewModel.fetchClubEvents(for: cid)
-//                        }
-//                    case .joinedClubs:
-//                        viewModel.fetchClubUserEvents()
-//                    case .checkedEvents:
-//                        viewModel.fetchUserEvents()
-//                    }
-//                }
-//                
-//                // ✅ 클럽 이름 (selectedClub일 때만)
-//                if selectedOption == .selectedClub, let name = clubName {
-//                    Text(name)
-//                        .font(.title).bold()
-//                        .padding(.top, -20)
-//                }
-//                
-//                // ✅ 달력 뷰
-//                CalendarView(
-//                    selectedDate: $selectedDate,
-//                    showPopup: $showPopup,
-//                    showCreateTaskView: $showCreateTaskView,
-//                    showScheduleListView: $showScheduleListView
-//                )
-//                .blur(radius: showCreateTaskView || showScheduleListView ? 5 : 0)
-//                .disabled(showCreateTaskView || showScheduleListView)
-//            }
-//            
-//            // ✅ 팝업 뷰
-//            if showPopup {
-//                Color.black.opacity(0.3).ignoresSafeArea()
-//                    .onTapGesture { showPopup = false }
-//                EventPopupView(
-//                    showPopup: $showPopup,
-//                    showCreateTaskView: $showCreateTaskView,
-//                    showScheduleListView: $showScheduleListView
-//                )
-//                .transition(.scale)
-//            }
-//            
-//            // ✅ 일정 생성 뷰
-//            if showCreateTaskView {
-//                CreateTaskView(
-//                    showCreateTaskView: $showCreateTaskView,
-//                    selectedDate: selectedDate
-//                )
-//                .environmentObject(viewModel)
-//            }
-//            
-//            // ✅ 일정 리스트 뷰
-//            else if showScheduleListView {
-//                Color.white.opacity(0.9).ignoresSafeArea()
-//                    .onTapGesture { showScheduleListView = false }
-//                ScheduleListView(
-//                    showScheduleListView: $showScheduleListView,
-//                    selectedDate: selectedDate,
-//                    events: viewModel.events
-//                )
-//                .layoutPriority(0)
-//                .background(Color.white)
-//            }
-//        }
-//        .onAppear {
-//            if let cid = ClubEventContext.shared.selectedClubId {
-//                viewModel.fetchClubEvents(for: cid)
-//            }
-//        }
-//    }
-//}
 // MARK: - CalendarView (달력 + 사이드 메뉴 + 접근 제한 팝업) --------------------
 struct CalendarView: View {
     @Binding var selectedDate: Date
@@ -414,33 +244,7 @@ struct CalendarView: View {
         }
         .padding(.horizontal, 10)
     }
-//    // MARK: 날짜 그리드
-//    private var calendarGrid: some View {
-//        let total = Calendar.current.range(of: .day, in: .month, for: month)!.count
-//        let first = firstWeekday(of: month) - 1
-//        return LazyVGrid(columns: Array(repeating: .init(.flexible()), count: 7), spacing: 10) {
-//            ForEach(0..<42) { idx in
-//                if idx < first || idx >= first + total {
-//                    Color.clear.frame(width: 40, height: 40)
-//                } else {
-//                    let day = idx - first + 1
-//                    if let date = Calendar.current.date(byAdding: .day, value: day - 1,
-//                                                        to: startOfMonth(month)) {
-//                        let sel = Calendar.current.isDate(selectedDate, inSameDayAs: date)
-//                        CellView(day: day, isSelected: sel)
-//                            .onTapGesture {
-//                                print("qqqq")
-//                                selectedDate = date
-//                                //showPopup    = true
-//                                showScheduleListView = true
-//                            }
-//                    }
-//                }
-//            }
-//        }
-//        .padding(.horizontal, 10)
-//    }
-    
+
     // 날짜 유틸
     private func firstWeekday(of d: Date) -> Int {
         Calendar.current.component(.weekday, from: startOfMonth(d))
@@ -459,20 +263,7 @@ struct CalendarView: View {
 }
 
 // MARK: - CellView ------------------------------------------------------------
-//struct CellView: View {
-//    let day: Int; let isSelected: Bool
-//    var body: some View {
-//        Text("\(day)").foregroundColor(Color.gray)
-//            .frame(width: 45, height: 45)
-//            .background(
-//                Circle().fill(isSelected ? Color.green : Color.green.opacity(0.1))
-//                    .overlay(Circle().stroke(isSelected ? .green : .clear,
-//                                             lineWidth: 2))
-//            )
-//            .font(.title3)
-//            .foregroundColor(isSelected ? .white : .black)
-//    }
-//}
+
 struct CellView: View {
     let day: Int
     let isSelected: Bool

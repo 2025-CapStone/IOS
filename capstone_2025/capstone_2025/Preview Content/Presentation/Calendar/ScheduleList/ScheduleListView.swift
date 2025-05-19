@@ -6,7 +6,6 @@
 //
 import SwiftUI
 
-
 struct ScheduleListView: View {
     @Binding var showScheduleListView: Bool
     var selectedDate: Date
@@ -22,18 +21,22 @@ struct ScheduleListView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 16) {
+                // ✅ 상단 바
                 HStack {
-                 
                     Button(action: { showScheduleListView = false }) {
                         Image(systemName: "arrow.left")
+                            .foregroundColor(.black)
                     }
+                    Spacer()
                 }
                 .padding(.horizontal)
 
+                // ✅ 선택 날짜
                 Text(formattedDate(selectedDate))
                     .font(.title2)
                     .bold()
 
+                // ✅ 일정 목록
                 ScrollView {
                     if filteredEvents.isEmpty {
                         Text("해당 날짜에 일정이 없습니다.")
@@ -41,25 +44,19 @@ struct ScheduleListView: View {
                             .padding(.top, 60)
                     } else {
                         ForEach(filteredEvents) { event in
-                            Button(action: {
+                            Button {
                                 selectedSchedule = event
                                 showPopup = true
-                            }) {
-                                VStack(alignment: .leading) {
-                                    Text(event.startTime.formatted(date: .omitted, time: .shortened))
-                                        .foregroundColor(.brown)
-                                    Text(event.description)
-                                }
-                                .padding()
-                                .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray))
+                            } label: {
+                                ScheduleListViewCell(event: event)
                             }
-                            .padding(.horizontal)
+                            .padding(.horizontal, 20)
                         }
                     }
                 }
             }
 
-            // ✅ 팝업이 있을 경우 어두운 배경 + 팝업 표시
+            // ✅ 팝업
             if let event = selectedSchedule, showPopup {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
@@ -67,32 +64,11 @@ struct ScheduleListView: View {
                         showPopup = false
                     }
 
-//                ScheduleCheckPopup(
-//                    schedule: Schedule(
-//                        eventId: event.eventId,
-//                        startTime: event.startTime.formatted(date: .omitted, time: .shortened), endTime: event.endTime.formatted(date: .omitted, time: .shortened),
-//                        title: event.description
-//                    ),
-//                    showPopup: $showPopup
-//                )
-                ScheduleCheckPopupWrapper(
-                    event: event,
-                    showPopup: $showPopup
-                )
-                .zIndex(1)
-                .transition(.scale)
-                .animation(.easeInOut, value: showPopup)
+                ScheduleCheckPopupWrapper(event: event, showPopup: $showPopup)
+                    .zIndex(1)
+                    .transition(.scale)
+                    .animation(.easeInOut, value: showPopup)
             }
-        }
-        .onAppear {
-            print("[ScheduleListView] ✅ onAppear 호출됨")
-//            if let clubId = ClubEventContext.shared.selectedClubId {
-//                // 최신 이벤트 목록 요청
-//                EventListViewModel().fetchEvents(for: clubId)
-//            }
-        }
-        .onDisappear {
-            print("[ScheduleListView] ✅ onDisappear 호출됨")
         }
     }
 
@@ -104,16 +80,6 @@ struct ScheduleListView: View {
     }
 }
 
-// ✅ 날짜 포맷 함수
-private func formattedYearMonth(_ date: Date) -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy년 MM월"
-    return formatter.string(from: date)
-}
-
-
-// 5/10 프리뷰 부분
-
 struct ScheduleListView_Previews: PreviewProvider {
     @State static var showScheduleListView = true
 
@@ -123,26 +89,37 @@ struct ScheduleListView_Previews: PreviewProvider {
             selectedDate: Date(),
             events: dummyEvents
         )
+        .previewDisplayName("Schedule List View")
     }
 
     static var dummyEvents: [Event] {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
+        let now = Date()
+        let calendar = Calendar.current
+        let todayMorning = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: now)!
+        let todayNoon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: now)!
+        let todayEvening = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: now)!
 
         return [
             Event(
                 eventId: 1,
                 clubId: 1,
-                startTime: formatter.date(from: "2025-05-14T09:00:00Z")!,
-                endTime: formatter.date(from: "2025-05-14T12:00:00Z")!,
-                description: "더미 이벤트 A"
+                startTime: todayMorning,
+                endTime: calendar.date(byAdding: .hour, value: 1, to: todayMorning)!,
+                description: "아침 운동 모임"
             ),
             Event(
                 eventId: 2,
                 clubId: 1,
-                startTime: formatter.date(from: "2025-05-14T15:00:00Z")!,
-                endTime: formatter.date(from: "2025-05-14T16:30:00Z")!,
-                description: "더미 이벤트 B"
+                startTime: todayNoon,
+                endTime: calendar.date(byAdding: .hour, value: 1, to: todayNoon)!,
+                description: "점심 간단 회의"
+            ),
+            Event(
+                eventId: 3,
+                clubId: 1,
+                startTime: todayEvening,
+                endTime: calendar.date(byAdding: .hour, value: 2, to: todayEvening)!,
+                description: "저녁 테니스 연습"
             )
         ]
     }
