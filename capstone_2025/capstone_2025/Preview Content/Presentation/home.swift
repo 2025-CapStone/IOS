@@ -15,24 +15,34 @@ struct home: View {
     @State private var searchText           = ""
     @State private var isLogoutAlertVisible = false
 
-    @State private var showJoinPopup        = false          // + 버튼 팝업
-    @State private var showJoinSuccess      = false          // 가입 성공 팝업
-    @State private var successMessage       = ""             // 성공 문구
 
     @State private var showJoinError        = false          // 가입 실패 Alert
     @State private var errorMessage         = ""             // 실패 문구
+    
 
+    
+    @State private var showOnlyJoinedClubs: Bool = false
+    @State private var isMenuListClicked = false
     // MARK: - Grid Layout -----------------------------------------------------
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 20), count: 2)
-
+    
     // MARK: - Derived Data ----------------------------------------------------
     private var clubs: [Club] {
-        viewModel.clubs.map(Club.init(from:))
+        let source: [ClubResponseDTO] = showOnlyJoinedClubs
+            ? AppState.shared.user?.joinedClub ?? []
+            : viewModel.clubs
+
+        return source.map(Club.init(from:))
     }
+    
     private var filteredClubs: [Club] {
         let key = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         return key.isEmpty ? clubs
                            : clubs.filter { $0.name.localizedCaseInsensitiveContains(key) }
+    }
+    
+    private var menuListText: String {
+        showOnlyJoinedClubs ? "전체 클럽을 보시겠습니까?" : "가입된 클럽만 보시나요?"
     }
 
     // MARK: - Body ------------------------------------------------------------
@@ -79,25 +89,14 @@ struct home: View {
                     }
                 }
             }
-            .onAppear { viewModel.fetchAllClubs()
-                viewModel.fetchClubs()
+            .onAppear {
+                if(showOnlyJoinedClubs){
+                }
+                else{
+                    viewModel.fetchAllClubs()
+                    viewModel.fetchClubs()}
             }
 
-            // ──────────────── 팝업들 ────────────────
-//            if showJoinPopup {
-//                JoinClubPopupView(
-//                    isVisible: $showJoinPopup,
-//                    onJoin: { clubId in
-//                        joinClub(with: clubId)
-//                    },
-//                    viewModel: viewModel
-//                )
-//            }
-//            if showJoinSuccess {
-//                JoinSuccessPopupView(message: successMessage) {
-//                    showJoinSuccess = false
-//                }
-//            }
         }
         // ──────────────── Alert 들 ────────────────
         .alert("로그아웃",
@@ -107,11 +106,18 @@ struct home: View {
                    Button("로그아웃", role: .destructive) { handleLogout() }
                },
                message: { Text("정말 로그아웃 하시겠습니까?") })
+        .alert(menuListText, isPresented: $isMenuListClicked) {
+            Button("예", role: .none) {
+                if(showOnlyJoinedClubs){
+                    
+                    showOnlyJoinedClubs = false
+                }else{
+                    showOnlyJoinedClubs = true
+                   }
+            }
+            Button("아니오", role: .cancel) {}
+        }
 
-        .alert("가입 실패",
-               isPresented: $showJoinError,
-               actions: { Button("확인", role: .cancel) {} },
-               message: { Text(errorMessage) })
     }
 
     // MARK: - Header ----------------------------------------------------------
@@ -152,12 +158,13 @@ struct home: View {
                 .shadow(radius: 1)
 
                 Button {
-                    showJoinPopup = false       // 클럽 ID 입력 팝업 띄우기
+                    isMenuListClicked.toggle()
+                    //showJoinPopup = false       // 클럽 ID 입력 팝업 띄우기
                 } label: {
-                    Image(systemName: "plus.circle.fill")
+                    Image("menu")
                         .resizable()
                         .frame(width: 34, height: 34)
-                        .foregroundColor(.black)
+                        .foregroundColor(.black).opacity(0.6)
                 }
             }
             .padding(.horizontal, 20)
@@ -199,27 +206,8 @@ struct home: View {
         }
     }
 
-    // MARK: - Join / Logout / Mock --------------------------------------------
-    /// 목업 백엔드를 이용해 가입 시도
-    private func joinClub(with idString: String) {
-        guard let id = Int(idString) else {
-            errorMessage = "숫자 형태의 클럽 ID를 입력하세요."
-            showJoinError = true
-            return
-        }
 
-        let (ok, name) = MockBackend.shared.joinClub(id: id)
 
-        if ok, let clubName = name {
-            showJoinPopup   = false
-            successMessage  = "\(clubName)에 가입되었습니다."
-            showJoinSuccess = true
-            viewModel.fetchAllClubs()          // 필요 시 새로고침
-        } else {
-            errorMessage = "해당 ID의 클럽을 찾을 수 없습니다."
-            showJoinError = true
-        }
-    }
 
     private func handleLogout() {
         loginViewModel.logout()
@@ -228,4 +216,28 @@ struct home: View {
             router.path.append(AppRoute.onboarding)
         }
     }
+}
+#Preview {
+    let dummyViewModel = ClubListViewModel()
+    dummyViewModel.clubs = [
+        ClubResponseDTO(
+            clubId: 1,
+            clubName: "테스트 클럽 1",
+            clubDescription: "이것은 테스트 클럽입니다.",
+            clubLogoURL: nil,
+            clubBackgroundURL: nil,
+            clubCreatedAt: "2025-05-18T12:00:00Z"
+        ),
+        ClubResponseDTO(
+            clubId: 2,
+            clubName: "테스트 클럽 2",
+            clubDescription: "두 번째 클럽입니다.",
+            clubLogoURL: nil,
+            clubBackgroundURL: nil,
+            clubCreatedAt: "2025-05-10T15:30:00Z"
+        )
+    ]
+
+    return home()
+        .environmentObject(NavigationRouter())
 }

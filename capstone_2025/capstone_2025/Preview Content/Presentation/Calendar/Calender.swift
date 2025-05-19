@@ -544,6 +544,13 @@ struct MainCalendarView_Previews: PreviewProvider {
                 startTime: tomorrow,
                 endTime: Calendar.current.date(byAdding: .hour, value: 3, to: tomorrow)!,
                 description: "프리뷰 이벤트 - 내일"
+            ),
+            Event(
+                eventId: 3,
+                clubId: 1,
+                startTime: tomorrow,
+                endTime: Calendar.current.date(byAdding: .hour, value: 3, to: tomorrow)!,
+                description: "프리뷰 이벤트 - 내일2"
             )
         ]
         return vm

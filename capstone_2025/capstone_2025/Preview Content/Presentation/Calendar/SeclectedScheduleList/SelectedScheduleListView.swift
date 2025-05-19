@@ -5,7 +5,6 @@
 //  Created by ㅇㅇ ㅇ on 5/16/25.
 //
 
-
 import SwiftUI
 
 struct SelectedScheduleListView: View {
@@ -19,22 +18,26 @@ struct SelectedScheduleListView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 12) {
             if filteredEvents.isEmpty {
                 Text("일정이 없습니다.")
                     .foregroundColor(.gray)
-                    .padding()
+                    .font(.subheadline)
+                    .padding(.horizontal)
             } else {
-                ScrollView {
-                    ForEach(filteredEvents) { event in
-                        SelectedScheduleListViewCell(event: event) { selected in
-                            selectedEvent = selected
-                            showPopup = true
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(filteredEvents) { event in
+                            SelectedScheduleListViewCell(event: event) { selected in
+                                selectedEvent = selected
+                                showPopup = true
+                            }
                         }
-                        .padding(.horizontal)
                     }
+                    .padding(.horizontal)
                 }
             }
         }
+        .padding(.vertical, 8)
     }
 }

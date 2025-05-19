@@ -18,6 +18,9 @@ struct club_intro: View {
     @State var showJoinError: Bool = false
     @State var errorMessage: String = ""
     
+    @State private var joinState: ClubJoinState = .notJoined
+
+    
     init(viewModel: ClubListViewModel, club: Club, onUpdate: @escaping (Club) -> Void) {
         self._club = State(initialValue: club)
         self.viewModel = viewModel
@@ -62,6 +65,7 @@ struct club_intro: View {
                             case .success(let clubName):
                                 print("[club_intro] ✅ 가입 성공: \(clubName)")
                                 isVisible = true
+                                joinState = .pendingApproval
                             case .failure(let error):
                                 print("[club_intro] ❌ 가입 실패: \(error.localizedDescription)")
                                 errorMessage = error.localizedDescription
@@ -70,20 +74,28 @@ struct club_intro: View {
                         }
                     }
                 }) {
-                    Text("가입하기")
+                    Text(joinState.buttonText)
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
                         .padding(.vertical, 10)
                         .padding(.horizontal, 50)
-                        .background(Color.blue)
+                        .background(joinState.isButtonDisabled ? Color.gray : Color.blue)
                         .cornerRadius(10)
                 }
+                .disabled(joinState.isButtonDisabled)
 
 
                 Spacer()
 
                 Spacer()
-            }
+            }.onAppear {
+                    if let joined = AppState.shared.user?.joinedClub {
+                        if joined.contains(where: { $0.clubId == club.id }) {
+                            joinState = .alreadyJoined
+                        }
+                    }
+                }
+            
             
             if isMenuOpen { menuPopup }
             
@@ -93,8 +105,10 @@ struct club_intro: View {
                 }
             }
             if isVisible {
-                JoinSuccessPopupView(message: "\(club.name)에 가입되었습니다.") {
-                    isVisible = false
+                JoinSuccessPopupView(message: "\(club.name)에 가입 신청하였습니다.") {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        isVisible = false }
+                  
                 }
             }
 
