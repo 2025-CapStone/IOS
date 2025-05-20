@@ -82,7 +82,8 @@ struct CreateTaskView: View {
             Button(action: {
                 let mergedStart = merge(date: selectedDate, time: startTime)
                 let mergedEnd = merge(date: selectedDate, time: endTime)
-                let clubId = AppState.shared.user!.joinedClub.first(where: { $0.clubName == selectedClubName })!.clubId
+                //print(clubID)
+                let clubId = 3/*AppState.shared.user!.joinedClub.first(where: { $0.clubName == selectedClubName }).clubId*/
                 viewModel.setClubId(clubId)
                 viewModel.createEvent(
                     startTime: mergedStart,

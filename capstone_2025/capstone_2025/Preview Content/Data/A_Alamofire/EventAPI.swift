@@ -11,7 +11,7 @@ import Alamofire
 
 enum EventAPI {
     static func fetchClubEvents(clubId: Int, accessToken: String, completion: @escaping (Result<[EventResponseDTO], Error>) -> Void) {
-        let url = "http://43.201.191.12:8080/api/event/get-event/club_id?clubId=\(clubId)"
+        let url = "https://api.on-club.co.kr/api/event/get-event/club_id?clubId=\(clubId)"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"
@@ -34,7 +34,7 @@ enum EventAPI {
     
     
     static func fetchClubUserEvents(userId : Int,accessToken: String, completion: @escaping (Result<[EventResponseDTO], Error>) -> Void) {
-        let url = "http://43.201.191.12:8080/api/event/get-event/user_id?userId=\(userId)"
+        let url = "https://api.on-club.co.kr/api/event/get-event/user_id?userId=\(userId)"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"
@@ -65,7 +65,7 @@ enum EventAPI {
         accessToken: String,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-        let url = "http://43.201.191.12:8080/api/event/add-event"
+        let url = "https://api.on-club.co.kr/api/event/add-event"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"
@@ -106,7 +106,7 @@ enum EventAPI {
     static func fetchUserEvents(userId : Int,accessToken: String, completion: @escaping (Result<[EventResponseDTO], Error>) -> Void) {
         
         
-        let url = "http://43.201.191.12:8080/api/participant/all/by_user_id"
+        let url = "https://api.on-club.co.kr/api/participant/all/by_user_id"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"

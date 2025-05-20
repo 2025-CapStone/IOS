@@ -10,7 +10,7 @@ import Foundation
 final class SecuredAPI {
     static let shared = SecuredAPI()
 
-    private let baseURL = "http://43.201.191.12:8080"
+    private let baseURL = "https://api.on-club.co.kr"
 
     private lazy var session: Session = {
         let interceptor = AuthInterceptor()

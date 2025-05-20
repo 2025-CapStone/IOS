@@ -17,7 +17,7 @@ enum MembershipAPI {
         accessToken: String,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-        let url = "http://43.201.191.12:8080/api/membership/join/request"
+        let url = "https://api.on-club.co.kr/api/membership/join/request"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"

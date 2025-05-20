@@ -15,7 +15,7 @@ enum ParticipantAPI {
                throw URLError(.userAuthenticationRequired)
            }
 
-           let url = "http://43.201.191.12:8080/api/participant/join?userId=\(userId)&eventId=\(eventId)"
+           let url = "https://api.on-club.co.kr/api/participant/join?userId=\(userId)&eventId=\(eventId)"
            let headers: HTTPHeaders = [
                "Authorization": "Bearer \(accessToken)",
                "Content-Type": "application/x-www-form-urlencoded"
@@ -52,7 +52,7 @@ enum ParticipantAPI {
              throw URLError(.userAuthenticationRequired)
          }
 
-         let url = "http://43.201.191.12:8080/api/guest/attend/request"
+         let url = "https://api.on-club.co.kr/api/guest/attend/request"
          let headers: HTTPHeaders = [
              "Authorization": "Bearer \(accessToken)",
              "Content-Type": "application/json"
@@ -114,7 +114,7 @@ enum ParticipantAPI {
     //    }
     //
     //    static func fetchAll(eventId: Int, accessToken: String, completion: @escaping (Result<[ParticipantResponseDTO], Error>) -> Void) {
-    //        let url = "http://43.201.191.12:8080/api/participant/all?eventId=\(eventId)"
+    //        let url = "https://api.on-club.co.kr/api/participant/all?eventId=\(eventId)"
     //        let headers: HTTPHeaders = [
     //            "Authorization": "Bearer \(accessToken)",
     //            "Content-Type": "application/json"
@@ -138,7 +138,7 @@ enum ParticipantAPI {
             throw URLError(.userAuthenticationRequired)
         }
 
-        let url = "http://43.201.191.12:8080/api/participant/all"
+        let url = "https://api.on-club.co.kr/api/participant/all"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"

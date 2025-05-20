@@ -11,7 +11,7 @@ final class UnsecuredAPI {
     static let shared = UnsecuredAPI()
     private init() {}
 
-    private let baseURL = "http://43.201.191.12:8080"
+    private let baseURL = "https://api.on-club.co.kr"
 
     func signup(signupData: [String: Any]) async throws -> Data {
         let url = "\(baseURL)/api/user/join"
