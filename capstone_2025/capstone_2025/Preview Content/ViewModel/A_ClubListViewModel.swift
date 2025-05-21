@@ -8,6 +8,9 @@ final class ClubListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     //@Published var Joinedclubs: [ClubResponseDTO] = []
+    
+    var JoinRequestState = "가입실패"
+    
     init(){print("ClubListViewModel Created || \(Date())")}
 
     func fetchAllClubs() {

@@ -19,6 +19,7 @@ struct club_intro: View {
     @State var errorMessage: String = ""
     
     @State private var joinState: ClubJoinState = .notJoined
+    
 
     
     init(viewModel: ClubListViewModel, club: Club, onUpdate: @escaping (Club) -> Void) {
@@ -28,6 +29,7 @@ struct club_intro: View {
     }
     
     var body: some View {
+        
         // ---------- 1단계 : 배경 이미지를 가장 뒤에 깔아준다 ----------
         ZStack {
             clubBackground               // 배경 이미지
@@ -71,7 +73,15 @@ struct club_intro: View {
                             case .failure(let error):
                                 print("[club_intro] ❌ 가입 실패: \(error.localizedDescription)")
                                 errorMessage = error.localizedDescription
+                              
+
+                                if errorMessage.contains("409"){
+                                    joinState = .pendingApproval
+                                    viewModel.JoinRequestState = "대기 중"
+                                    errorMessage = "이미 가입 신청을 하셨습니다."
+                                }
                                 showJoinError = true
+                         
                             }
                         }
                     }
@@ -116,7 +126,7 @@ struct club_intro: View {
 
             // ✅ 가입 실패 알림
 
-        }.alert("가입 실패", isPresented: $showJoinError) {
+        }.alert( viewModel.JoinRequestState, isPresented: $showJoinError) {
             Button("확인", role: .cancel) {}
         } message: {
             Text(errorMessage)
@@ -193,7 +203,7 @@ struct club_intro: View {
                 Spacer()
                 VStack(alignment: .leading, spacing: 10) {
                     // 일정관리 (정상 진입)
-                    MenuItem(title: "일정관리", selectedClubId: club.id,selectedClubName: club.name)
+                    MenuItem(title: "일정확인", selectedClubId: club.id,selectedClubName: club.name)
                     
                     // 회원관리 (제한)
                     MenuItem(
