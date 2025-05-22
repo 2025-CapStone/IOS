@@ -94,6 +94,7 @@ struct Login: View {
         .onReceive(viewModel.$isSuccess) { success in
             if success {
                 router.path = NavigationPath()
+                AppState.shared.notificationViewModel.fetchAll()
                 router.path.append(AppRoute.home)
             }
         }

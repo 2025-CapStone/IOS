@@ -7,12 +7,17 @@ final class ClubListViewModel: ObservableObject {
     @Published var clubs: [ClubResponseDTO] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    //@Published var Joinedclubs: [ClubResponseDTO] = []
+    @Published var Joinedclubs: [ClubResponseDTO] = []
     
     var JoinRequestState = "가입실패"
     
-    init(){print("ClubListViewModel Created || \(Date())")}
+    
+    init(){print("Test Viewmodel ClubListViewModel Created || \(Date())")
+        
+    }
 
+    static let shared = ClubListViewModel()
+    
     func fetchAllClubs() {
         guard let accessToken = SessionStorage.shared.accessToken else {
             print("[ClubListViewModel] ❌ 토큰 없음 - fetchClubs() 실패")
@@ -56,10 +61,11 @@ final class ClubListViewModel: ObservableObject {
                 switch result {
                 case .success(let clubs):
                     //self?.clubs = clubs
+                    self?.Joinedclubs = clubs
                     AppState.shared.user!.joinedClub = clubs
                     
-                    print("[ClubListViewModel] ✅ clubs: \(clubs.map { $0.clubName })")
-                    print("[ClubListViewModel] ✅ clubs: \(clubs)")
+                    print("[ClubListViewModel] ✅ joinedclubs: \(clubs.map { $0.clubName })")
+                    //print("[ClubListViewModel] ✅ joinedclubs: \(clubs)")
 
                     
                 case .failure(let error):

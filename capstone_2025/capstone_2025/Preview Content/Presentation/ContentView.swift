@@ -13,6 +13,7 @@ enum AppRoute: Hashable {
     case calendar
     case budget//(예산관리)
     case member
+    case notification
 //    case clubEdit
     
     
@@ -74,8 +75,9 @@ struct ContentView: View {
                             .environmentObject(router)
                     case .home:
 //                        home(viewModel: AppDIContainer.shared.makeClubListViewModel(), loginViewModel: AppDIContainer.shared.makeLoginViewModel())
-                        home().environmentObject(router)
-                            .environmentObject(router)
+                        GeometryReader{_ in
+                            home().environmentObject(router)
+                          }
                     case .onboarding:
                         onboarding()
                             .environmentObject(router)
@@ -84,6 +86,10 @@ struct ContentView: View {
                             .environmentObject(router)
 //                    case .clubEdit:
 //                        club_edit().environmentObject(router)
+                    case .notification:
+                        NotificationView()
+                            .environmentObject(router)
+
                     }
                 }
         }

@@ -197,7 +197,7 @@ struct club_intro: View {
     }
     
     // MARK: - 메뉴 팝업 --------------------------------------------------------
-    private var menuPopup: some View {
+     var menuPopup: some View {
         VStack {
             HStack {
                 Spacer()
@@ -263,16 +263,26 @@ struct MenuItem: View {
             action?()
             guard !restricted else { return }
             
-            if title.hasPrefix("일정"), let id = selectedClubId {
-                ClubEventContext.shared.selectedClubId = id
-                ClubEventContext.shared.selectedClubName = selectedClubName
+            if title.hasPrefix("일정") {
+                if let id = selectedClubId {
+                    ClubEventContext.shared.selectedClubId = id
+                    ClubEventContext.shared.selectedClubName = selectedClubName}
+                else{
+                    ClubEventContext.shared.selectedClubId = nil
+                    ClubEventContext.shared.selectedClubName = nil
+                }
                 router.path.append(AppRoute.calendar)
             } else if title.hasPrefix("예산") {
                 router.path.append(AppRoute.budget)
-            } else if title.hasPrefix("회원") {
-                router.path.append(AppRoute.member)
+            } else if title.hasPrefix("알림") {
+                router.path.append(AppRoute.notification)
             } else if title.hasSuffix("아웃") {
-                router.path.append(AppRoute.login)
+                CustomAlertView(title: "로그아웃", message: "로그아웃 하시겠습니까?"){        AppState.shared.loginViewmodel.logout()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        router.path = NavigationPath()
+                        router.path.append(AppRoute.onboarding)
+                    }} onCancel: {}
+                
             }
         }) {
             HStack {

@@ -7,15 +7,21 @@ import SwiftUI
 
 struct home: View {
     // MARK: - ViewModels & Router --------------------------------------------
-    @ObservedObject private var viewModel      = ClubListViewModel()
+    @ObservedObject private var viewModel      = AppState.shared.clubListViewModel
     @ObservedObject private var loginViewModel = LoginViewModel()
     @EnvironmentObject   var router         : NavigationRouter
+    @ObservedObject var notiVM = AppState.shared.notificationViewModel
 
-    @State private var isTagSearchMode: Bool = false
+
 
     // MARK: - UI State --------------------------------------------------------
     @State private var searchText           = ""
+    
+    
     @State private var isLogoutAlertVisible = false
+    @State private var isMenuOpen       = false
+    @State private var isMenuListClicked = false
+    @State private var isTagSearchMode: Bool = false
 
 
     @State private var showJoinError        = false          // 가입 실패 Alert
@@ -24,18 +30,23 @@ struct home: View {
 
     
     @State private var showOnlyJoinedClubs: Bool = false
-    @State private var isMenuListClicked = false
     // MARK: - Grid Layout -----------------------------------------------------
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 20), count: 2)
     
     // MARK: - Derived Data ----------------------------------------------------
     private var clubs: [Club] {
-        let source: [ClubResponseDTO] = showOnlyJoinedClubs
-            ? AppState.shared.user?.joinedClub ?? []
-            : viewModel.clubs
+        let dtoList: [ClubResponseDTO]
+        
+        if showOnlyJoinedClubs {
+            dtoList = viewModel.Joinedclubs
+        } else {
+            dtoList = viewModel.clubs
+        }
+        print("Test Home-DtoList \(dtoList.count)")
 
-        return source.map(Club.init(from:))
+        return dtoList.map { Club(from: $0) }
     }
+
     
     
 //    private var filteredClubs: [Club] {
@@ -65,7 +76,7 @@ struct home: View {
             // ───────────────── 메인 콘텐츠 ─────────────────
             VStack(spacing: 0) {
                 header
-
+                
                 if viewModel.isLoading {
                     ProgressView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -84,33 +95,53 @@ struct home: View {
                 }
             }
             .onAppear {
+                print("Test Home-VStack onAppear \(Date())")
                 if(showOnlyJoinedClubs){
+                    viewModel.fetchClubs()
                 }
                 else{
                     viewModel.fetchAllClubs()
-                    viewModel.fetchClubs()}
-            }
+                }
+            }.onDisappear{
+                print("Test Home-VStack DIsAppear \(Date())")
+                
+            }.onChange(of: showOnlyJoinedClubs) { newValue in
+                print("Test Home-Vstack onChange: \(newValue)")
+                if newValue {
+                    viewModel.fetchClubs()
+                } else {
+                    viewModel.fetchAllClubs()
+                }
+            }.onAppear{
+                print("Test Home-Zstack onAppear \(Date())")
+            }.onDisappear{
+                print("Test Home-Zstack onDisAppear \(Date())")
 
-        }
+            }
+            
+        
         // ──────────────── Alert 들 ────────────────
         .alert("로그아웃",
                isPresented: $isLogoutAlertVisible,
                actions: {
-                   Button("취소", role: .cancel) {}
-                   Button("로그아웃", role: .destructive) { handleLogout() }
-               },
+            Button("취소", role: .cancel) {}
+            Button("로그아웃", role: .destructive) { handleLogout() }
+        },
                message: { Text("정말 로그아웃 하시겠습니까?") })
         .alert(menuListText, isPresented: $isMenuListClicked) {
             Button("예", role: .none) {
-                if(showOnlyJoinedClubs){
-                    
-                    showOnlyJoinedClubs = false
-                }else{
-                    showOnlyJoinedClubs = true
-                   }
+                showOnlyJoinedClubs.toggle()
+                //                if(showOnlyJoinedClubs){
+                //
+                //                    showOnlyJoinedClubs = false
+                //                }else{
+                //                    showOnlyJoinedClubs = true
+                //                   }
             }
             Button("아니오", role: .cancel) {}
-        }
+        }.onAppear{               print("Test Home-HomeVIew onAppear \(Date())")}.onDisappear{print("Test Home-HomeVIew onAppear \(Date())")}
+            
+    }
 
     }
 
@@ -122,7 +153,21 @@ struct home: View {
                 Image("ball")
                     .resizable()
                     .frame(width: 32, height: 32)
-                    .onTapGesture { isLogoutAlertVisible = true }
+                    .overlay(alignment: .topTrailing) {
+                        let count = notiVM.notifications.filter { !$0.isRead }.count
+                        if count > 0 {
+                            Text("\(count)")
+                                .font(.caption2)
+                                .foregroundColor(.white)
+                                .padding(5)
+                                .background(Circle().fill(Color.red))
+                                .offset(x: 6, y: -6)
+                        }
+                    }
+                    .onTapGesture {
+                        router.path.append(AppRoute.notification)
+                    }
+
 
                 Text("OnClub")
                     .font(.custom("Comfortaa-Bold", size: 24))
@@ -182,7 +227,7 @@ struct home: View {
         .frame(width: 170, height: 180)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 15))
-        .shadow(radius: 2)
+        .shadow(radius: 2).onAppear{print(     print("Test Home-clubCard onAppear \(Date())"))}.onDisappear{print(     print("Test Home-clubCard DisAppear \(Date())"))}
     }
 
     @ViewBuilder
@@ -240,6 +285,11 @@ struct home: View {
         }
     }
 
+    
+    
+    
+    // extension
+    
 }
 #Preview {
     let dummyViewModel = ClubListViewModel()

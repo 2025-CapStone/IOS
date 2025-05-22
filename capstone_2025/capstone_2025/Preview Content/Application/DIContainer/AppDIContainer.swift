@@ -77,6 +77,12 @@ final class AppDIContainer {
         //vm.setClubId(clubId)
        // return vm
     }
+    
+    // MARK: - Notification DI
+
+    func makeNotificationViewModel() -> NotificationViewModel {
+        NotificationViewModel()
+    }
 
 }
 

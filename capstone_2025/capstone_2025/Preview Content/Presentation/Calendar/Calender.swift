@@ -13,7 +13,6 @@ struct Schedule: Identifiable {
 
 // MARK: - MainCalendarView ----------------------------------------------------
 
-
 struct MainCalendarView: View {
     var clubId: Int?
     var clubName: String? = ClubEventContext.shared.selectedClubName
@@ -26,6 +25,7 @@ struct MainCalendarView: View {
     @State private var selectedDate = Date()
     @State private var selectedEvent: Event? = nil
     @State private var selectedOption: FilterOption = .selectedClub
+    @State private var disableSelectedClub: Bool = false
 
     var body: some View {
         ZStack {
@@ -38,7 +38,7 @@ struct MainCalendarView: View {
                             NavigationRouter().path.append(AppRoute.home)
                         }
                     Spacer()
-                    Button(action: { /* 메뉴 토글 생략 */ }) {
+                    Button(action: {}) {
                         Image(systemName: "ellipsis")
                             .resizable()
                             .scaledToFit()
@@ -50,7 +50,10 @@ struct MainCalendarView: View {
                 .padding(.top, 20)
 
                 // ✅ 라디오 버튼
-                RadioButtonGroup { old, new in
+                RadioButtonGroup(
+                    selectedOption: $selectedOption,
+                    disableSelectedClub: disableSelectedClub
+                ) { old, new in
                     selectedOption = new
                     switch new {
                     case .selectedClub:
@@ -66,28 +69,27 @@ struct MainCalendarView: View {
                 .padding(.horizontal)
                 .padding(.top, 12)
 
-                // ✅ 선택한 클럽 이름
                 if selectedOption == .selectedClub, let name = clubName {
                     Text(name)
                         .font(.title).bold()
                         .padding(.horizontal)
                         .padding(.top, 10)
-                        .padding(.bottom,-30) // 👈 CalendarView와 자연스러운 간격
+                        .padding(.bottom,-30)
                 }
 
-                // ✅ CalendarView + SelectedScheduleListView
-                VStack() {
+                VStack {
                     CalendarView(
                         selectedDate: $selectedDate,
                         showPopup: $showPopup,
                         showCreateTaskView: $showCreateTaskView,
-                        showScheduleListView: $showScheduleListView, showSelectedScheduleListView: $showSelectedScheduleListView,
+                        showScheduleListView: $showScheduleListView,
+                        showSelectedScheduleListView: $showSelectedScheduleListView,
                         events: viewModel.events
                     )
                     .blur(radius: showCreateTaskView ? 5 : 0)
                     .disabled(showCreateTaskView)
 
-                  if showSelectedScheduleListView {
+                    if showSelectedScheduleListView {
                         SelectedScheduleListView(
                             events: viewModel.events,
                             selectedDate: selectedDate,
@@ -99,14 +101,15 @@ struct MainCalendarView: View {
                             .foregroundColor(.gray)
                             .padding(.top, 40)
                     }
-
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
             }
+
             if showScheduleListView {
                 Color.white.opacity(0.9).ignoresSafeArea()
                     .onTapGesture { showScheduleListView = false }
+
                 ScheduleListView(
                     showScheduleListView: $showScheduleListView,
                     selectedDate: selectedDate,
@@ -115,9 +118,7 @@ struct MainCalendarView: View {
                 .layoutPriority(0)
                 .background(Color.white)
             }
-        
 
-            // ✅ 팝업
             if showPopup, let selected = selectedEvent {
                 Color.black.opacity(0.4).ignoresSafeArea()
                     .onTapGesture { showPopup = false }
@@ -135,12 +136,20 @@ struct MainCalendarView: View {
             }
         }
         .onAppear {
+            // ✅ 조건 판단: ClubId가 없으면 .joinedClubs으로 초기화
             if let cid = ClubEventContext.shared.selectedClubId {
+                selectedOption = .selectedClub
+                disableSelectedClub = false
                 viewModel.fetchClubEvents(for: cid)
+            } else {
+                selectedOption = .joinedClubs
+                disableSelectedClub = true
+                viewModel.fetchClubUserEvents()
             }
         }
     }
 }
+
 
 // MARK: - CalendarView (달력 + 사이드 메뉴 + 접근 제한 팝업) --------------------
 struct CalendarView: View {
