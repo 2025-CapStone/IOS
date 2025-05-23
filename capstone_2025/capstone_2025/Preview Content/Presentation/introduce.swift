@@ -55,7 +55,7 @@ struct introduce: View {
             }
         }.onAppear{
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                router.path.append(AppRoute.introduce1)
+                router.path.append(AppRoute.login)
             }
         }
     }

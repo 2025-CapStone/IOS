@@ -3,7 +3,7 @@ import SwiftUI
 
 enum FilterOption: String, CaseIterable, Identifiable {
     case selectedClub = "선택한 클럽"
-    case joinedClubs = "가입 클럽"
+    case joinedClubs = "가입된 클럽"
     case checkedEvents = "참석 체크한"
 
     var id: Int { self.hashValue }
@@ -32,8 +32,10 @@ struct RadioButtonGroup: View {
                 )
             }
         }
-        .padding(.horizontal, 20)
+        //.padding(.horizontal)
         .padding(.vertical, 10)
+        .padding(.trailing, 0)
+        .padding(.leading, 0)
     }
 }
 struct RadioButtonGroup_Previews: PreviewProvider {

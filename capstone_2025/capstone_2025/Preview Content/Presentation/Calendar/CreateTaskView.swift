@@ -10,11 +10,13 @@ import SwiftUI
 struct CreateTaskView: View {
     @Binding var showCreateTaskView: Bool
     var selectedDate: Date
+    
     @State private var selectedClubName: String = ""
     @State private var descriptionText: String = ""
     @State private var startTime: Date = Date()
     @State private var endTime: Date = Date()
-    @State private var longDetail: String = ""
+    
+    @State private var showSuccessAlert = false
 
     @EnvironmentObject var viewModel: EventListViewModel
 
@@ -33,14 +35,16 @@ struct CreateTaskView: View {
 
             // 🔹 선택된 날짜 중앙 표시
             Text(formattedDate(selectedDate))
-                .font(.headline)
+                .font(.title2)
+                .fontWeight(.semibold)
                 .padding(.bottom, 10)
 
             // 🔸 일정 설명 입력
-            TextField("Description", text: $descriptionText)
+            TextField("일정 설명을 입력하세요", text: $descriptionText)
                 .padding()
                 .background(Color.white)
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
+                .font(.body)
                 .padding(.horizontal)
 
             // 🔸 시작 및 종료 시간 선택
@@ -69,7 +73,7 @@ struct CreateTaskView: View {
 
             // 🔸 소속 클럽 선택
             Picker("소속 클럽 선택", selection: $selectedClubName) {
-                ForEach(AppState.shared.user!.joinedClub.map(\.clubName), id: \.self) { clubName in
+                ForEach(AppState.shared.user!.joinedClub.map(\ .clubName), id: \ .self) { clubName in
                     Text(clubName).tag(clubName)
                 }
             }
@@ -77,44 +81,45 @@ struct CreateTaskView: View {
             .frame(height: 100)
             .padding(.horizontal)
 
-
             // 🔘 생성 버튼
             Button(action: {
                 let mergedStart = merge(date: selectedDate, time: startTime)
                 let mergedEnd = merge(date: selectedDate, time: endTime)
-print(selectedClubName)
-                let userClub=AppState.shared.user!.joinedClub.filter {
-         
-                    
-                    return $0.clubName.compare(selectedClubName)==ComparisonResult.orderedSame }.first
-                let userClubId = userClub!.clubId
- 
-                viewModel.setClubId(userClubId)
+
+                guard let userClub = AppState.shared.user!.joinedClub.first(where: { $0.clubName == selectedClubName }) else { return }
+
+                viewModel.setClubId(userClub.clubId)
                 viewModel.createEvent(
                     startTime: mergedStart,
                     endTime: mergedEnd,
                     description: descriptionText
                 ) { success in
                     if success {
-                        showCreateTaskView = false
+                        showSuccessAlert = true
                     } else {
                         print("[CreateTaskView] ❌ 이벤트 생성 실패")
                     }
                 }
             }) {
-                Text("Create")
+                Text("일정 생성")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.gray.opacity(0.4))
+                    .background(Color.green.opacity(0.9))
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
+            .font(.headline)
             .padding(.horizontal)
             .padding(.bottom)
         }
         .padding(.top)
         .background(Color.white)
         .edgesIgnoringSafeArea(.bottom)
+        .alert("일정이 생성되었습니다", isPresented: $showSuccessAlert) {
+            Button("확인") {
+                showCreateTaskView = false
+            }
+        }
     }
 
     // ✅ 날짜 + 시간 병합
@@ -136,22 +141,11 @@ print(selectedClubName)
     }
 }
 
-
-
-
-let dummyViewModel = DummyEventListViewModel()
-#Preview {
-    CreateTaskView(
-        showCreateTaskView: .constant(true),
-        selectedDate: Date()
-    )
-    .environmentObject(dummyViewModel)
-}
- class DummyEventListViewModel: ObservableObject {
+// MARK: - Preview 용 더미 ViewModel
+class DummyEventListViewModel: ObservableObject {
     @Published var events: [Event] = []
 
     init() {
-        // 테스트용 이벤트 더미 데이터
         events = [
             Event(eventId: 1, clubId: 1, startTime: Date(), endTime: Date().addingTimeInterval(3600), description: "더미 일정 1"),
             Event(eventId: 2, clubId: 1, startTime: Date(), endTime: Date().addingTimeInterval(7200), description: "더미 일정 2")
@@ -163,5 +157,16 @@ let dummyViewModel = DummyEventListViewModel()
     func createEvent(startTime: Date, endTime: Date, description: String, completion: @escaping (Bool) -> Void) {
         print("[DummyEventListViewModel] createEvent 호출됨")
         completion(true)
+    }
+}
+
+// MARK: - CreateTaskView 미리보기
+struct CreateTaskView_Previews: PreviewProvider {
+    static var previews: some View {
+        CreateTaskView(
+            showCreateTaskView: .constant(true),
+            selectedDate: Date()
+        )
+        .environmentObject(DummyEventListViewModel())
     }
 }

@@ -52,9 +52,8 @@ struct onboarding: View {
 
                     VStack(alignment: .center, spacing: 12) { // 중앙 정렬
                         PermissionRow(title: "알림", description: "푸시 알림 등록 및 수신")
-                        PermissionRow(title: "위치 정보", description: "활동 위치 검색")
-                        PermissionRow(title: "셀룰러 데이터", description: "네트워크 연결")
-                        PermissionRow(title: "연락처 정보", description: "활동 정보 전송 및 이벤트 공유")
+//                        PermissionRow(title: "위치 정보", description: "활동 위치 검색")
+                        PermissionRow(title: "달력", description: "이벤트를 달력 기본 어플리케이션에 추가")
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)

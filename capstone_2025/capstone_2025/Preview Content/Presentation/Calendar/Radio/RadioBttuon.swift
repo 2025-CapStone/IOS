@@ -24,17 +24,17 @@ struct RadioButton: View {
             }
         }) {
             Text(title)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundColor(isDisabled ? .gray : (isSelected ? .white : .black))
                 .padding(.vertical, 8)
                 .padding(.horizontal, 14)
-                .background(isSelected ? Color.green : Color.white)
+                .background(isSelected ? Color(hex:"#8ce366").opacity(0.9) : Color.white)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(isSelected ? Color.green : Color.gray.opacity(0.3), lineWidth: 1)
+                        .stroke(isSelected ? Color(hex:"#8ce366").opacity(0.5) : .clear, lineWidth: 1)
                 )
-                .cornerRadius(10)
-                .shadow(color: isSelected ? Color.black.opacity(0.1) : .clear, radius: 2, x: 0, y: 2)
+                .cornerRadius(15)
+                .shadow(color: isSelected ? .clear : .clear, radius: 2, x: 0, y: 2)
         }
         .disabled(isDisabled)
     }

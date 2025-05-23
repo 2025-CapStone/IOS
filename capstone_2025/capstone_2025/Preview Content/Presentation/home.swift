@@ -97,9 +97,10 @@ struct home: View {
             .onAppear {
                 print("Test Home-VStack onAppear \(Date())")
                 if(showOnlyJoinedClubs){
-                    viewModel.fetchClubs()
+
                 }
                 else{
+                    viewModel.fetchClubs()
                     viewModel.fetchAllClubs()
                 }
             }.onDisappear{
