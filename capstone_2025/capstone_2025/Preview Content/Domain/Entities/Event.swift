@@ -29,18 +29,18 @@ struct Event: Identifiable, Hashable {
     init(from dto: EventResponseDTO) {
         self.eventId = dto.eventId
         self.clubId = dto.clubId
-
-        guard let start = Event.legacyFormatter.date(from: dto.eventStartTime) else {
-            preconditionFailure("❌ 시작시간 파싱 실패: \(dto.eventStartTime)")
+        guard let start = Event.legacyFormatter.date(from: dto.eventStartTime!)//DateFormatter.notificationDateFormatter.date(from:dto.eventStartTime!)
+        else {
+            preconditionFailure("❌ 시작시간 파싱 실패: \(dto.eventStartTime!)")
         }
         self.startTime = start
 
-        guard let end = Event.legacyFormatter.date(from: dto.eventEndTime) else {
-            preconditionFailure("❌ 종료시간 파싱 실패: \(dto.eventEndTime)")
+        guard let end = Event.legacyFormatter.date(from: dto.eventEndTime!) /*DateFormatter.notificationDateFormatter.date(from:dto.eventEndTime!)*/ else {
+            preconditionFailure("❌ 종료시간 파싱 실패: \(dto.eventEndTime!)")
         }
         self.endTime = end
 
-        self.description = dto.eventDescription
+        self.description = dto.eventDescription!
     }
 
 

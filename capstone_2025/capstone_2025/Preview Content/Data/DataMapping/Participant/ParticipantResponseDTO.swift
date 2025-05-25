@@ -12,17 +12,17 @@ struct ParticipantResponseDTO: Codable, Identifiable, Hashable {
     var id: Int { userId }
 
     let userId: Int
-    let userName: String
-    let gender: String
-    let career: Int
+    let userName: String?
+    let gender: String?
+    let career: Int?
     let gameCount: Int?
 
     private let lastGamedAtRaw: String?
 
     // ✅ 필요한 형식으로 변환
     var lastGamedAt: Date? {
-        guard let dateString = lastGamedAtRaw else { return nil }
-        return ISO8601DateFormatter().date(from: dateString)
+        guard let dateString = lastGamedAtRaw else { return Date() }
+        return DateFormatter.notificationDateFormatter.date(from: dateString)
     }
 
     enum CodingKeys: String, CodingKey {

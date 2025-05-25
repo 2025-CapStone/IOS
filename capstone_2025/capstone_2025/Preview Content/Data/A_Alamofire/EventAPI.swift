@@ -11,19 +11,44 @@ import Alamofire
 
 enum EventAPI {
     static func fetchClubEvents(clubId: Int, accessToken: String, completion: @escaping (Result<[EventResponseDTO], Error>) -> Void) {
-        let url = "https://api.on-club.co.kr/api/event/get-event/club_id?clubId=\(clubId)"
+        let url = "https://api.on-club.co.kr/api/event/get-event/club_id"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"
         ]
+        let parameters : [String:Any] = [
+            "clubId" : clubId
+        ]
         
-        AF.request(url, method: .get, headers: headers)
+        
+        
+//        AF.request(url, method: .get, headers: headers)
+//            .validate()
+//            .responseDecodable(of: [EventResponseDTO].self) { response in
+//                print(response)
+//
+//                switch response.result {
+//                    
+//                case .success(let events):
+//                    completion(.success(events))
+//                case .failure(let error):
+//                    completion(.failure(error))
+//                }
+//            }
+        let request = AF.request(url, method: .get,parameters: parameters ,encoding: URLEncoding.default, headers: headers)
+
+        // ✅ cURL 출력
+        request.cURLDescription { description in
+            print("[fetchClubEvents] 🔍 cURL:\n\(description)")
+        }
+        
+        request
             .validate()
+            .cacheResponse(using: .doNotCache)
             .responseDecodable(of: [EventResponseDTO].self) { response in
-                print(response)
+                //print(response)
 
                 switch response.result {
-                    
                 case .success(let events):
                     completion(.success(events))
                 case .failure(let error):
@@ -34,14 +59,31 @@ enum EventAPI {
     
     
     static func fetchClubUserEvents(userId : Int,accessToken: String, completion: @escaping (Result<[EventResponseDTO], Error>) -> Void) {
-        let url = "https://api.on-club.co.kr/api/event/get-event/user_id?userId=\(userId)"
+        let url = "https://api.on-club.co.kr/api/event/get-event/user_id"//?userId=\(userId)"
         let headers: HTTPHeaders = [
             "Authorization": "Bearer \(accessToken)",
             "Content-Type": "application/json"
         ]
+        let parameters: [String: Any] = [
+            "userId": userId
+        ]
         
-        let request = AF.request(url, method: .get, headers: headers)
+//        AF.request(url, method: .get, headers: headers)
+//            .validate()
+//            .responseDecodable(of: [EventResponseDTO].self) { response in
+//                print(response)
+//
+//                switch response.result {
+//                    
+//                case .success(let events):
+//                    completion(.success(events))
+//                case .failure(let error):
+//                    completion(.failure(error))
+//                }
+//            }
         
+        let request = AF.request(url, method: .get,parameters: parameters ,encoding: URLEncoding.default, headers: headers)
+
         // ✅ cURL 출력
         request.cURLDescription { description in
             print("[fetchClubUserEvents] 🔍 cURL:\n\(description)")
@@ -49,8 +91,9 @@ enum EventAPI {
         
         request
             .validate()
+            .cacheResponse(using: .doNotCache)
             .responseDecodable(of: [EventResponseDTO].self) { response in
-                print(response)
+                //print(response)
 
                 switch response.result {
                 case .success(let events):
@@ -87,6 +130,7 @@ enum EventAPI {
         // 응답 처리
         dataRequest
             .validate()
+            .cacheResponse(using: .doNotCache)
             .responseString { response in
                 print(response)
 
@@ -126,7 +170,7 @@ enum EventAPI {
         request
             .validate()
             .responseDecodable(of: [EventResponseDTO].self) { response in
-                print(response)
+                //print(response)
                 switch response.result {
                 case .success(let events):
                     completion(.success(events))

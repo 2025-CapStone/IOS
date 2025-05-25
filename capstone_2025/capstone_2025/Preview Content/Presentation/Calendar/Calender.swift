@@ -291,6 +291,8 @@ struct MainCalendarView: View {
             }
         }
         .onAppear {
+            
+            print("")
             if let cid = ClubEventContext.shared.selectedClubId {
                 selectedOption = .selectedClub
                 disableSelectedClub = false

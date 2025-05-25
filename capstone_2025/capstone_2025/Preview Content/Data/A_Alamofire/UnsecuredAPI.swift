@@ -42,7 +42,7 @@ final class UnsecuredAPI {
     }
 
     func login(loginData: [String: Any]) async throws -> Data {
-        let url = "\(baseURL)/api/user/login"
+        let url = "\(baseURL)/api/user/login/ios"
 
         return try await withCheckedThrowingContinuation { continuation in
             let request = AF.request(
@@ -59,6 +59,7 @@ final class UnsecuredAPI {
 
             request
                 .validate()
+                //.cacheResponse(using: .doNotCache)
                 .responseData { response in
                     switch response.result {
                     case .success(let data):

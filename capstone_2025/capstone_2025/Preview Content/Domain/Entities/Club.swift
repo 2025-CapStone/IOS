@@ -17,13 +17,13 @@ struct Club: Identifiable, Hashable {
     let tag: [String]
 
     init(from dto: ClubResponseDTO) {
-        self.id = dto.clubId
-        self.name = dto.clubName
-        self.description = dto.clubDescription
+        self.id = dto.clubId!
+        self.name = dto.clubName!
+        self.description = dto.clubDescription!
         self.logoURL = dto.clubLogoURL
         self.backgroundURL = dto.clubBackgroundURL
-        self.createdAt = ISO8601DateFormatter().date(from: dto.clubCreatedAt) ?? Date()
-        self.tag = [dto.tagOne, dto.tagTwo, dto.tagThree].filter { !$0.isEmpty }
+        self.createdAt = DateFormatter.notificationDateFormatter.date(from:dto.clubCreatedAt) ?? Date()
+        self.tag = [dto.tagOne!, dto.tagTwo!, dto.tagThree!].filter { !$0.isEmpty }
     }
 
 

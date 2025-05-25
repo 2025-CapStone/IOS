@@ -92,7 +92,7 @@ final class ClubListViewModel: ObservableObject {
         ClubAPI.findClubById(clubId: id, accessToken: accessToken) { result in
             switch result {
             case .success(let club):
-                completion(.success(club.clubName))
+                completion(.success(club.clubName!))
             case .failure(let error):
                 completion(.failure(error))
             }

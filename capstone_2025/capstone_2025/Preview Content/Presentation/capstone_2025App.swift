@@ -23,6 +23,8 @@ import SwiftUI
 struct capstone_2025App: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var appState = AppState.shared
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
 
     init() {
         // ✅ 앱 시작 시 토큰 초기화 (디버깅/테스트 목적)
@@ -40,6 +42,19 @@ struct capstone_2025App: App {
             case .active:
                 print("📲 [AppState] 앱 활성화됨")
                 logSessionInfo()
+                let status = AppState.shared.getPushAuthorization()
+                if status == .denied {
+//                    알림창(title: "푸쉬 알림을 해주세요", style: .destructive){_ in 
+//                                      DispatchQueue.main.async {
+//                                          if let appSettings = URL(string: UIApplication.openSettingsURLString),
+//                                             UIApplication.shared.canOpenURL(appSettings) {
+//                                              UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+//                                          }
+//                                      }
+//                    }
+                    
+                    
+                }
 
             case .inactive:
                 print("⏸ [AppState] 앱 비활성화됨")

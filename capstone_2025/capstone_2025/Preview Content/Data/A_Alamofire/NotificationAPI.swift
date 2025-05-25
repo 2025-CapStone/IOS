@@ -23,6 +23,7 @@ enum NotificationAPI {
         
         request
             .validate()
+            .cacheResponse(using: .doNotCache)
             .responseDecodable(of: [NotificationResponseDTO].self) { response in
                 switch response.result {
                 case .success(let notifications):
@@ -52,6 +53,7 @@ enum NotificationAPI {
 
         request
             .validate()
+            .cacheResponse(using: .doNotCache)
             .responseString { response in
                 switch response.result {
                 case .success(let message):
@@ -81,6 +83,7 @@ enum NotificationAPI {
 
         request
             .validate()
+            .cacheResponse(using: .doNotCache)
             .responseString { response in
                 switch response.result {
                 case .success(let message):

@@ -73,7 +73,7 @@ struct CreateTaskView: View {
 
             // 🔸 소속 클럽 선택
             Picker("소속 클럽 선택", selection: $selectedClubName) {
-                ForEach(AppState.shared.user!.joinedClub.map(\ .clubName), id: \ .self) { clubName in
+                ForEach(AppState.shared.user!.joinedClub.map(\ .clubName!), id: \ .self) { clubName in
                     Text(clubName).tag(clubName)
                 }
             }
@@ -88,7 +88,7 @@ struct CreateTaskView: View {
 
                 guard let userClub = AppState.shared.user!.joinedClub.first(where: { $0.clubName == selectedClubName }) else { return }
 
-                viewModel.setClubId(userClub.clubId)
+                viewModel.setClubId(userClub.clubId!)
                 viewModel.createEvent(
                     startTime: mergedStart,
                     endTime: mergedEnd,

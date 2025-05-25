@@ -7,18 +7,18 @@
 import Foundation
 
 struct ClubResponseDTO: Decodable {
-    let clubId: Int
-    let clubName: String
-    let clubDescription: String
+    let clubId: Int?
+    let clubName: String?
+    let clubDescription: String?
     let clubLogoURL: String?
     let clubBackgroundURL: String?
     let clubCreatedAt: String
-    let tagOne: String
-    let tagTwo: String
-    let tagThree: String
+    let tagOne: String?
+    let tagTwo: String?
+    let tagThree: String?
 
     var tags: [String] {
-        return [tagOne, tagTwo, tagThree].filter { !$0.isEmpty }
+        return [tagOne!, tagTwo!, tagThree!].filter { !$0.isEmpty }
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -79,3 +79,4 @@ extension ClubResponseDTO {
         self.tagThree = tagThree
     }
 }
+

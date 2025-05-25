@@ -164,7 +164,7 @@ struct club_intro: View {
                     case .success(let img):
                         img.resizable().scaledToFill()
                     default:
-                        Image("defaultLogo").resizable().scaledToFill()
+                        Image("defaultLogo").resizable().aspectRatio(contentMode: .fit )
                     }
                 }
             } else {
@@ -185,7 +185,7 @@ struct club_intro: View {
                         Color.clear               // 로딩 중 투명
                     case .success(let img):
                         img.resizable()
-                           .scaledToFill()        // 전체 채우기
+                                   // 전체 채우기
                     default:
                         Color.gray.opacity(0.1)   // 실패 시 기본 색
                     }
@@ -355,3 +355,4 @@ struct AccessDeniedPopup: View {
     return club_intro(viewModel: viewModel, club: club) { _ in }
         .environmentObject(router)
 }
+                  

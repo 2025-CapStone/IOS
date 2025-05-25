@@ -4,6 +4,8 @@ import SwiftUI
 struct Login: View {
     @EnvironmentObject var router: NavigationRouter
     @ObservedObject var viewModel: LoginViewModel
+    //@State private var showPushAlert = false
+    // 푸쉬 알림을 설정 위한 도구
 
     var body: some View {
         VStack(spacing: 20) {
@@ -34,7 +36,7 @@ struct Login: View {
 
                     TextField("ex ) xxx - xxxx - xxxx", text: $viewModel.phoneNumber)
                         .padding(10)
-                        .keyboardType(.phonePad)
+                        .keyboardType(.default)
                 }
                 .background(Color(.systemGray6))
                 .cornerRadius(10)

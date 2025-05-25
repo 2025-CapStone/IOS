@@ -25,15 +25,7 @@ final class NotificationViewModel: ObservableObject {
                 switch result {
                 case .success(let dtos):
                     self?.notifications = dtos.map { dto in
-                        Notification(
-                            id: dto.id,
-                            title: dto.title,
-                            message: dto.message,
-                            sender: dto.sender,
-                            createdAt: Self.dateFromISO(dto.createdAt),
-                            type: dto.type,
-                            isRead: dto.read
-                        )
+                        dto.toEntity()
                     }
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription

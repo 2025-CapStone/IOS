@@ -34,7 +34,7 @@ import Foundation
                 self?.isLoading = false
                 switch result {
                 case .success(let dtos):
-                    print("[EventAPI] ✅ 응답 DTO: \(dtos)")
+                    //print("[EventAPI] ✅ 응답 DTO: \(dtos)")
                     let mapped = dtos.map { Event(from: $0) }
                     for e in mapped {
                         print("[Mapped] \(e.eventId) - start: \(e.startTime), end: \(e.endTime)")
@@ -68,7 +68,7 @@ import Foundation
                  self?.isLoading = false
                  switch result {
                  case .success(let dtos):
-                     print("[EventAPI] ✅ 응답 DTO: \(dtos)")
+                     //print("[EventAPI] ✅ 응답 DTO: \(dtos)")
                      let mapped = dtos.map { Event(from: $0) }
                      for e in mapped {
                          print("[Mapped] \(e.eventId) - start: \(e.startTime), end: \(e.endTime)")
@@ -101,7 +101,7 @@ import Foundation
                  self?.isLoading = false
                  switch result {
                  case .success(let dtos):
-                     print("[EventAPI] ✅ 응답 DTO: \(dtos)")
+                     //print("[EventAPI] ✅ 응답 DTO: \(dtos)")
                      let mapped = dtos.map { Event(from: $0) }
                      for e in mapped {
                          print("[Mapped] \(e.eventId) - start: \(e.startTime), end: \(e.endTime)")

@@ -17,6 +17,9 @@ final class LoginViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isSuccess: Bool = false
     @Published var showErrorAlert: Bool = false
+    
+    
+    
 
     func login() {
         isLoading = true
@@ -25,7 +28,8 @@ final class LoginViewModel: ObservableObject {
 
         let loginData: [String: Any] = [
             "userTel": phoneNumber,
-            "password": password
+            "password": password,
+            "deviceToken" : AppState.shared.getDeviceToken()
         ]
 
         Task {
@@ -46,6 +50,8 @@ final class LoginViewModel: ObservableObject {
                     self.isSuccess = true
                     print("🔹 로그인 성공 (User: \(AppState.shared.user)")
                     print("🔹 로그인 성공 (refreshToken: \(SessionStorage.shared.refreshToken)")
+                    print("🔹 로그인 성공 (accessToken: \(SessionStorage.shared.accessToken)")
+
                     print("로그인 초기 joinedClub \(AppState.shared.user!.joinedClub)")
                 }
             } catch {

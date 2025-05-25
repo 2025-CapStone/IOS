@@ -3,6 +3,10 @@ import Foundation
 // MARK: - UserRepository 구현체
 final class DefaultUserRepository: UserRepository {
 
+    
+ 
+    
+
     private let dataTransferService: DataTransferService
     private let backgroundQueue: DataTransferDispatchQueue
 
@@ -40,8 +44,8 @@ final class DefaultUserRepository: UserRepository {
 extension DefaultUserRepository {
 
     // ✅ 수정: Result<User, Error> → Result<LoginResponseDTO, Error>
-    func login(phoneNumber: String, password: String, completion: @escaping (Result<LoginResponseDTO, Error>) -> Void) -> Cancellable? {
-        let requestDTO = LoginRequestDTO(phoneNumber: phoneNumber, password: password)
+    func login(phoneNumber: String, password: String,deviceToken : String, completion: @escaping (Result<LoginResponseDTO, Error>) -> Void) -> Cancellable? {
+        let requestDTO = LoginRequestDTO(phoneNumber: phoneNumber, password: password, deviceToken: deviceToken)
         let endpoint = APIEndpoints.login(requestDTO)
         let task = RepositoryTask()
 

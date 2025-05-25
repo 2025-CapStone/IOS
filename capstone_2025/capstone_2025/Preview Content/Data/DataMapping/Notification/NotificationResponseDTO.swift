@@ -9,13 +9,13 @@ import Foundation
 
 // ✅ 서버 응답용 DTO
 struct NotificationResponseDTO: Codable, Identifiable, Hashable {
-    let id: Int
-    let title: String
-    let message: String
-    let type: NotificationType
-    let read: Bool
-    let createdAt: String
-    let sender: String
+    let id: Int?
+    let title: String?
+    let message: String?
+    let type: NotificationType?
+    let read: Bool?
+    let createdAt: String?
+    let sender: String?
     let referenceId: Int64?
     let targetId: Int64?
 
@@ -32,24 +32,16 @@ struct NotificationResponseDTO: Codable, Identifiable, Hashable {
     }
 }
 
-extension DateFormatter {
-    static let iso8601WithFractional: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
-        return formatter
-    }()
-}
-
 extension NotificationResponseDTO {
     func toEntity() -> Notification {
         Notification(
-            id: id,
-            title: title,
-            message: message,
-            sender: sender,
-            createdAt: DateFormatter.iso8601WithFractional.date(from: createdAt) ?? Date(),
-            type: type,
-            isRead: read
+            id: id!,
+            title: title!,
+            message: message!,
+            sender: sender!,
+            createdAt: DateFormatter.notificationDateFormatter.date(from: createdAt!) ?? Date(),
+            type: type!,
+            isRead: read!
         )
     }
 }
@@ -71,4 +63,13 @@ enum NotificationType: String, Codable {
         let raw = try container.decode(String.self)
         self = NotificationType(rawValue: raw.uppercased()) ?? .unknown
     }
+}
+extension DateFormatter {
+    static let notificationDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "Asia/Seoul") // 백엔드가 UTC일 경우
+        return formatter
+    }()
 }
