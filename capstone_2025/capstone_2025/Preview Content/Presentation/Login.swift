@@ -36,7 +36,9 @@ struct Login: View {
 
                     TextField("ex ) xxx - xxxx - xxxx", text: $viewModel.phoneNumber)
                         .padding(10)
-                        .keyboardType(.default)
+                        .keyboardType(.numberPad).onChange(of: viewModel.phoneNumber) { newValue in
+                            handlePhoneNumberChange(newValue)
+                        }
                 }
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
@@ -99,11 +101,38 @@ struct Login: View {
                 AppState.shared.notificationViewModel.fetchAll()
                 router.path.append(AppRoute.home)
             }
+        }.keyboardAdaptive().onTapGesture {
+            UIApplication.shared.endEditing()
         }
         .alert("로그인 실패", isPresented: $viewModel.showErrorAlert) {
             Button("확인", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "알 수 없는 오류가 발생했습니다.")
+        }
+    }
+    
+    func handlePhoneNumberChange(_ input: String) {
+        let formatted = formatPhoneNumber(input)
+        if viewModel.phoneNumber != formatted {
+            viewModel.phoneNumber = formatted
+        }
+    }
+    
+    func formatPhoneNumber(_ number: String) -> String {
+        let digits = number.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+        let len = digits.count
+
+        if len <= 3 {
+            return digits
+        } else if len <= 7 {
+            let prefix = String(digits.prefix(3))
+            let mid = String(digits.suffix(len - 3))
+            return "\(prefix)-\(mid)"
+        } else {
+            let prefix = String(digits.prefix(3))
+            let mid = String(digits.dropFirst(3).prefix(4))
+            let suffix = String(digits.dropFirst(7))
+            return "\(prefix)-\(mid)-\(suffix)"
         }
     }
 }

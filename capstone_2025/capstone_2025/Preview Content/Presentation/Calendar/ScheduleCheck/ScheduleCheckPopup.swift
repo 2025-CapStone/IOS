@@ -185,8 +185,8 @@ struct ScheduleCheckPopup: View {
     private func computeParticipantState() -> ParticipantState {
         let isMember = isUserMember(of: schedule)
         switch (isMember, isJoined) {
-        case (false, false): return .GuestParticipated
-        case (false, true):  return .GuestNotParticipated
+        case (false, false): return .GuestNotParticipated
+        case (false, true):  return .GuestParticipated
         case (true,  true):  return .Participated
         case (true,  false): return .notParticipated
         }
